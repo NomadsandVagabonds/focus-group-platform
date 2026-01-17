@@ -84,14 +84,14 @@
     padding: 2rem;
 }
 
-/* Bottom bar takes 30% - for other participants + self */
+/* Bottom bar takes 30% - for self + other participants */
 .bottomBar {
     flex: 3;
     display: flex;
     gap: 12px;
     padding: 12px;
     background: var(--color-bg-secondary);
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     flex-shrink: 0;
     min-height: 120px;

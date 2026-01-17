@@ -108,8 +108,23 @@ function ParticipantLayout() {
                 )}
             </div>
 
-            {/* Bottom bar - Other participants + self */}
+            {/* Bottom bar - Self + other participants */}
             <div className={styles.bottomBar}>
+                {/* Self view - first (left side) */}
+                {localTrack && (
+                    <div className={styles.selfTile}>
+                        {localTrack.publication?.track ? (
+                            <VideoTrack
+                                trackRef={localTrack}
+                                className={styles.smallVideo}
+                            />
+                        ) : (
+                            <div className={styles.smallPlaceholder}>📹</div>
+                        )}
+                        <span className={styles.smallLabel}>You</span>
+                    </div>
+                )}
+
                 {/* Other participants */}
                 {otherParticipants.map((trackRef) => (
                     <div key={trackRef.participant.identity} className={styles.smallTile}>
@@ -126,21 +141,6 @@ function ParticipantLayout() {
                         </span>
                     </div>
                 ))}
-
-                {/* Self view */}
-                {localTrack && (
-                    <div className={styles.selfTile}>
-                        {localTrack.publication?.track ? (
-                            <VideoTrack
-                                trackRef={localTrack}
-                                className={styles.smallVideo}
-                            />
-                        ) : (
-                            <div className={styles.smallPlaceholder}>📹</div>
-                        )}
-                        <span className={styles.smallLabel}>You</span>
-                    </div>
-                )}
             </div>
         </div>
     );
