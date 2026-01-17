@@ -13,29 +13,35 @@
     overflow: hidden;
 }
 
-/* Main area takes most space */
+/* Main area takes 70% of available space */
 .mainArea {
-    flex: 1;
+    flex: 7;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 8px;
     min-height: 0;
+    background: #000;
 }
 
 .featuredTile {
     position: relative;
     width: 100%;
     height: 100%;
-    background: var(--color-bg-secondary);
+    background: #000;
     border-radius: 8px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Use contain to never crop - letterbox instead */
 .video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: #000;
 }
 
 .placeholder {
@@ -78,31 +84,41 @@
     padding: 2rem;
 }
 
-/* Bottom bar for other participants + self */
+/* Bottom bar takes 30% - for other participants + self */
 .bottomBar {
+    flex: 3;
     display: flex;
-    gap: 8px;
-    padding: 8px;
+    gap: 12px;
+    padding: 12px;
     background: var(--color-bg-secondary);
     justify-content: flex-end;
     align-items: center;
     flex-shrink: 0;
-    min-height: 90px;
+    min-height: 120px;
 }
 
-.smallTile,
-.selfTile {
+/* Regular participant tiles in bottom bar */
+.smallTile {
     position: relative;
     width: 120px;
-    height: 75px;
+    height: 80px;
     background: var(--color-bg-tertiary, #1a1a2e);
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
 }
 
+/* Self view - 2x larger on desktop */
 .selfTile {
-    border: 2px solid var(--color-accent-primary);
+    position: relative;
+    width: 200px;
+    height: 130px;
+    background: var(--color-bg-tertiary, #1a1a2e);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid var(--color-accent-primary);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 }
 
 .smallVideo {
@@ -123,25 +139,72 @@
 
 .smallLabel {
     position: absolute;
-    bottom: 2px;
-    left: 6px;
+    bottom: 4px;
+    left: 8px;
     color: white;
-    font-size: 0.6rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
-/* Mobile responsive */
+/* Tablet responsive */
+@media (max-width: 1024px) {
+    .selfTile {
+        width: 160px;
+        height: 105px;
+    }
+
+    .smallTile {
+        width: 100px;
+        height: 70px;
+    }
+
+    .bottomBar {
+        min-height: 100px;
+        gap: 8px;
+        padding: 8px;
+    }
+}
+
+/* Mobile responsive - same size for all */
 @media (max-width: 768px) {
     .bottomBar {
-        min-height: 70px;
+        flex: 2;
+        min-height: 80px;
         padding: 6px;
         gap: 6px;
     }
 
     .smallTile,
     .selfTile {
-        width: 80px;
-        height: 55px;
+        width: 90px;
+        height: 60px;
+    }
+
+    .selfTile {
+        border-width: 2px;
+    }
+
+    .mainArea {
+        flex: 8;
+    }
+}
+
+/* Very small screens - hide other participants, only show self */
+@media (max-width: 480px) {
+    .smallTile {
+        display: none;
+    }
+
+    .selfTile {
+        width: 100px;
+        height: 70px;
+    }
+
+    .bottomBar {
+        justify-content: center;
     }
 }
