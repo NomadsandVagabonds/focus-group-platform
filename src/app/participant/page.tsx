@@ -12,7 +12,7 @@ import {
 } from '@/lib/livekit-data';
 import styles from './page.module.css';
 
-const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
+const ParticipantVideoGrid = dynamic(() => import('@/components/ParticipantVideoGrid'), {
     ssr: false,
     loading: () => <div className={styles.mediaPlaceholder}>Loading video...</div>
 });
@@ -118,11 +118,9 @@ function ParticipantContent() {
                 {/* Media area - shows video feed from moderator */}
                 <div className={styles.mediaArea}>
                     {token ? (
-                        <VideoGrid
+                        <ParticipantVideoGrid
                             token={token}
                             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://demo.livekit.cloud'}
-                            maxParticipants={10}
-                            showPerceptionOverlay={false}
                             onRoomConnected={handleRoomConnected}
                             onRoomDisconnected={handleRoomDisconnected}
                         />
