@@ -7,9 +7,10 @@ import {
     useTracks,
     RoomAudioRenderer,
     useRoomContext,
+    useConnectionState,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { Track, Room, ConnectionState } from 'livekit-client';
+import { Track, Room, ConnectionState, RoomEvent } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
 import styles from './VideoGrid.module.css';
 
@@ -30,7 +31,7 @@ interface VideoGridProps {
     onRoomDisconnected?: () => void;
 }
 
-// Inner component that can access room context
+// Inner component that can access room context and listens for connection events
 function RoomDataHandler({
     onRoomConnected,
     onRoomDisconnected
@@ -39,18 +40,22 @@ function RoomDataHandler({
     onRoomDisconnected?: () => void;
 }) {
     const room = useRoomContext();
+    const connectionState = useConnectionState();
 
     useEffect(() => {
-        if (room && room.state === ConnectionState.Connected) {
-            // Set the room for data channel usage
+        if (!room) return;
+
+        console.log('Room connection state:', connectionState);
+
+        if (connectionState === ConnectionState.Connected) {
+            console.log('Room CONNECTED - setting up data channels');
             setRoom(room);
             onRoomConnected?.(room);
-        }
-
-        return () => {
+        } else if (connectionState === ConnectionState.Disconnected) {
+            console.log('Room DISCONNECTED');
             onRoomDisconnected?.();
-        };
-    }, [room, room?.state, onRoomConnected, onRoomDisconnected]);
+        }
+    }, [room, connectionState, onRoomConnected, onRoomDisconnected]);
 
     return null;
 }
