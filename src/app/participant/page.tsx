@@ -68,7 +68,12 @@ function ParticipantContent() {
 
     // Handle perception value changes - send via LiveKit data channel
     const handlePerceptionChange = useCallback((value: number, timestamp: number) => {
-        if (!isConnected) return;
+        console.log('[Participant] handlePerceptionChange called, value:', value, 'isConnected:', isConnected);
+
+        if (!isConnected) {
+            console.log('[Participant] NOT CONNECTED, skipping send');
+            return;
+        }
 
         const dataPoint: PerceptionDataPoint = {
             userId,
@@ -77,6 +82,7 @@ function ParticipantContent() {
             value,
             mediaTimestamp: currentMediaTimestamp,
         };
+        console.log('[Participant] Calling sendPerceptionData with:', dataPoint);
         sendPerceptionData(dataPoint);
     }, [userId, sessionId, currentMediaTimestamp, isConnected]);
 
