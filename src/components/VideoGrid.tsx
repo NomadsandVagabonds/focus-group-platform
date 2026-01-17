@@ -1,17 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     LiveKitRoom,
-    VideoConference,
-    GridLayout,
     ParticipantTile,
     useTracks,
     RoomAudioRenderer,
-    ControlBar,
+    useRoomContext,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { Track } from 'livekit-client';
+import { Track, Room, ConnectionState } from 'livekit-client';
+import { setRoom } from '@/lib/livekit-data';
 import styles from './VideoGrid.module.css';
 
 interface VideoGridProps {
@@ -25,10 +24,35 @@ interface VideoGridProps {
     showPerceptionOverlay?: boolean;
     /** Current perception values by participant ID */
     perceptionValues?: Record<string, number>;
-    /** Callback when screen share starts */
-    onScreenShareStart?: () => void;
-    /** Callback when screen share stops */
-    onScreenShareStop?: () => void;
+    /** Callback when room connects (provides room for data channels) */
+    onRoomConnected?: (room: Room) => void;
+    /** Callback when room disconnects */
+    onRoomDisconnected?: () => void;
+}
+
+// Inner component that can access room context
+function RoomDataHandler({
+    onRoomConnected,
+    onRoomDisconnected
+}: {
+    onRoomConnected?: (room: Room) => void;
+    onRoomDisconnected?: () => void;
+}) {
+    const room = useRoomContext();
+
+    useEffect(() => {
+        if (room && room.state === ConnectionState.Connected) {
+            // Set the room for data channel usage
+            setRoom(room);
+            onRoomConnected?.(room);
+        }
+
+        return () => {
+            onRoomDisconnected?.();
+        };
+    }, [room, room?.state, onRoomConnected, onRoomDisconnected]);
+
+    return null;
 }
 
 function ParticipantGrid({
@@ -108,6 +132,8 @@ export default function VideoGrid({
     maxParticipants = 10,
     showPerceptionOverlay = false,
     perceptionValues = {},
+    onRoomConnected,
+    onRoomDisconnected,
 }: VideoGridProps) {
     return (
         <LiveKitRoom
@@ -118,6 +144,10 @@ export default function VideoGrid({
             audio={true}
             className={styles.roomContainer}
         >
+            <RoomDataHandler
+                onRoomConnected={onRoomConnected}
+                onRoomDisconnected={onRoomDisconnected}
+            />
             <ParticipantGrid
                 maxParticipants={maxParticipants}
                 showPerceptionOverlay={showPerceptionOverlay}

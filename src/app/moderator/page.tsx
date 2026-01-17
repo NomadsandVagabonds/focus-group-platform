@@ -1,15 +1,15 @@
 'use client';
 
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { Room } from 'livekit-client';
 import PerceptionOverlay from '@/components/PerceptionOverlay';
 import {
-    connectSocket,
-    disconnectSocket,
-    subscribeToAggregates,
-    AggregateData
-} from '@/lib/socket';
+    subscribeToPerceptionUpdates,
+    AggregateData,
+    PerceptionDataPoint,
+} from '@/lib/livekit-data';
 import styles from './page.module.css';
 
 const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
@@ -28,6 +28,9 @@ function ModeratorContent() {
     const [aggregateData, setAggregateData] = useState<AggregateData[]>([]);
     const [perceptionValues, setPerceptionValues] = useState<Record<string, number>>({});
     const [participantCount, setParticipantCount] = useState(0);
+
+    const roomRef = useRef<Room | null>(null);
+    const unsubscribeRef = useRef<(() => void) | null>(null);
 
     // Get LiveKit token with moderator privileges
     useEffect(() => {
@@ -51,35 +54,53 @@ function ModeratorContent() {
         getToken();
     }, [sessionId, moderatorId]);
 
-    // Connect to WebSocket and subscribe to aggregates
+    // Handle room connection - set up data channel subscriptions
+    const handleRoomConnected = useCallback((room: Room) => {
+        console.log('Room connected, setting up perception data subscriptions');
+        roomRef.current = room;
+        setIsConnected(true);
+
+        // Subscribe to perception updates via LiveKit data channels
+        unsubscribeRef.current = subscribeToPerceptionUpdates(
+            room,
+            // Individual perception updates
+            (data: PerceptionDataPoint) => {
+                console.log('Received perception update:', data.userId, data.value);
+            },
+            // Aggregate updates (calculated locally by aggregator)
+            (data: AggregateData) => {
+                setAggregateData(prev => {
+                    const newData = [...prev, data];
+                    // Keep last 5 minutes of data
+                    const cutoff = Date.now() - 5 * 60 * 1000;
+                    return newData.filter(d => d.timestamp >= cutoff);
+                });
+
+                setPerceptionValues(data.participants);
+                setParticipantCount(Object.keys(data.participants).length);
+            },
+            true // isModerator - enables local aggregation
+        );
+    }, []);
+
+    // Handle room disconnection
+    const handleRoomDisconnected = useCallback(() => {
+        console.log('Room disconnected');
+        setIsConnected(false);
+        if (unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
+        }
+    }, []);
+
+    // Cleanup on unmount
     useEffect(() => {
-        const socket = connectSocket(sessionId, moderatorId);
-
-        socket.on('connect', () => {
-            setIsConnected(true);
-        });
-
-        socket.on('disconnect', () => {
-            setIsConnected(false);
-        });
-
-        const unsubscribe = subscribeToAggregates((data) => {
-            setAggregateData(prev => {
-                const newData = [...prev, data];
-                // Keep last 5 minutes of data
-                const cutoff = Date.now() - 5 * 60 * 1000;
-                return newData.filter(d => d.timestamp >= cutoff);
-            });
-
-            setPerceptionValues(data.participants);
-            setParticipantCount(Object.keys(data.participants).length);
-        });
-
         return () => {
-            unsubscribe();
-            disconnectSocket();
+            if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+            }
         };
-    }, [sessionId, moderatorId]);
+    }, []);
 
     // Calculate current average
     const currentAverage = aggregateData.length > 0
@@ -88,15 +109,9 @@ function ModeratorContent() {
 
     // Handle recording toggle
     const toggleRecording = useCallback(() => {
-        const socket = connectSocket(sessionId, moderatorId);
-        if (isRecording) {
-            socket.emit('session:stop-recording');
-            setIsRecording(false);
-        } else {
-            socket.emit('session:start-recording');
-            setIsRecording(true);
-        }
-    }, [isRecording, sessionId, moderatorId]);
+        // TODO: Implement LiveKit recording via egress API
+        setIsRecording(!isRecording);
+    }, [isRecording]);
 
     // Copy join link
     const copyJoinLink = useCallback(() => {
@@ -158,6 +173,8 @@ function ModeratorContent() {
                             maxParticipants={10}
                             showPerceptionOverlay={true}
                             perceptionValues={perceptionValues}
+                            onRoomConnected={handleRoomConnected}
+                            onRoomDisconnected={handleRoomDisconnected}
                         />
                     )}
                 </div>

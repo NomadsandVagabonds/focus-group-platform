@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import styles from './PerceptionOverlay.module.css';
-import { AggregateData } from '@/lib/socket';
+import { AggregateData } from '@/lib/livekit-data';
 
 interface PerceptionOverlayProps {
     /** Real-time aggregate data */
