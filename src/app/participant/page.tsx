@@ -20,7 +20,9 @@ const VideoGrid = dynamic(() => import('@/components/VideoGrid'), {
 function ParticipantContent() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get('session') || 'demo-session';
-    const userId = searchParams.get('user') || `participant-${Date.now()}`;
+
+    // Use useState to keep userId stable across re-renders
+    const [userId] = useState(() => searchParams.get('user') || `participant-${Date.now()}`);
 
     const [token, setToken] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
