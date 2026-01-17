@@ -2,10 +2,8 @@
 
 import {
     Room,
-    DataPacket_Kind,
     RoomEvent,
     RemoteParticipant,
-    LocalParticipant,
 } from 'livekit-client';
 
 export interface PerceptionDataPoint {
@@ -26,7 +24,6 @@ export interface AggregateData {
 
 // Data channel topics
 const PERCEPTION_UPDATE = 'perception:update';
-const PERCEPTION_AGGREGATE = 'perception:aggregate';
 
 // Text encoder/decoder for data messages
 const encoder = new TextEncoder();
@@ -42,12 +39,13 @@ class PerceptionAggregator {
     private aggregateInterval: NodeJS.Timeout | null = null;
 
     start(callback: (data: AggregateData) => void) {
+        console.log('[Aggregator] Starting aggregator');
         this.aggregateCallback = callback;
-        // Calculate and broadcast aggregates every 250ms
         this.aggregateInterval = setInterval(() => this.calculateAndBroadcast(), 250);
     }
 
     stop() {
+        console.log('[Aggregator] Stopping aggregator');
         if (this.aggregateInterval) {
             clearInterval(this.aggregateInterval);
             this.aggregateInterval = null;
@@ -57,7 +55,9 @@ class PerceptionAggregator {
     }
 
     updateValue(userId: string, value: number, timestamp: number) {
+        console.log(`[Aggregator] Update from ${userId}: ${value}`);
         this.participantValues.set(userId, { value, timestamp });
+
         // Remove stale values (older than 5 seconds)
         const now = Date.now();
         this.participantValues.forEach((v, k) => {
@@ -80,7 +80,6 @@ class PerceptionAggregator {
             participants[k] = v.value;
         });
 
-        // Calculate statistics
         const mean = values.reduce((a, b) => a + b, 0) / values.length;
         const sorted = [...values].sort((a, b) => a - b);
         const median = sorted.length % 2 === 0
@@ -97,6 +96,7 @@ class PerceptionAggregator {
             participants,
         };
 
+        console.log('[Aggregator] Broadcasting aggregate:', participants);
         this.aggregateCallback(aggregate);
     }
 }
@@ -105,6 +105,7 @@ const aggregator = new PerceptionAggregator();
 
 // Set the current LiveKit room
 export function setRoom(room: Room) {
+    console.log('[LiveKit-Data] setRoom called, room state:', room.state);
     currentRoom = room;
 }
 
@@ -115,8 +116,15 @@ export function getRoom(): Room | null {
 
 // Send perception data (from participant)
 export function sendPerceptionData(data: PerceptionDataPoint): void {
-    if (!currentRoom || !currentRoom.localParticipant) {
-        console.warn('No room connected, cannot send perception data');
+    console.log('[LiveKit-Data] sendPerceptionData called, room exists:', !!currentRoom);
+
+    if (!currentRoom) {
+        console.warn('[LiveKit-Data] No room set!');
+        return;
+    }
+
+    if (!currentRoom.localParticipant) {
+        console.warn('[LiveKit-Data] No local participant!');
         return;
     }
 
@@ -125,11 +133,17 @@ export function sendPerceptionData(data: PerceptionDataPoint): void {
         data,
     });
 
+    console.log('[LiveKit-Data] Publishing data:', data.userId, data.value);
+
     // Send to all participants (moderator will receive)
     currentRoom.localParticipant.publishData(
         encoder.encode(message),
         { reliable: true }
-    );
+    ).then(() => {
+        console.log('[LiveKit-Data] Data published successfully');
+    }).catch((err) => {
+        console.error('[LiveKit-Data] Failed to publish data:', err);
+    });
 }
 
 // Subscribe to perception updates (moderator uses this)
@@ -139,6 +153,8 @@ export function subscribeToPerceptionUpdates(
     onAggregate: (data: AggregateData) => void,
     isModerator: boolean = false
 ): () => void {
+    console.log('[LiveKit-Data] subscribeToPerceptionUpdates, isModerator:', isModerator);
+
     // Start aggregator if moderator
     if (isModerator) {
         aggregator.start(onAggregate);
@@ -149,11 +165,15 @@ export function subscribeToPerceptionUpdates(
         payload: Uint8Array,
         participant?: RemoteParticipant,
     ) => {
+        console.log('[LiveKit-Data] DATA RECEIVED from:', participant?.identity);
+
         try {
             const message = JSON.parse(decoder.decode(payload));
+            console.log('[LiveKit-Data] Parsed message topic:', message.topic);
 
             if (message.topic === PERCEPTION_UPDATE) {
                 const perceptionData = message.data as PerceptionDataPoint;
+                console.log('[LiveKit-Data] Perception update:', perceptionData.userId, perceptionData.value);
                 onUpdate(perceptionData);
 
                 // If moderator, update aggregator
@@ -166,22 +186,25 @@ export function subscribeToPerceptionUpdates(
                 }
             }
         } catch (e) {
-            console.error('Error parsing data message:', e);
+            console.error('[LiveKit-Data] Error parsing data message:', e);
         }
     };
 
     // Handle participant disconnection
     const handleParticipantDisconnected = (participant: RemoteParticipant) => {
+        console.log('[LiveKit-Data] Participant disconnected:', participant.identity);
         if (isModerator) {
             aggregator.removeParticipant(participant.identity);
         }
     };
 
+    console.log('[LiveKit-Data] Subscribing to DataReceived event');
     room.on(RoomEvent.DataReceived, handleDataReceived);
     room.on(RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
 
     // Return cleanup function
     return () => {
+        console.log('[LiveKit-Data] Unsubscribing from events');
         room.off(RoomEvent.DataReceived, handleDataReceived);
         room.off(RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
         if (isModerator) {
@@ -190,48 +213,9 @@ export function subscribeToPerceptionUpdates(
     };
 }
 
-// Broadcast aggregate data (from moderator to all participants)
-export function broadcastAggregate(data: AggregateData): void {
-    if (!currentRoom || !currentRoom.localParticipant) return;
-
-    const message = JSON.stringify({
-        topic: PERCEPTION_AGGREGATE,
-        data,
-    });
-
-    currentRoom.localParticipant.publishData(
-        encoder.encode(message),
-        { reliable: false } // Aggregates can be lossy for lower latency
-    );
-}
-
-// Subscribe to aggregates (participant uses this to see overall sentiment)
-export function subscribeToAggregates(
-    room: Room,
-    callback: (data: AggregateData) => void
-): () => void {
-    const handleDataReceived = (payload: Uint8Array) => {
-        try {
-            const message = JSON.parse(decoder.decode(payload));
-            if (message.topic === PERCEPTION_AGGREGATE) {
-                callback(message.data as AggregateData);
-            }
-        } catch (e) {
-            console.error('Error parsing aggregate message:', e);
-        }
-    };
-
-    room.on(RoomEvent.DataReceived, handleDataReceived);
-
-    return () => {
-        room.off(RoomEvent.DataReceived, handleDataReceived);
-    };
-}
-
-// Legacy compatibility - these mirror the old Socket.io interface
+// Legacy compatibility
 export function connectSocket(sessionId: string, userId: string): { on: Function; connected: boolean } {
-    // This is now a no-op since we use the LiveKit room directly
-    console.log('Socket.io deprecated - using LiveKit Data Channels');
+    console.log('[LiveKit-Data] connectSocket called (deprecated)');
     return {
         on: () => { },
         connected: currentRoom?.state === 'connected'
@@ -239,5 +223,5 @@ export function connectSocket(sessionId: string, userId: string): { on: Function
 }
 
 export function disconnectSocket(): void {
-    // No-op - room disconnection handled by VideoGrid
+    // No-op
 }
