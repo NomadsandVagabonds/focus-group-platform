@@ -8,9 +8,10 @@ import {
     RoomAudioRenderer,
     useRoomContext,
     useConnectionState,
+    useParticipants,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { Track, Room, ConnectionState, RoomEvent } from 'livekit-client';
+import { Track, Room, ConnectionState } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
 import styles from './VideoGrid.module.css';
 
@@ -45,17 +46,31 @@ function RoomDataHandler({
     useEffect(() => {
         if (!room) return;
 
-        console.log('Room connection state:', connectionState);
+        console.log('[VideoGrid] Room connection state:', connectionState);
 
         if (connectionState === ConnectionState.Connected) {
-            console.log('Room CONNECTED - setting up data channels');
+            console.log('[VideoGrid] Room CONNECTED');
             setRoom(room);
             onRoomConnected?.(room);
         } else if (connectionState === ConnectionState.Disconnected) {
-            console.log('Room DISCONNECTED');
+            console.log('[VideoGrid] Room DISCONNECTED');
             onRoomDisconnected?.();
         }
     }, [room, connectionState, onRoomConnected, onRoomDisconnected]);
+
+    return null;
+}
+
+// Debug component to log participants
+function ParticipantDebugger() {
+    const participants = useParticipants();
+
+    useEffect(() => {
+        console.log('[VideoGrid] Total participants:', participants.length);
+        participants.forEach(p => {
+            console.log('[VideoGrid] Participant:', p.identity, 'tracks:', p.trackPublications.size);
+        });
+    }, [participants]);
 
     return null;
 }
@@ -72,6 +87,14 @@ function ParticipantGrid({
         ],
         { onlySubscribed: false }
     );
+
+    // Log tracks for debugging
+    useEffect(() => {
+        console.log('[VideoGrid] Total tracks:', tracks.length);
+        tracks.forEach(t => {
+            console.log('[VideoGrid] Track:', t.participant.identity, t.source, t.publication?.trackName);
+        });
+    }, [tracks]);
 
     // Separate screen shares from camera tracks
     const screenShareTracks = tracks.filter(
@@ -153,6 +176,7 @@ export default function VideoGrid({
                 onRoomConnected={onRoomConnected}
                 onRoomDisconnected={onRoomDisconnected}
             />
+            <ParticipantDebugger />
             <ParticipantGrid
                 maxParticipants={maxParticipants}
                 showPerceptionOverlay={showPerceptionOverlay}
