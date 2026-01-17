@@ -25,9 +25,10 @@ function ParticipantContent() {
     const [token, setToken] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isDialActive, setIsDialActive] = useState(true);
-    const [currentMediaTimestamp, setCurrentMediaTimestamp] = useState<number | undefined>();
 
+    // Use refs to avoid stale closures
     const roomRef = useRef<Room | null>(null);
+    const isConnectedRef = useRef(false);
 
     // Get LiveKit token
     useEffect(() => {
@@ -53,8 +54,9 @@ function ParticipantContent() {
 
     // Handle room connection
     const handleRoomConnected = useCallback((room: Room) => {
-        console.log('Participant connected to room');
+        console.log('[Participant] Room CONNECTED');
         roomRef.current = room;
+        isConnectedRef.current = true;
         setRoom(room);
         setIsConnected(true);
         setIsDialActive(true);
@@ -62,16 +64,17 @@ function ParticipantContent() {
 
     // Handle room disconnection
     const handleRoomDisconnected = useCallback(() => {
-        console.log('Participant disconnected from room');
+        console.log('[Participant] Room DISCONNECTED');
+        isConnectedRef.current = false;
         setIsConnected(false);
     }, []);
 
-    // Handle perception value changes - send via LiveKit data channel
+    // Handle perception value changes - use ref to avoid stale closure
     const handlePerceptionChange = useCallback((value: number, timestamp: number) => {
-        console.log('[Participant] handlePerceptionChange called, value:', value, 'isConnected:', isConnected);
+        console.log('[Participant] handlePerceptionChange - value:', value, 'connected:', isConnectedRef.current);
 
-        if (!isConnected) {
-            console.log('[Participant] NOT CONNECTED, skipping send');
+        if (!isConnectedRef.current) {
+            console.log('[Participant] NOT connected, skipping');
             return;
         }
 
@@ -80,11 +83,11 @@ function ParticipantContent() {
             sessionId,
             timestamp,
             value,
-            mediaTimestamp: currentMediaTimestamp,
         };
-        console.log('[Participant] Calling sendPerceptionData with:', dataPoint);
+
+        console.log('[Participant] Sending perception data:', value);
         sendPerceptionData(dataPoint);
-    }, [userId, sessionId, currentMediaTimestamp, isConnected]);
+    }, [userId, sessionId]);
 
     return (
         <div className={styles.container}>
@@ -135,7 +138,7 @@ function ParticipantContent() {
                 <PerceptionBar
                     onValueChange={handlePerceptionChange}
                     intervalMs={250}
-                    isActive={isDialActive && isConnected}
+                    isActive={isDialActive}
                     enableHaptics={true}
                     showPrompt={true}
                 />
