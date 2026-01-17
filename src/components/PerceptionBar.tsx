@@ -39,6 +39,19 @@ export default function PerceptionBar({
     const lastHapticValue = useRef<number>(Math.round(value / 25) * 25);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+    // Use ref for value to avoid recreating interval on every change
+    const valueRef = useRef(value);
+    const onValueChangeRef = useRef(onValueChange);
+
+    // Keep refs updated
+    useEffect(() => {
+        valueRef.current = value;
+    }, [value]);
+
+    useEffect(() => {
+        onValueChangeRef.current = onValueChange;
+    }, [onValueChange]);
+
     // Haptic feedback for significant value changes
     const triggerHaptic = useCallback((newValue: number) => {
         if (!enableHaptics || typeof navigator === 'undefined') return;
@@ -91,20 +104,26 @@ export default function PerceptionBar({
         triggerHaptic(presetValue);
     }, [triggerHaptic]);
 
-    // Interval-based value reporting
+    // Stable interval-based value reporting using refs
     useEffect(() => {
-        if (!isActive || !onValueChange) return;
+        if (!isActive) return;
+
+        console.log('[PerceptionBar] Starting stable interval');
 
         intervalRef.current = setInterval(() => {
-            onValueChange(value, Date.now());
+            if (onValueChangeRef.current) {
+                console.log('[PerceptionBar] Reporting value:', valueRef.current);
+                onValueChangeRef.current(valueRef.current, Date.now());
+            }
         }, intervalMs);
 
         return () => {
+            console.log('[PerceptionBar] Clearing interval');
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [isActive, value, onValueChange, intervalMs]);
+    }, [isActive, intervalMs]); // Only recreate when isActive or intervalMs changes
 
     // Get color based on current value
     const getValueColor = (val: number): string => {
