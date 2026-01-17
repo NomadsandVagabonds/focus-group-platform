@@ -117,25 +117,30 @@
     align-items: center;
     justify-content: center;
     padding: var(--space-sm) var(--space-md);
-    border: 2px solid transparent;
+    border: none;
     border-radius: var(--radius-md);
-    background: var(--color-bg-elevated);
+    background: transparent;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
 }
 
 .emojiBtn:hover {
-    background: var(--color-bg-glass);
-    transform: scale(1.02);
+    transform: scale(1.1);
 }
 
 .emojiBtn.active {
-    transform: scale(1.05);
+    transform: scale(1.2);
 }
 
 .emoji {
     font-size: 24px;
     line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transition: all 0.2s ease;
+}
+
+.emojiBtn.active .emoji {
+    filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor);
 }
 
 /* Tracking status */

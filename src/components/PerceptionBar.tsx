@@ -188,10 +188,7 @@ export default function PerceptionBar({
                         key={preset.value}
                         className={`${styles.emojiBtn} ${Math.abs(value - preset.value) < 15 ? styles.active : ''}`}
                         onClick={() => handleEmojiClick(preset.value)}
-                        style={{
-                            borderColor: Math.abs(value - preset.value) < 15 ? preset.color : 'transparent',
-                            backgroundColor: Math.abs(value - preset.value) < 15 ? `${preset.color}15` : undefined,
-                        }}
+                        style={{ color: preset.color }}
                         title={preset.label}
                     >
                         <span className={styles.emoji}>{preset.emoji}</span>
