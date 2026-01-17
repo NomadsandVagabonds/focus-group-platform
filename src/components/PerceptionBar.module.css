@@ -109,6 +109,9 @@
     display: flex;
     justify-content: space-between;
     gap: var(--space-sm);
+    margin-top: var(--space-md);
+    padding-bottom: var(--space-md);
+    overflow: visible;
 }
 
 .emojiBtn {
@@ -122,6 +125,7 @@
     background: transparent;
     cursor: pointer;
     transition: all 0.2s ease;
+    overflow: visible;
 }
 
 .emojiBtn:hover {
@@ -140,7 +144,7 @@
 }
 
 .emojiBtn.active .emoji {
-    filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor);
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 12px currentColor);
 }
 
 /* Tracking status */
