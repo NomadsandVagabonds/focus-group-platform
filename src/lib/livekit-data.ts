@@ -58,10 +58,11 @@ class PerceptionAggregator {
         console.log(`[Aggregator] Update from ${userId}: ${value}`);
         this.participantValues.set(userId, { value, timestamp });
 
-        // Remove stale values (older than 5 seconds)
+        // Remove stale values (older than 30 seconds)
         const now = Date.now();
         this.participantValues.forEach((v, k) => {
-            if (now - v.timestamp > 5000) {
+            if (now - v.timestamp > 30000) {
+                console.log(`[Aggregator] Removing stale value for ${k}`);
                 this.participantValues.delete(k);
             }
         });
