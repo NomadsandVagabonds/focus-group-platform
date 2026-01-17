@@ -1,0 +1,111 @@
+.container {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.legendDot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+}
+
+.legendBand {
+    width: 16px;
+    height: 8px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 2px;
+}
+
+.chart {
+    display: block;
+}
+
+/* D3 styling */
+.container :global(.axis) {
+    color: var(--color-text-muted);
+}
+
+.container :global(.axis line),
+.container :global(.axis path) {
+    stroke: var(--color-text-muted);
+    stroke-opacity: 0.3;
+}
+
+.container :global(.axis text) {
+    fill: var(--color-text-muted);
+    font-size: 10px;
+}
+
+.grid :global(line) {
+    stroke: var(--color-text-muted);
+    stroke-opacity: 0.1;
+}
+
+.grid :global(path) {
+    display: none;
+}
+
+.stdDevBand {
+    fill: rgba(99, 102, 241, 0.15);
+}
+
+.meanLine {
+    fill: none;
+    stroke: var(--color-accent-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.individualLine {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.currentValueDot {
+    fill: var(--color-accent-primary);
+    stroke: var(--color-bg-secondary);
+    stroke-width: 2;
+}
+
+.currentValueLabel {
+    fill: var(--color-text-primary);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.scaleLabel {
+    fill: var(--color-text-muted);
+    font-size: 10px;
+    text-anchor: end;
+}

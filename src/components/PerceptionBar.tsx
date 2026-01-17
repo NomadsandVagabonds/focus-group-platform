@@ -1,0 +1,193 @@
+'use client';
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import styles from './PerceptionBar.module.css';
+
+interface PerceptionBarProps {
+    /** Callback fired at granular intervals with current value */
+    onValueChange?: (value: number, timestamp: number) => void;
+    /** Tracking interval in milliseconds (default: 250ms) */
+    intervalMs?: number;
+    /** Initial value (0-100) */
+    initialValue?: number;
+    /** Whether the dial is actively tracking */
+    isActive?: boolean;
+    /** Enable haptic feedback on mobile */
+    enableHaptics?: boolean;
+    /** Show the "Please keep rating!" prompt */
+    showPrompt?: boolean;
+}
+
+const EMOJI_PRESETS = [
+    { value: 12, emoji: '😠', label: 'Strongly Disagree', color: '#ef4444' },
+    { value: 37, emoji: '😕', label: 'Disagree', color: '#f97316' },
+    { value: 62, emoji: '🙂', label: 'Agree', color: '#22c55e' },
+    { value: 87, emoji: '😄', label: 'Strongly Agree', color: '#10b981' },
+];
+
+export default function PerceptionBar({
+    onValueChange,
+    intervalMs = 250,
+    initialValue = 50,
+    isActive = true,
+    enableHaptics = true,
+    showPrompt = true,
+}: PerceptionBarProps) {
+    const [value, setValue] = useState(initialValue);
+    const [isDragging, setIsDragging] = useState(false);
+    const sliderRef = useRef<HTMLDivElement>(null);
+    const lastHapticValue = useRef<number>(Math.round(value / 25) * 25);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Haptic feedback for significant value changes
+    const triggerHaptic = useCallback((newValue: number) => {
+        if (!enableHaptics || typeof navigator === 'undefined') return;
+
+        const roundedValue = Math.round(newValue / 25) * 25;
+        if (roundedValue !== lastHapticValue.current) {
+            lastHapticValue.current = roundedValue;
+            if ('vibrate' in navigator) {
+                navigator.vibrate(15);
+            }
+        }
+    }, [enableHaptics]);
+
+    // Convert pointer position to value (horizontal)
+    const getValueFromPosition = useCallback((clientX: number): number => {
+        if (!sliderRef.current) return value;
+
+        const rect = sliderRef.current.getBoundingClientRect();
+        const relativeX = clientX - rect.left;
+        const percentage = relativeX / rect.width;
+        return Math.max(0, Math.min(100, Math.round(percentage * 100)));
+    }, [value]);
+
+    // Handle pointer events
+    const handlePointerDown = useCallback((e: React.PointerEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+        const newValue = getValueFromPosition(e.clientX);
+        setValue(newValue);
+        triggerHaptic(newValue);
+
+        (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    }, [getValueFromPosition, triggerHaptic]);
+
+    const handlePointerMove = useCallback((e: React.PointerEvent) => {
+        if (!isDragging) return;
+        const newValue = getValueFromPosition(e.clientX);
+        setValue(newValue);
+        triggerHaptic(newValue);
+    }, [isDragging, getValueFromPosition, triggerHaptic]);
+
+    const handlePointerUp = useCallback((e: React.PointerEvent) => {
+        setIsDragging(false);
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    }, []);
+
+    // Handle emoji button clicks
+    const handleEmojiClick = useCallback((presetValue: number) => {
+        setValue(presetValue);
+        triggerHaptic(presetValue);
+    }, [triggerHaptic]);
+
+    // Interval-based value reporting
+    useEffect(() => {
+        if (!isActive || !onValueChange) return;
+
+        intervalRef.current = setInterval(() => {
+            onValueChange(value, Date.now());
+        }, intervalMs);
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [isActive, value, onValueChange, intervalMs]);
+
+    // Get color based on current value
+    const getValueColor = (val: number): string => {
+        if (val < 25) return '#ef4444';
+        if (val < 50) return '#f97316';
+        if (val < 75) return '#22c55e';
+        return '#10b981';
+    };
+
+    return (
+        <div className={styles.container}>
+            {/* Rating prompt */}
+            {showPrompt && (
+                <div className={styles.prompt}>
+                    <span className={styles.promptIcon}>⚠️</span>
+                    <span>Please keep rating!</span>
+                    <span className={styles.promptIcon}>⚠️</span>
+                </div>
+            )}
+
+            {/* Horizontal slider */}
+            <div className={styles.sliderContainer}>
+                <div
+                    ref={sliderRef}
+                    className={`${styles.sliderTrack} ${isDragging ? styles.dragging : ''}`}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerLeave={handlePointerUp}
+                    style={{ touchAction: 'none' }}
+                >
+                    {/* Gradient background */}
+                    <div className={styles.gradientBg} />
+
+                    {/* Tick marks */}
+                    <div className={styles.tickMarks}>
+                        {[0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100].map((tick) => (
+                            <div
+                                key={tick}
+                                className={`${styles.tick} ${tick % 25 === 0 ? styles.majorTick : ''}`}
+                                style={{ left: `${tick}%` }}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Thumb */}
+                    <div
+                        className={styles.thumb}
+                        style={{
+                            left: `${value}%`,
+                            backgroundColor: '#ffffff',
+                            boxShadow: isDragging ? `0 0 12px ${getValueColor(value)}` : undefined
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Emoji buttons */}
+            <div className={styles.emojiButtons}>
+                {EMOJI_PRESETS.map((preset) => (
+                    <button
+                        key={preset.value}
+                        className={`${styles.emojiBtn} ${Math.abs(value - preset.value) < 15 ? styles.active : ''}`}
+                        onClick={() => handleEmojiClick(preset.value)}
+                        style={{
+                            borderColor: Math.abs(value - preset.value) < 15 ? preset.color : 'transparent',
+                            backgroundColor: Math.abs(value - preset.value) < 15 ? `${preset.color}15` : undefined,
+                        }}
+                        title={preset.label}
+                    >
+                        <span className={styles.emoji}>{preset.emoji}</span>
+                    </button>
+                ))}
+            </div>
+
+            {/* Tracking indicator (subtle) */}
+            <div className={styles.trackingStatus}>
+                <span
+                    className={styles.statusDot}
+                    style={{ backgroundColor: isActive ? '#22c55e' : '#6b7280' }}
+                />
+                {isActive ? 'Tracking' : 'Paused'}
+            </div>
+        </div>
+    );
+}
