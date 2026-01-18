@@ -64,11 +64,11 @@
 
 .participantInfo {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
     padding: 10px 14px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+    background: linear-gradient(rgba(0, 0, 0, 0.85), transparent);
     display: flex;
     justify-content: space-between;
     align-items: center;
