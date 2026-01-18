@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, use, useRef } from 'react';
 import Link from 'next/link';
 import styles from '../../admin.module.css';
 
@@ -22,9 +21,15 @@ interface Session {
     code: string;
 }
 
+interface Document {
+    name: string;
+    size: number;
+    createdAt: string;
+    url: string;
+}
+
 export default function ParticipantDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const router = useRouter();
     const [participant, setParticipant] = useState<Participant | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -36,14 +41,17 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
     const [summaryNotes, setSummaryNotes] = useState('');
     const [fullNotes, setFullNotes] = useState('');
 
+    // Documents
+    const [documents, setDocuments] = useState<Document[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     useEffect(() => {
         fetchParticipantData();
     }, [id]);
 
     const fetchParticipantData = async () => {
         try {
-            // We need an API to get a single participant
-            // For now, we'll search through sessions
             const sessionsRes = await fetch('/api/sessions');
             const sessionsData = await sessionsRes.json();
 
@@ -59,6 +67,9 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                     setEmail(found.email || '');
                     setSummaryNotes(found.notes || '');
                     setFullNotes(found.metadata?.fullNotes as string || '');
+
+                    // Fetch documents
+                    fetchDocuments(found.id);
                     break;
                 }
             }
@@ -66,6 +77,61 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
             console.error('Failed to fetch participant:', error);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const fetchDocuments = async (participantId: string) => {
+        try {
+            const res = await fetch(`/api/participants/${participantId}/documents`);
+            const data = await res.json();
+            setDocuments(data.documents || []);
+        } catch (error) {
+            console.error('Failed to fetch documents:', error);
+        }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !participant) return;
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch(`/api/participants/${participant.id}/documents`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (res.ok) {
+                fetchDocuments(participant.id);
+            } else {
+                alert('Failed to upload file. Make sure Supabase Storage is configured.');
+            }
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Failed to upload file.');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleDeleteDocument = async (fileName: string) => {
+        if (!participant || !confirm(`Delete ${fileName}?`)) return;
+
+        try {
+            await fetch(`/api/participants/${participant.id}/documents`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fileName })
+            });
+            setDocuments(prev => prev.filter(d => d.name !== fileName));
+        } catch (error) {
+            console.error('Delete failed:', error);
         }
     };
 
@@ -111,6 +177,12 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
             navigator.clipboard.writeText(url);
             alert('Invite URL copied!');
         }
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     };
 
     if (isLoading) {
@@ -230,6 +302,76 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                 </div>
             </div>
 
+            {/* Documents Section */}
+            <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>Documents</h2>
+                    <label className={styles.secondaryBtn} style={{ cursor: 'pointer' }}>
+                        {isUploading ? 'Uploading...' : '📎 Upload File'}
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            onChange={handleFileUpload}
+                            style={{ display: 'none' }}
+                            disabled={isUploading}
+                        />
+                    </label>
+                </div>
+                <p style={{ fontSize: '13px', color: '#718096', marginBottom: '16px' }}>
+                    Upload survey data, consent forms, or other participant documents.
+                </p>
+
+                {documents.length === 0 ? (
+                    <div style={{ padding: '24px', textAlign: 'center', color: '#718096' }}>
+                        No documents uploaded yet
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {documents.map(doc => (
+                            <div
+                                key={doc.name}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '12px 16px',
+                                    background: '#F7FAFC',
+                                    borderRadius: '8px'
+                                }}
+                            >
+                                <div>
+                                    <a
+                                        href={doc.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: '#9A3324', fontWeight: 500, textDecoration: 'none' }}
+                                    >
+                                        📄 {doc.name}
+                                    </a>
+                                    {doc.size > 0 && (
+                                        <span style={{ marginLeft: '12px', color: '#718096', fontSize: '12px' }}>
+                                            {formatFileSize(doc.size)}
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={() => handleDeleteDocument(doc.name)}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#9A3324',
+                                        cursor: 'pointer',
+                                        fontSize: '14px'
+                                    }}
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             {/* Rating Data Section */}
             <div className={styles.card}>
                 <h2 className={styles.cardTitle}>Rating Data</h2>
@@ -242,3 +384,4 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
         </>
     );
 }
+
