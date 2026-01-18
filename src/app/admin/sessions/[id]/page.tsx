@@ -17,6 +17,7 @@ interface Session {
 interface Participant {
     id: string;
     code: string;
+    name?: string;
     display_name?: string;
     email?: string;
     notes?: string;
@@ -29,7 +30,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
-    const [newParticipantEmail, setNewParticipantEmail] = useState('');
+    const [newParticipantName, setNewParticipantName] = useState('');
 
     useEffect(() => {
         fetchSessionData();
@@ -50,21 +51,24 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
     };
 
     const addParticipant = async () => {
-        if (!newParticipantEmail.trim()) return;
+        if (!newParticipantName.trim()) return;
 
         try {
             const res = await fetch(`/api/sessions/${id}/participants`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    participants: [{ email: newParticipantEmail.trim() }]
+                    participants: [{
+                        name: newParticipantName.trim(),
+                        display_name: newParticipantName.trim() // Default display name to name
+                    }]
                 })
             });
 
             if (res.ok) {
                 const data = await res.json();
                 setParticipants(prev => [...prev, ...data.participants]);
-                setNewParticipantEmail('');
+                setNewParticipantName('');
                 setShowAddModal(false);
             }
         } catch (error) {
@@ -158,7 +162,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 >
                                     <div className={styles.participantInfo}>
                                         <div className={styles.participantName}>
-                                            {p.email || p.display_name || 'Participant'}
+                                            {p.name || p.display_name || 'Participant'}
                                         </div>
                                         <div className={styles.participantCode}>
                                             Code: {p.code}
@@ -221,12 +225,12 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         <h2 className={styles.cardTitle}>Add Participant</h2>
 
                         <div className={styles.field}>
-                            <label>Email or Identifier</label>
+                            <label>Participant Name</label>
                             <input
                                 type="text"
-                                value={newParticipantEmail}
-                                onChange={(e) => setNewParticipantEmail(e.target.value)}
-                                placeholder="participant@example.com"
+                                value={newParticipantName}
+                                onChange={(e) => setNewParticipantName(e.target.value)}
+                                placeholder="e.g., Margaret Johnson"
                                 autoFocus
                             />
                         </div>

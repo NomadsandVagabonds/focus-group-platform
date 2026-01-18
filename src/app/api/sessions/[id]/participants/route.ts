@@ -36,12 +36,22 @@ export async function POST(
         }
 
         // Create participant records with auto-generated codes
-        const participantRecords = participants.map((p: { email?: string; notes?: string; metadata?: Record<string, unknown> }) => ({
+        const participantRecords = participants.map((p: {
+            name?: string;
+            display_name?: string;
+            email?: string;
+            notes?: string;
+            metadata?: Record<string, unknown>
+        }) => ({
             session_id: sessionId,
             code: generateParticipantCode(),
+            display_name: p.display_name || p.name || null,
             email: p.email || null,
             notes: p.notes || null,
-            metadata: p.metadata || {}
+            metadata: {
+                ...p.metadata,
+                name: p.name || null  // Store legal name in metadata
+            }
         }));
 
         const { data: created, error: createError } = await supabase

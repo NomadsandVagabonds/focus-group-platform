@@ -36,6 +36,7 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
     const [isSaving, setIsSaving] = useState(false);
 
     // Editable fields
+    const [name, setName] = useState('');
     const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [summaryNotes, setSummaryNotes] = useState('');
@@ -63,6 +64,7 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                 if (found) {
                     setParticipant(found);
                     setSession(sessionData.session);
+                    setName(found.metadata?.name as string || '');
                     setDisplayName(found.display_name || '');
                     setEmail(found.email || '');
                     setSummaryNotes(found.notes || '');
@@ -147,7 +149,7 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                     displayName,
                     email,
                     notes: summaryNotes,
-                    metadata: { fullNotes }
+                    metadata: { name, fullNotes }
                 })
             });
 
@@ -210,7 +212,7 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
 
             <div className={styles.detailHeader}>
                 <div className={styles.detailHeaderInfo}>
-                    <h1>{displayName || email || 'Participant'}</h1>
+                    <h1>{name || displayName || 'Participant'}</h1>
                     <p>Code: <strong style={{ color: '#9A3324', fontFamily: 'monospace' }}>{participant.code}</strong></p>
                 </div>
                 <button className={styles.primaryBtn} onClick={handleSave} disabled={isSaving}>
@@ -225,17 +227,27 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                         <h2 className={styles.cardTitle}>Basic Information</h2>
 
                         <div className={styles.field}>
+                            <label>Name (Legal)</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Full legal name"
+                            />
+                        </div>
+
+                        <div className={styles.field}>
                             <label>Display Name</label>
                             <input
                                 type="text"
                                 value={displayName}
                                 onChange={(e) => setDisplayName(e.target.value)}
-                                placeholder="How they appear in session"
+                                placeholder="How they appear in session (e.g., Maggie)"
                             />
                         </div>
 
                         <div className={styles.field}>
-                            <label>Email</label>
+                            <label>Email (Optional)</label>
                             <input
                                 type="email"
                                 value={email}
