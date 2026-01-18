@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import styles from './admin.module.css';
+import styles from '../admin.module.css';
 
 export default function DataPage() {
     return (
