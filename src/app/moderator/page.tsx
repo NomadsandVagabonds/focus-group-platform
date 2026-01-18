@@ -108,10 +108,71 @@ function ModeratorContent() {
         : 50;
 
     // Handle recording toggle
-    const toggleRecording = useCallback(() => {
-        // TODO: Implement LiveKit recording via egress API
-        setIsRecording(!isRecording);
-    }, [isRecording]);
+    const toggleRecording = useCallback(async () => {
+        try {
+            if (!isRecording) {
+                // Start recording
+                const [recordingRes, sliderRes] = await Promise.all([
+                    fetch('/api/recording', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'start',
+                            roomName: sessionId,
+                            sessionId: sessionId,
+                        }),
+                    }),
+                    fetch('/api/slider-data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'start',
+                            sessionId: sessionId,
+                        }),
+                    }),
+                ]);
+
+                if (recordingRes.ok && sliderRes.ok) {
+                    setIsRecording(true);
+                    console.log('[Moderator] Recording started');
+                } else {
+                    const error = await recordingRes.json();
+                    console.error('[Moderator] Failed to start recording:', error);
+                    alert('Failed to start recording. Check console for details.');
+                }
+            } else {
+                // Stop recording
+                const [recordingRes, sliderRes] = await Promise.all([
+                    fetch('/api/recording', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'stop',
+                            roomName: sessionId,
+                        }),
+                    }),
+                    fetch('/api/slider-data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'stop',
+                            sessionId: sessionId,
+                        }),
+                    }),
+                ]);
+
+                if (recordingRes.ok) {
+                    setIsRecording(false);
+                    console.log('[Moderator] Recording stopped');
+                } else {
+                    console.error('[Moderator] Failed to stop recording');
+                }
+            }
+        } catch (error) {
+            console.error('[Moderator] Recording error:', error);
+            alert('Recording error. Check console for details.');
+        }
+    }, [isRecording, sessionId]);
 
     // Copy join link
     const copyJoinLink = useCallback(() => {
