@@ -59,9 +59,9 @@ export default function ModeratorScript() {
             <button
                 className={styles.toggleBtn}
                 onClick={() => setIsOpen(!isOpen)}
-                title={isOpen ? "Close Script" : "Open Script"}
+                title={isOpen ? "Hide Script" : "Show Script"}
             >
-                {isOpen ? '→' : 'Script'}
+                {isOpen ? '←' : '→'}
             </button>
 
             {/* Header */}

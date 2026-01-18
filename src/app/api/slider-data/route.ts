@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('[SliderData] Error:', error);
         return NextResponse.json(
-            { error: 'Slider data operation failed', details: String(error) },
+            { error: 'Slider data operation failed' },
             { status: 500 }
         );
     }

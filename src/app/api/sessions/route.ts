@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomBytes } from 'crypto';
 import { supabase } from '@/lib/supabase';
 
 /**
@@ -138,31 +139,38 @@ export async function POST(request: NextRequest) {
 }
 
 /**
+ * Generate cryptographically secure random characters from a charset
+ */
+function generateSecureCode(length: number, charset: string): string {
+    const bytes = randomBytes(length);
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += charset[bytes[i] % charset.length];
+    }
+    return result;
+}
+
+/**
  * Generate a session code like "ABC-123"
+ * Uses crypto.randomBytes for security
  */
 function generateSessionCode(): string {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
+    // Removed ambiguous characters: I, O, 0, 1
+    const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const numbers = '23456789';
 
-    let code = '';
-    for (let i = 0; i < 3; i++) {
-        code += letters.charAt(Math.floor(Math.random() * letters.length));
-    }
-    code += '-';
-    for (let i = 0; i < 3; i++) {
-        code += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    }
-    return code;
+    const letterPart = generateSecureCode(3, letters);
+    const numberPart = generateSecureCode(3, numbers);
+
+    return `${letterPart}-${numberPart}`;
 }
 
 /**
  * Generate a participant code like "XYZ789"
+ * Uses crypto.randomBytes for security
  */
 function generateParticipantCode(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
+    // Removed ambiguous characters: I, O, 0, 1
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    return generateSecureCode(6, chars);
 }

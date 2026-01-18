@@ -312,15 +312,9 @@ function ModeratorContent() {
         }
     }, [isRecording, resolvedSessionId]);
 
-    // Copy join link
-    const copyJoinLink = useCallback(() => {
-        const url = `${window.location.origin}/participant?session=${resolvedSessionId}`;
-        navigator.clipboard.writeText(url);
-    }, [resolvedSessionId]);
 
     return (
         <div className={styles.container}>
-            <ModeratorScript />
             {/* Header */}
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
@@ -356,14 +350,37 @@ function ModeratorContent() {
                     </div>
 
                     <div className={styles.connectionStatus}>
-                        <span
-                            className={styles.statusDot}
-                            style={{ backgroundColor: isConnected ? 'var(--color-success)' : 'var(--color-danger)' }}
-                        />
-                        {isConnected ? 'Live' : 'Connecting...'}
+                        {isRecording ? (
+                            <>
+                                <span
+                                    className={`${styles.statusDot} ${styles.recordingDot}`}
+                                    style={{ backgroundColor: 'var(--color-danger)' }}
+                                />
+                                Recording
+                            </>
+                        ) : isConnected ? (
+                            <>
+                                <span
+                                    className={styles.statusDot}
+                                    style={{ backgroundColor: 'var(--color-text-secondary)' }}
+                                />
+                                Ready
+                            </>
+                        ) : (
+                            <>
+                                <span
+                                    className={styles.statusDot}
+                                    style={{ backgroundColor: 'var(--color-warning)' }}
+                                />
+                                Connecting...
+                            </>
+                        )}
                     </div>
                 </div>
             </header>
+
+            {/* Script panel - fixed overlay */}
+            <ModeratorScript />
 
             {/* Main layout */}
             <div className={styles.mainLayout}>
@@ -422,17 +439,6 @@ function ModeratorContent() {
                             <span className={styles.recordIcon} />
                             {isRecording ? 'Stop Recording' : 'Start Recording'}
                         </button>
-
-                        <button className={styles.controlBtn} onClick={copyJoinLink}>
-                            📋 Copy Join Link
-                        </button>
-
-                        <div className={styles.joinInfo}>
-                            <p>Participants can join at:</p>
-                            <code className={styles.joinUrl}>
-                                /participant?session={resolvedSessionId}
-                            </code>
-                        </div>
                     </div>
 
                     {/* Participant list with accordion */}

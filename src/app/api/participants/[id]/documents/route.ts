@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// File upload validation constants
+const ALLOWED_TYPES = [
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'text/plain',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
+const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
 /**
  * GET /api/participants/[id]/documents
  * List documents for a participant
@@ -39,10 +51,10 @@ export async function GET(
         return NextResponse.json({ documents });
 
     } catch (error) {
-        console.error('Error listing documents:', error);
+        console.error('[Documents] Error listing:', error);
         return NextResponse.json(
             { error: 'Failed to list documents', documents: [] },
-            { status: 200 }
+            { status: 500 }
         );
     }
 }
@@ -63,6 +75,22 @@ export async function POST(
         if (!file) {
             return NextResponse.json(
                 { error: 'No file provided' },
+                { status: 400 }
+            );
+        }
+
+        // Validate file type
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            return NextResponse.json(
+                { error: 'File type not allowed. Allowed: PDF, images, text, Word docs' },
+                { status: 400 }
+            );
+        }
+
+        // Validate file size
+        if (file.size > MAX_SIZE) {
+            return NextResponse.json(
+                { error: 'File too large. Maximum size: 10MB' },
                 { status: 400 }
             );
         }
@@ -92,7 +120,7 @@ export async function POST(
         });
 
     } catch (error) {
-        console.error('Error uploading document:', error);
+        console.error('[Documents] Error uploading:', error);
         return NextResponse.json(
             { error: 'Failed to upload document' },
             { status: 500 }
@@ -128,7 +156,7 @@ export async function DELETE(
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        console.error('Error deleting document:', error);
+        console.error('[Documents] Error deleting:', error);
         return NextResponse.json(
             { error: 'Failed to delete document' },
             { status: 500 }

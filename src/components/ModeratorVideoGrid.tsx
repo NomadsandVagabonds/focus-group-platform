@@ -60,25 +60,32 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
     );
 
     // Separate local (moderator) from remote (participants)
+    // Filter out: local participant OR anyone with "moderator" in their identity
     const remoteParticipantTracks = tracks.filter(
-        t => t.participant.identity !== localParticipant.identity
+        t => t.participant.identity !== localParticipant.identity &&
+            !t.participant.identity.toLowerCase().includes('moderator')
     );
     const localTrack = tracks.find(
-        t => t.participant.identity === localParticipant.identity
+        t => t.participant.identity === localParticipant.identity ||
+            t.participant.identity.toLowerCase().includes('moderator')
     );
 
-    console.log('[ModeratorGrid] Remote participants:', remoteParticipantTracks.length);
+    console.log('[ModeratorGrid] Local identity:', localParticipant.identity);
+    console.log('[ModeratorGrid] Remote participants:', remoteParticipantTracks.map(t => t.participant.identity));
     console.log('[ModeratorGrid] Local track:', !!localTrack);
 
     // Calculate grid columns based on participant count
+    // Always show grid format, never single full-screen
     const getGridColumns = (count: number) => {
-        if (count <= 1) return 1;
-        if (count <= 4) return 2;
-        if (count <= 9) return 3;
-        return 4;
+        if (count <= 0) return 1;
+        if (count === 1) return 1; // Single participant but styled smaller
+        if (count <= 4) return 2;  // 2x2 for 2-4 participants
+        if (count <= 9) return 3;  // 3x3 for 5-9 participants
+        return 4;                   // 4 columns for 10+
     };
 
-    const gridCols = getGridColumns(remoteParticipantTracks.length);
+    const participantCount = remoteParticipantTracks.length;
+    const gridCols = getGridColumns(participantCount);
 
     return (
         <div className={styles.container}>
@@ -87,6 +94,7 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                 {remoteParticipantTracks.length > 0 ? (
                     <div
                         className={styles.participantGrid}
+                        data-count={participantCount}
                         style={{
                             gridTemplateColumns: `repeat(${gridCols}, 1fr)`
                         }}
@@ -128,20 +136,28 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                 )}
             </div>
 
-            {/* Self view - Bottom left PiP */}
-            {localTrack && (
-                <div className={styles.selfView}>
-                    {localTrack.publication?.track ? (
-                        <VideoTrack
-                            trackRef={localTrack}
-                            className={styles.selfVideo}
-                        />
-                    ) : (
-                        <div className={styles.selfPlaceholder}>📹</div>
-                    )}
-                    <span className={styles.selfLabel}>You (Moderator)</span>
-                </div>
-            )}
+            {/* Moderator strip - dedicated area below grid, not overlapping */}
+            <div className={styles.moderatorStrip}>
+                {localTrack && (
+                    <div className={styles.selfView}>
+                        {localTrack.publication?.track ? (
+                            <VideoTrack
+                                trackRef={localTrack}
+                                className={styles.selfVideo}
+                            />
+                        ) : (
+                            <div className={styles.selfPlaceholder}>📹</div>
+                        )}
+                        <span className={styles.selfLabel}>You (Moderator)</span>
+                    </div>
+                )}
+                <span className={styles.moderatorStatus}>
+                    {remoteParticipantTracks.length === 0
+                        ? 'Waiting for participants...'
+                        : `${remoteParticipantTracks.length} participant${remoteParticipantTracks.length !== 1 ? 's' : ''} connected`
+                    }
+                </span>
+            </div>
         </div>
     );
 }

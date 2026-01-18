@@ -61,12 +61,11 @@ export async function GET() {
         });
 
     } catch (error) {
-        console.error('Database test error:', error);
+        console.error('[TestDB] Error:', error);
         return NextResponse.json(
             {
                 success: false,
-                error: error instanceof Error ? error.message : 'Unknown error',
-                details: error
+                error: 'Database connection test failed'
             },
             { status: 500 }
         );
