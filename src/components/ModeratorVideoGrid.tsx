@@ -25,6 +25,11 @@ interface ModeratorVideoGridProps {
     perceptionValues?: Record<string, number>;
     onRoomConnected?: (room: Room) => void;
     onRoomDisconnected?: () => void;
+    onParticipantStateChange?: (state: {
+        mutedParticipants: Set<string>;
+        handRaises: Record<string, number>;
+        connectedParticipants: string[];
+    }) => void;
 }
 
 function RoomHandler({
@@ -62,7 +67,19 @@ function SpeakingTile({ participant, children }: { participant: Participant; chi
     );
 }
 
-function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValues?: Record<string, number>; sessionId?: string }) {
+function ModeratorLayout({
+    perceptionValues = {},
+    sessionId,
+    onParticipantStateChange
+}: {
+    perceptionValues?: Record<string, number>;
+    sessionId?: string;
+    onParticipantStateChange?: (state: {
+        mutedParticipants: Set<string>;
+        handRaises: Record<string, number>;
+        connectedParticipants: string[];
+    }) => void;
+}) {
     const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
     const participants = useParticipants();
@@ -190,6 +207,22 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
             room.localParticipant.publishData(payload, { reliable: true });
         }
     }, [room]);
+
+    // Report state changes to parent component
+    useEffect(() => {
+        if (!onParticipantStateChange) return;
+
+        // Get list of connected participants (excluding moderator)
+        const connectedParticipants = participants
+            .filter(p => !p.identity.toLowerCase().includes('moderator'))
+            .map(p => p.identity);
+
+        onParticipantStateChange({
+            mutedParticipants,
+            handRaises,
+            connectedParticipants
+        });
+    }, [mutedParticipants, handRaises, participants, onParticipantStateChange]);
 
     // Fetch media for this session
     useEffect(() => {
@@ -511,6 +544,7 @@ export default function ModeratorVideoGrid({
     perceptionValues = {},
     onRoomConnected,
     onRoomDisconnected,
+    onParticipantStateChange,
 }: ModeratorVideoGridProps) {
     return (
         <LiveKitRoom
@@ -525,7 +559,11 @@ export default function ModeratorVideoGrid({
                 onRoomConnected={onRoomConnected}
                 onRoomDisconnected={onRoomDisconnected}
             />
-            <ModeratorLayout perceptionValues={perceptionValues} sessionId={sessionId} />
+            <ModeratorLayout
+                perceptionValues={perceptionValues}
+                sessionId={sessionId}
+                onParticipantStateChange={onParticipantStateChange}
+            />
             <RoomAudioRenderer />
         </LiveKitRoom>
     );

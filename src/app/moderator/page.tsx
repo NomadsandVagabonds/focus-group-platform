@@ -22,11 +22,15 @@ const ModeratorVideoGrid = dynamic(() => import('@/components/ModeratorVideoGrid
 function ParticipantAccordion({
     participantId,
     currentValue,
-    sessionId
+    sessionId,
+    isMuted,
+    hasHandRaised
 }: {
     participantId: string;
-    currentValue: number;
+    currentValue: number | undefined;
     sessionId: string;
+    isMuted: boolean;
+    hasHandRaised: boolean;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [notes, setNotes] = useState<string | null>(null);
@@ -84,11 +88,26 @@ function ParticipantAccordion({
                         transition: 'transform 0.2s',
                         opacity: 0.6
                     }}>▶</span>
+                    {/* Status indicators */}
+                    {hasHandRaised && <span title="Hand raised" style={{ fontSize: '12px' }}>✋</span>}
+                    <span
+                        title={isMuted ? 'Muted' : 'Unmuted'}
+                        style={{
+                            fontSize: '10px',
+                            opacity: isMuted ? 1 : 0.4
+                        }}
+                    >
+                        {isMuted ? '🔇' : '🎤'}
+                    </span>
                     {participantId}
                 </span>
-                <span className={styles.participantValue} style={{ color: getValueColor(currentValue) }}>
-                    {Math.round(currentValue)}
-                </span>
+                {currentValue !== undefined ? (
+                    <span className={styles.participantValue} style={{ color: getValueColor(currentValue) }}>
+                        {Math.round(currentValue)}
+                    </span>
+                ) : (
+                    <span className={styles.participantValue} style={{ opacity: 0.4 }}>—</span>
+                )}
             </div>
             {isExpanded && (
                 <div style={{
@@ -134,6 +153,17 @@ function ModeratorContent() {
     const [perceptionValues, setPerceptionValues] = useState<Record<string, number>>({});
     const [participantCount, setParticipantCount] = useState(0);
     const [resolvedSessionId, setResolvedSessionId] = useState<string | null>(null);
+
+    // Participant state from video grid (muted, hand raises, connected)
+    const [participantState, setParticipantState] = useState<{
+        mutedParticipants: Set<string>;
+        handRaises: Record<string, number>;
+        connectedParticipants: string[];
+    }>({
+        mutedParticipants: new Set(),
+        handRaises: {},
+        connectedParticipants: []
+    });
 
     const roomRef = useRef<Room | null>(null);
     const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -471,6 +501,7 @@ function ModeratorContent() {
                             perceptionValues={perceptionValues}
                             onRoomConnected={handleRoomConnected}
                             onRoomDisconnected={handleRoomDisconnected}
+                            onParticipantStateChange={setParticipantState}
                         />
                     ) : (
                         <div className={styles.videoPlaceholder}>Connecting...</div>
@@ -504,16 +535,20 @@ function ModeratorContent() {
 
                     {/* Participant list with accordion */}
                     <div className={styles.participantList}>
-                        <h3 className={styles.sectionTitle}>Participants</h3>
-                        {Object.entries(perceptionValues).map(([id, value]) => (
+                        <h3 className={styles.sectionTitle}>
+                            Participants ({participantState.connectedParticipants.length})
+                        </h3>
+                        {participantState.connectedParticipants.map((id) => (
                             <ParticipantAccordion
                                 key={id}
                                 participantId={id}
-                                currentValue={value}
+                                currentValue={perceptionValues[id]}
                                 sessionId={resolvedSessionId || ''}
+                                isMuted={participantState.mutedParticipants.has(id)}
+                                hasHandRaised={!!participantState.handRaises[id]}
                             />
                         ))}
-                        {Object.keys(perceptionValues).length === 0 && (
+                        {participantState.connectedParticipants.length === 0 && (
                             <p className={styles.emptyState}>Waiting for participants...</p>
                         )}
                     </div>
