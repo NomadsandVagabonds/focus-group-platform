@@ -230,6 +230,25 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         <code>{window.location.origin}/join/{session.code}?p=[CODE]</code>
                     </div>
 
+                    <div className={styles.inviteBox} style={{ background: 'rgba(250, 204, 21, 0.1)', borderColor: 'rgba(250, 204, 21, 0.3)' }}>
+                        <label style={{ color: '#B7791F' }}>👁️ Observer URL (for clients)</label>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <code style={{ flex: 1 }}>{window.location.origin}/observer?session={session.id}</code>
+                            <button
+                                className={styles.copyBtn}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(`${window.location.origin}/observer?session=${session.id}`);
+                                    alert('Observer link copied!');
+                                }}
+                            >
+                                Copy
+                            </button>
+                        </div>
+                        <span style={{ fontSize: '11px', color: '#718096', marginTop: '4px', display: 'block' }}>
+                            Observers can watch but won't appear on camera
+                        </span>
+                    </div>
+
                     <div className={styles.field}>
                         <label>Moderator Notes</label>
                         <textarea
