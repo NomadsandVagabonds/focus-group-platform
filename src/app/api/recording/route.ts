@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { EgressClient, EncodedFileOutput, EncodedFileType } from 'livekit-server-sdk';
+import { EgressClient, EncodedFileOutput, EncodedFileType, S3Upload } from 'livekit-server-sdk';
 
 const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY || '';
 const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET || '';
 const LIVEKIT_URL = process.env.NEXT_PUBLIC_LIVEKIT_URL || '';
+
+// S3 Configuration
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || '';
+const AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || '';
+const AWS_S3_BUCKET = process.env.AWS_S3_BUCKET || '';
+const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 
 // Convert wss:// to https:// for API calls
 const getApiHost = () => {
@@ -29,13 +35,22 @@ export async function POST(request: NextRequest) {
 
         // Validate environment variables
         if (!LIVEKIT_API_KEY || !LIVEKIT_API_SECRET || !LIVEKIT_URL) {
-            console.error('[Recording] Missing environment variables:', {
-                hasApiKey: !!LIVEKIT_API_KEY,
-                hasApiSecret: !!LIVEKIT_API_SECRET,
-                hasUrl: !!LIVEKIT_URL,
-            });
+            console.error('[Recording] Missing LiveKit environment variables');
             return NextResponse.json(
                 { error: 'Server configuration error: missing LiveKit credentials' },
+                { status: 500 }
+            );
+        }
+
+        // Validate S3 credentials for recording
+        if (action === 'start' && (!AWS_ACCESS_KEY || !AWS_SECRET_KEY || !AWS_S3_BUCKET)) {
+            console.error('[Recording] Missing S3 environment variables:', {
+                hasAccessKey: !!AWS_ACCESS_KEY,
+                hasSecretKey: !!AWS_SECRET_KEY,
+                hasBucket: !!AWS_S3_BUCKET,
+            });
+            return NextResponse.json(
+                { error: 'Server configuration error: missing S3 storage credentials. Please configure AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_S3_BUCKET.' },
                 { status: 500 }
             );
         }
@@ -57,20 +72,28 @@ export async function POST(request: NextRequest) {
 
             console.log(`[Recording] Starting egress for room ${roomName}`);
 
-            // Create file output configuration
-            const fileOutput = new EncodedFileOutput({
-                fileType: EncodedFileType.MP4,
-                filepath: `recordings/${sessionId || roomName}/{room_name}-{time}.mp4`,
+            // Create S3 upload configuration
+            const s3Upload = new S3Upload({
+                accessKey: AWS_ACCESS_KEY,
+                secret: AWS_SECRET_KEY,
+                bucket: AWS_S3_BUCKET,
+                region: AWS_REGION,
             });
 
-            // Use the EncodedOutputs wrapper format (newer API)
-            // This wraps the file output in an object with a 'file' property
-            const output = { file: fileOutput };
+            // Create file output with S3 destination
+            const fileOutput = new EncodedFileOutput({
+                fileType: EncodedFileType.MP4,
+                filepath: `resonant/${sessionId || roomName}/{room_name}-{time}.mp4`,
+                output: {
+                    case: 's3',
+                    value: s3Upload,
+                },
+            });
 
             // Start room composite recording
             const egress = await egressClient.startRoomCompositeEgress(
                 roomName,
-                output,
+                { file: fileOutput },
                 {
                     layout: 'grid-dark',
                     audioOnly: false,
@@ -86,6 +109,7 @@ export async function POST(request: NextRequest) {
                 success: true,
                 egressId: egress.egressId,
                 startTime,
+                s3Path: `s3://${AWS_S3_BUCKET}/resonant/${sessionId || roomName}/`,
                 message: 'Recording started',
             });
         } else if (action === 'stop') {
@@ -116,7 +140,7 @@ export async function POST(request: NextRequest) {
                 startTime,
                 endTime,
                 durationMs: duration,
-                message: 'Recording stopped',
+                message: 'Recording stopped. File will be available in S3 shortly.',
             });
         } else if (action === 'status') {
             const egressId = activeRecordings.get(roomName);

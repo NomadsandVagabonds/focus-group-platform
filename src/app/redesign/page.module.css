@@ -143,6 +143,9 @@
     color: #1A1A2E;
     margin-bottom: 1rem;
     font-weight: 700;
+    /* Improve contrast against background lines */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(245, 240, 232, 0.8);
 }
 
 .subHeading {
