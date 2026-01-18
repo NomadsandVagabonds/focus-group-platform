@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-    EgressClient,
-    EncodedFileOutput,
-    EncodedFileType,
-    RoomCompositeEgressRequest,
-} from 'livekit-server-sdk';
+import { EgressClient, EncodedFileOutput, EncodedFileType } from 'livekit-server-sdk';
 
 const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY || '';
 const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET || '';
@@ -12,8 +7,7 @@ const LIVEKIT_URL = process.env.NEXT_PUBLIC_LIVEKIT_URL || '';
 
 // Convert wss:// to https:// for API calls
 const getApiHost = () => {
-    const url = LIVEKIT_URL.replace('wss://', 'https://');
-    return url;
+    return LIVEKIT_URL.replace('wss://', 'https://');
 };
 
 // Store active egress IDs per room (in production, use a database)
@@ -33,11 +27,20 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const egressClient = new EgressClient(
-            getApiHost(),
-            LIVEKIT_API_KEY,
-            LIVEKIT_API_SECRET
-        );
+        // Validate environment variables
+        if (!LIVEKIT_API_KEY || !LIVEKIT_API_SECRET || !LIVEKIT_URL) {
+            console.error('[Recording] Missing environment variables:', {
+                hasApiKey: !!LIVEKIT_API_KEY,
+                hasApiSecret: !!LIVEKIT_API_SECRET,
+                hasUrl: !!LIVEKIT_URL,
+            });
+            return NextResponse.json(
+                { error: 'Server configuration error: missing LiveKit credentials' },
+                { status: 500 }
+            );
+        }
+
+        const egressClient = new EgressClient(getApiHost(), LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
 
         if (action === 'start') {
             // Check if already recording
@@ -52,21 +55,19 @@ export async function POST(request: NextRequest) {
             const startTime = Date.now();
             sessionStartTimes.set(roomName, startTime);
 
+            console.log(`[Recording] Starting egress for room ${roomName}`);
+
+            // Create file output configuration
+            const fileOutput = new EncodedFileOutput({
+                fileType: EncodedFileType.MP4,
+                filepath: `recordings/${sessionId || roomName}/{room_name}-{time}.mp4`,
+            });
+
             // Start room composite recording
-            // Uses LiveKit's default grid layout, outputs to LiveKit's managed storage
             const egress = await egressClient.startRoomCompositeEgress(
                 roomName,
-                {
-                    file: new EncodedFileOutput({
-                        fileType: EncodedFileType.MP4,
-                        filepath: `recordings/${sessionId || roomName}/{room_name}-{time}.mp4`,
-                    }),
-                },
-                {
-                    layout: 'grid-dark', // Dark theme matches our video UI
-                    audioOnly: false,
-                    videoOnly: false,
-                }
+                fileOutput,
+                'grid-dark' // layout
             );
 
             activeRecordings.set(roomName, egress.egressId);
