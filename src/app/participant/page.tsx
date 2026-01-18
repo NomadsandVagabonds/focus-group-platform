@@ -34,6 +34,7 @@ function ParticipantContent() {
     const [token, setToken] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isDialActive, setIsDialActive] = useState(true);
+    const [lowPowerMode, setLowPowerMode] = useState(false);
 
     // Use refs to avoid stale closures
     const roomRef = useRef<Room | null>(null);
@@ -141,6 +142,26 @@ function ParticipantContent() {
                     />
                     {isConnected ? 'Live' : 'Connecting...'}
                 </div>
+
+                {/* Low Power Mode Toggle */}
+                <button
+                    onClick={() => setLowPowerMode(!lowPowerMode)}
+                    style={{
+                        background: lowPowerMode ? 'rgba(250, 204, 21, 0.2)' : 'transparent',
+                        border: `1px solid ${lowPowerMode ? '#facc15' : 'rgba(255,255,255,0.2)'}`,
+                        borderRadius: '6px',
+                        padding: '6px 12px',
+                        color: lowPowerMode ? '#facc15' : 'rgba(255,255,255,0.6)',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                    }}
+                    title={lowPowerMode ? 'Camera disabled to save bandwidth' : 'Enable low power mode'}
+                >
+                    ⚡ {lowPowerMode ? 'Low Power ON' : 'Low Power'}
+                </button>
             </header>
 
             {/* Main content area - Media takes priority */}
@@ -159,6 +180,7 @@ function ParticipantContent() {
                         <ParticipantVideoGrid
                             token={token}
                             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://demo.livekit.cloud'}
+                            lowPowerMode={lowPowerMode}
                             onRoomConnected={handleRoomConnected}
                             onRoomDisconnected={handleRoomDisconnected}
                         />

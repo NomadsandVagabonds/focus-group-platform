@@ -19,6 +19,7 @@ import styles from './ParticipantVideoGrid.module.css';
 interface ParticipantVideoGridProps {
     token: string;
     serverUrl: string;
+    lowPowerMode?: boolean;  // Disables local video to save bandwidth
     onRoomConnected?: (room: Room) => void;
     onRoomDisconnected?: () => void;
 }
@@ -55,7 +56,7 @@ function RoomHandler({
     return null;
 }
 
-function ParticipantLayout() {
+function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean }) {
     const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
 
@@ -169,19 +170,22 @@ function ParticipantLayout() {
             {/* Bottom bar - Self + other participants */}
             <div className={styles.bottomBar}>
                 {/* Self view - first (left side) */}
-                {localTrack && (
-                    <div className={styles.selfTile}>
-                        {localTrack.publication?.track ? (
-                            <VideoTrack
-                                trackRef={localTrack}
-                                className={styles.smallVideo}
-                            />
-                        ) : (
-                            <div className={styles.smallPlaceholder}>📹</div>
-                        )}
-                        <span className={styles.smallLabel}>You</span>
-                    </div>
-                )}
+                <div className={styles.selfTile}>
+                    {lowPowerMode ? (
+                        <div className={styles.smallPlaceholder} style={{ background: 'rgba(250, 204, 21, 0.2)' }}>
+                            ⚡
+                            <span style={{ fontSize: '8px', marginTop: '2px' }}>Low Power</span>
+                        </div>
+                    ) : localTrack?.publication?.track ? (
+                        <VideoTrack
+                            trackRef={localTrack}
+                            className={styles.smallVideo}
+                        />
+                    ) : (
+                        <div className={styles.smallPlaceholder}>📹</div>
+                    )}
+                    <span className={styles.smallLabel}>You</span>
+                </div>
 
                 {/* Other participants */}
                 {otherParticipants.map((trackRef) => (
@@ -207,6 +211,7 @@ function ParticipantLayout() {
 export default function ParticipantVideoGrid({
     token,
     serverUrl,
+    lowPowerMode = false,
     onRoomConnected,
     onRoomDisconnected,
 }: ParticipantVideoGridProps) {
@@ -215,15 +220,15 @@ export default function ParticipantVideoGrid({
             token={token}
             serverUrl={serverUrl}
             connect={true}
-            video={true}
-            audio={true}
+            video={!lowPowerMode}  // Disable camera in low power mode
+            audio={true}           // Always keep audio
             className={styles.room}
         >
             <RoomHandler
                 onRoomConnected={onRoomConnected}
                 onRoomDisconnected={onRoomDisconnected}
             />
-            <ParticipantLayout />
+            <ParticipantLayout lowPowerMode={lowPowerMode} />
             <RoomAudioRenderer />
         </LiveKitRoom>
     );
