@@ -22,6 +22,52 @@ const activeRecordings = new Map<string, string>();
 // Store session start times for timestamp synchronization
 const sessionStartTimes = new Map<string, number>();
 
+// Auto-transcription after recording stops
+async function triggerTranscription(sessionId: string) {
+    console.log(`[Recording] Queuing transcription for session ${sessionId}`);
+
+    // Wait for S3 upload to complete (egress needs time to finalize)
+    await new Promise(resolve => setTimeout(resolve, 30000)); // 30 second delay
+
+    try {
+        // Fetch the latest recording URL
+        const baseUrl = process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : 'http://localhost:3000';
+
+        const recordingsRes = await fetch(`${baseUrl}/api/recordings?sessionId=${sessionId}`);
+        if (!recordingsRes.ok) {
+            console.log(`[Recording] No recordings found yet for ${sessionId}`);
+            return;
+        }
+
+        const recordingsJson = await recordingsRes.json();
+        const recordingUrl = recordingsJson.latestUrl;
+
+        if (!recordingUrl) {
+            console.log(`[Recording] No recording URL available for ${sessionId}`);
+            return;
+        }
+
+        console.log(`[Recording] Starting transcription for ${sessionId}`);
+
+        // Call the transcribe API
+        const transcribeRes = await fetch(`${baseUrl}/api/transcribe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId, recordingUrl }),
+        });
+
+        if (transcribeRes.ok) {
+            console.log(`[Recording] Transcription complete for ${sessionId}`);
+        } else {
+            console.error(`[Recording] Transcription failed for ${sessionId}:`, await transcribeRes.text());
+        }
+    } catch (error) {
+        console.error(`[Recording] Transcription error for ${sessionId}:`, error);
+    }
+}
+
 export async function POST(request: NextRequest) {
     try {
         const { action, roomName, sessionId } = await request.json();
@@ -134,13 +180,22 @@ export async function POST(request: NextRequest) {
 
             console.log(`[Recording] Stopped egress ${egressId} for room ${roomName}`);
 
+            // Trigger async transcription after delay (S3 upload needs to complete)
+            const effectiveSessionId = sessionId || roomName;
+            if (effectiveSessionId) {
+                // Don't await - let it run in background
+                triggerTranscription(effectiveSessionId).catch(err => {
+                    console.error('[Recording] Auto-transcription failed:', err);
+                });
+            }
+
             return NextResponse.json({
                 success: true,
                 egressId,
                 startTime,
                 endTime,
                 durationMs: duration,
-                message: 'Recording stopped. File will be available in S3 shortly.',
+                message: 'Recording stopped. File will be available in S3 shortly. Transcription queued.',
             });
         } else if (action === 'status') {
             const egressId = activeRecordings.get(roomName);
