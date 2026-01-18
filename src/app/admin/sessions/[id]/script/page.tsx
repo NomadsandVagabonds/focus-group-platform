@@ -28,13 +28,94 @@ export default function ScriptEditorPage() {
     const [sections, setSections] = useState<ScriptSection[]>([]);
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [isSavingTemplate, setIsSavingTemplate] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [hasChanges, setHasChanges] = useState(false);
 
-    // Fetch script sections from API
+    // Default template with comprehensive focus group content
+    const DEFAULT_TEMPLATE: ScriptSection[] = [
+        {
+            id: 'intro',
+            title: '1. Introduction & Welcome',
+            estimatedMinutes: 3,
+            content: `Hi everyone, thank you for joining today. My name is [YOUR NAME] and I'll be moderating our discussion.
+
+We're here to talk about [TOPIC]. There are no right or wrong answers – we just want your honest opinions and perspectives.
+
+Please feel free to speak up at any time. We want this to be a conversation, not an interview.`
+        },
+        {
+            id: 'consent',
+            title: '2. Consent & Recording',
+            estimatedMinutes: 2,
+            content: `Before we begin, I need to let you know that this session is being recorded for research purposes.
+
+Your identities will be kept confidential in any reports or publications.
+
+By staying in the session, you consent to this recording. Does anyone have questions about this?`
+        },
+        {
+            id: 'warmup',
+            title: '3. Warm-up & Introductions',
+            estimatedMinutes: 5,
+            content: `Let's go around the room and introduce ourselves. Please share:
+• Your first name
+• Where you're from
+• One interesting thing you did this weekend`
+        },
+        {
+            id: 'topic1',
+            title: '4. Topic Exploration',
+            estimatedMinutes: 15,
+            content: `Now let's dive into our main topic.
+
+Q1: When you hear the term "[KEY TERM]", what's the first word that comes to mind?
+
+Q2: How familiar would you say you are with [TOPIC]?
+
+Q3: Do you use any [RELATED TOOLS/SERVICES] in your daily life?`
+        },
+        {
+            id: 'stimulus',
+            title: '5. Stimulus / Media Review',
+            estimatedMinutes: 10,
+            content: `We're going to show you something now. Please watch/read carefully and use the slider to show your real-time reaction.
+
+[PRESENT MEDIA HERE]
+
+What stood out to you most?
+What questions do you have after seeing this?`
+        },
+        {
+            id: 'debrief',
+            title: '6. Debrief Discussion',
+            estimatedMinutes: 15,
+            content: `Let's discuss what we just saw.
+
+• What was your overall impression?
+• Was there anything surprising or unexpected?
+• Did this change how you think about [TOPIC]?
+• Who do you think should be responsible for [KEY ISSUE]?`
+        },
+        {
+            id: 'closing',
+            title: '7. Closing',
+            estimatedMinutes: 3,
+            content: `That wraps up our discussion. Thank you so much for sharing your perspectives today.
+
+Your input is incredibly valuable to this research.
+
+You'll receive your incentive via [PAYMENT METHOD] within [TIMEFRAME].
+
+Does anyone have any final questions before we end?`
+        }
+    ];
+
+    // Fetch script sections from API (try session script, then global template, then default)
     useEffect(() => {
         async function fetchScript() {
             try {
+                // First, try to fetch this session's saved script
                 const res = await fetch(`/api/session-scripts?sessionId=${sessionId}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -54,17 +135,42 @@ export default function ScriptEditorPage() {
                             mediaTag: s.media_tag,
                         }));
                         setSections(loadedSections);
-                    } else {
-                        // Default sections for new script
-                        setSections([
-                            { id: '1', title: 'Introduction', estimatedMinutes: 5, content: 'Welcome participants and explain the session format.' },
-                            { id: '2', title: 'Main Discussion', estimatedMinutes: 30, content: 'Present key topics and facilitate discussion.' },
-                            { id: '3', title: 'Wrap Up', estimatedMinutes: 10, content: 'Summarize key points and thank participants.' },
-                        ]);
+                        setIsLoading(false);
+                        return;
                     }
                 }
+
+                // No saved script - try global template
+                const templateRes = await fetch('/api/session-scripts?sessionId=global-template');
+                if (templateRes.ok) {
+                    const templateData = await templateRes.json();
+                    if (templateData.sections && templateData.sections.length > 0) {
+                        const loadedSections = templateData.sections.map((s: {
+                            section_id: string;
+                            title: string;
+                            estimated_minutes: number;
+                            content: string;
+                            media_tag?: string;
+                        }) => ({
+                            id: s.section_id,
+                            title: s.title,
+                            estimatedMinutes: s.estimated_minutes,
+                            content: s.content || '',
+                            mediaTag: s.media_tag,
+                        }));
+                        setSections(loadedSections);
+                        setHasChanges(true); // Template loaded but not saved to this session yet
+                        setIsLoading(false);
+                        return;
+                    }
+                }
+
+                // Fall back to hardcoded default template
+                setSections(DEFAULT_TEMPLATE);
+                setHasChanges(true); // Default loaded but not saved yet
             } catch (error) {
                 console.error('[Script] Failed to fetch:', error);
+                setSections(DEFAULT_TEMPLATE);
             } finally {
                 setIsLoading(false);
             }
@@ -80,7 +186,7 @@ export default function ScriptEditorPage() {
             .catch(() => setMedia([]));
     }, [sessionId]);
 
-    // Save script to API
+    // Save script to this session
     const saveScript = async () => {
         setIsSaving(true);
         try {
@@ -100,6 +206,31 @@ export default function ScriptEditorPage() {
             alert('Failed to save script');
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    // Save as global template for all new sessions
+    const saveAsTemplate = async () => {
+        if (!confirm('Save this script as the default template for all new sessions?')) {
+            return;
+        }
+        setIsSavingTemplate(true);
+        try {
+            const res = await fetch('/api/session-scripts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId: 'global-template', sections }),
+            });
+            if (res.ok) {
+                alert('Template saved! New sessions will start with this script.');
+            } else {
+                alert('Failed to save template');
+            }
+        } catch (error) {
+            console.error('[Script] Template save error:', error);
+            alert('Failed to save template');
+        } finally {
+            setIsSavingTemplate(false);
         }
     };
 
@@ -151,7 +282,7 @@ export default function ScriptEditorPage() {
 
             <div className={styles.pageHeader}>
                 <h1>Session Script</h1>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <span style={{ color: '#718096', fontSize: '0.9rem' }}>
                         Total: {totalMinutes} min ({sections.length} sections)
                     </span>
@@ -165,6 +296,19 @@ export default function ScriptEditorPage() {
                         style={{ opacity: (isSaving || !hasChanges) ? 0.6 : 1 }}
                     >
                         {isSaving ? 'Saving...' : hasChanges ? '💾 Save Script' : '✓ Saved'}
+                    </button>
+                    <button
+                        className={styles.secondaryBtn}
+                        onClick={saveAsTemplate}
+                        disabled={isSavingTemplate}
+                        style={{
+                            borderColor: '#9A3324',
+                            color: '#9A3324',
+                            opacity: isSavingTemplate ? 0.6 : 1
+                        }}
+                        title="Save this script as the default for all new sessions"
+                    >
+                        {isSavingTemplate ? 'Saving...' : '📋 Save as Template'}
                     </button>
                 </div>
             </div>
