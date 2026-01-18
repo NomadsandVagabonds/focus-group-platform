@@ -82,12 +82,12 @@ export default function ParticipantRatingData({ sessionId, participantCode, part
     const maxValue = Math.max(...values);
 
     // Chart
-    const chartWidth = 600;
-    const chartHeight = 100;
-    const padding = 40;
+    const chartWidth = 700;
+    const chartHeight = 140;
+    const padding = 45;
     const maxMs = durationMs || Math.max(...events.map(e => e.sessionMs), 1);
     const xScale = (ms: number) => padding + (ms / maxMs) * (chartWidth - padding * 2);
-    const yScale = (val: number) => chartHeight - 20 - (val / 100) * (chartHeight - 35);
+    const yScale = (val: number) => chartHeight - 25 - (val / 100) * (chartHeight - 45);
 
     const getCurrentValue = () => {
         const point = events.find(e => e.sessionMs >= currentTimeMs) || events[events.length - 1];
