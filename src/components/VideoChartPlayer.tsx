@@ -36,6 +36,7 @@ export default function VideoChartPlayer({ videoUrl, events, aggregates, duratio
     const videoRef = useRef<HTMLVideoElement>(null);
     const [currentTimeMs, setCurrentTimeMs] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [videoDurationMs, setVideoDurationMs] = useState(0);
 
     // Update current time when video plays
     useEffect(() => {
@@ -48,15 +49,25 @@ export default function VideoChartPlayer({ videoUrl, events, aggregates, duratio
 
         const handlePlay = () => setIsPlaying(true);
         const handlePause = () => setIsPlaying(false);
+        const handleLoadedMetadata = () => {
+            setVideoDurationMs(video.duration * 1000);
+        };
 
         video.addEventListener('timeupdate', handleTimeUpdate);
         video.addEventListener('play', handlePlay);
         video.addEventListener('pause', handlePause);
+        video.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+        // If already loaded
+        if (video.duration) {
+            setVideoDurationMs(video.duration * 1000);
+        }
 
         return () => {
             video.removeEventListener('timeupdate', handleTimeUpdate);
             video.removeEventListener('play', handlePlay);
             video.removeEventListener('pause', handlePause);
+            video.removeEventListener('loadedmetadata', handleLoadedMetadata);
         };
     }, []);
 
@@ -72,25 +83,51 @@ export default function VideoChartPlayer({ videoUrl, events, aggregates, duratio
     const chartHeight = 120;
     const padding = 40;
 
-    const maxMs = durationMs || Math.max(...aggregates.map(a => a.sessionMs), 1);
+    // Use VIDEO duration, not data duration (fixes sync issue)
+    const maxMs = videoDurationMs || durationMs || Math.max(...aggregates.map(a => a.sessionMs), 1);
     const xScale = (ms: number) => padding + (ms / maxMs) * (chartWidth - padding * 2);
     const yScale = (val: number) => chartHeight - 25 - (val / 100) * (chartHeight - 45);
 
-    // Get path up to current time (animated reveal)
+    // Catmull-Rom spline for smooth curves
+    const getSmoothPath = (points: { x: number; y: number }[]) => {
+        if (points.length < 2) return '';
+        if (points.length === 2) {
+            return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
+        }
+
+        let path = `M ${points[0].x} ${points[0].y}`;
+
+        for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[Math.max(0, i - 1)];
+            const p1 = points[i];
+            const p2 = points[i + 1];
+            const p3 = points[Math.min(points.length - 1, i + 2)];
+
+            // Catmull-Rom to Bezier conversion
+            const cp1x = p1.x + (p2.x - p0.x) / 6;
+            const cp1y = p1.y + (p2.y - p0.y) / 6;
+            const cp2x = p2.x - (p3.x - p1.x) / 6;
+            const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+            path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+        }
+
+        return path;
+    };
+
+    // Get path up to current time (animated reveal) - SMOOTH
     const getAnimatedPath = () => {
         const visiblePoints = aggregates.filter(a => a.sessionMs <= currentTimeMs);
         if (visiblePoints.length < 2) return '';
-        return visiblePoints.map((a, i) =>
-            `${i === 0 ? 'M' : 'L'} ${xScale(a.sessionMs)} ${yScale(a.mean)}`
-        ).join(' ');
+        const points = visiblePoints.map(a => ({ x: xScale(a.sessionMs), y: yScale(a.mean) }));
+        return getSmoothPath(points);
     };
 
-    // Get full path (faded)
+    // Get full path (faded) - SMOOTH
     const getFullPath = () => {
         if (aggregates.length < 2) return '';
-        return aggregates.map((a, i) =>
-            `${i === 0 ? 'M' : 'L'} ${xScale(a.sessionMs)} ${yScale(a.mean)}`
-        ).join(' ');
+        const points = aggregates.map(a => ({ x: xScale(a.sessionMs), y: yScale(a.mean) }));
+        return getSmoothPath(points);
     };
 
     // Click on chart to seek
@@ -159,7 +196,7 @@ export default function VideoChartPlayer({ videoUrl, events, aggregates, duratio
                 }}>
                     <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                         <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', fontFamily: 'monospace' }}>
-                            {formatTime(currentTimeMs)} / {formatTime(durationMs)}
+                            {formatTime(currentTimeMs)} / {formatTime(videoDurationMs || durationMs)}
                         </span>
                         <span style={{
                             color: getCurrentValue() < 35 ? '#ef4444' : getCurrentValue() > 65 ? '#22c55e' : '#facc15',
