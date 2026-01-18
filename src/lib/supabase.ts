@@ -1,9 +1,23 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Lazy initialization to handle build-time when env vars may not be available
+let _supabase: SupabaseClient | null = null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = (() => {
+    if (!_supabase) {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+            // Return a mock client during build time that won't be used
+            console.warn('Supabase credentials not found - using placeholder during build');
+            return createClient('https://placeholder.supabase.co', 'placeholder-key');
+        }
+
+        _supabase = createClient(supabaseUrl, supabaseAnonKey);
+    }
+    return _supabase;
+})();
 
 // Type definitions for our tables
 export interface Session {
