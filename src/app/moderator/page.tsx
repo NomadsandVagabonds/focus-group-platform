@@ -467,6 +467,7 @@ function ModeratorContent() {
                         <ModeratorVideoGrid
                             token={token}
                             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://demo.livekit.cloud'}
+                            sessionId={resolvedSessionId || undefined}
                             perceptionValues={perceptionValues}
                             onRoomConnected={handleRoomConnected}
                             onRoomDisconnected={handleRoomDisconnected}

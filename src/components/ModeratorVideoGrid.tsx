@@ -19,6 +19,7 @@ import styles from './ModeratorVideoGrid.module.css';
 interface ModeratorVideoGridProps {
     token: string;
     serverUrl: string;
+    sessionId?: string;
     perceptionValues?: Record<string, number>;
     onRoomConnected?: (room: Room) => void;
     onRoomDisconnected?: () => void;
@@ -49,13 +50,26 @@ function RoomHandler({
     return null;
 }
 
-function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<string, number> }) {
+function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValues?: Record<string, number>; sessionId?: string }) {
     const { localParticipant } = useLocalParticipant();
     const participants = useParticipants();
 
     // Timer state
     const [timerSeconds, setTimerSeconds] = useState(60 * 60); // 60 minutes
     const [isRunning, setIsRunning] = useState(false);
+
+    // Media state
+    interface MediaItem { id: string; filename: string; file_type: string; url: string; }
+    const [media, setMedia] = useState<MediaItem[]>([]);
+
+    // Fetch media for this session
+    useEffect(() => {
+        if (!sessionId) return;
+        fetch(`/api/session-media?sessionId=${sessionId}`)
+            .then(res => res.ok ? res.json() : { media: [] })
+            .then(data => setMedia(data.media || []))
+            .catch(() => setMedia([]));
+    }, [sessionId]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null;
@@ -207,7 +221,7 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                 <div className={styles.mediaBrowser}>
                     <span className={styles.mediaIcon}>📁</span>
                     <span className={styles.mediaLabel}>Media Library</span>
-                    <span className={styles.mediaStatus}>0 items</span>
+                    <span className={styles.mediaStatus}>{media.length} items</span>
                 </div>
             </div>
         </div>
@@ -223,6 +237,7 @@ function getPerceptionColor(value: number): string {
 export default function ModeratorVideoGrid({
     token,
     serverUrl,
+    sessionId,
     perceptionValues = {},
     onRoomConnected,
     onRoomDisconnected,
@@ -240,7 +255,7 @@ export default function ModeratorVideoGrid({
                 onRoomConnected={onRoomConnected}
                 onRoomDisconnected={onRoomDisconnected}
             />
-            <ModeratorLayout perceptionValues={perceptionValues} />
+            <ModeratorLayout perceptionValues={perceptionValues} sessionId={sessionId} />
             <RoomAudioRenderer />
         </LiveKitRoom>
     );
