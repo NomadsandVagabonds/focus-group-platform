@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ModeratorScript.module.css';
 
 interface ScriptSection {
@@ -8,6 +8,10 @@ interface ScriptSection {
     title: string;
     duration: string;
     content: string;
+}
+
+interface ModeratorScriptProps {
+    sessionId?: string;
 }
 
 const DEFAULT_SCRIPT: ScriptSection[] = [
@@ -49,9 +53,50 @@ const DEFAULT_SCRIPT: ScriptSection[] = [
     }
 ];
 
-export default function ModeratorScript() {
+export default function ModeratorScript({ sessionId }: ModeratorScriptProps) {
     const [isOpen, setIsOpen] = useState(true);
     const [activeSectionId, setActiveSectionId] = useState<string | null>('intro');
+    const [sections, setSections] = useState<ScriptSection[]>(DEFAULT_SCRIPT);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Fetch script from API if sessionId is provided
+    useEffect(() => {
+        if (!sessionId) return;
+
+        async function fetchScript() {
+            setIsLoading(true);
+            try {
+                const res = await fetch(`/api/session-scripts?sessionId=${sessionId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.sections && data.sections.length > 0) {
+                        // Transform from API format
+                        const loadedSections = data.sections.map((s: {
+                            section_id: string;
+                            title: string;
+                            estimated_minutes: number;
+                            content: string;
+                        }) => ({
+                            id: s.section_id,
+                            title: s.title,
+                            duration: `${s.estimated_minutes} min`,
+                            content: s.content || '',
+                        }));
+                        setSections(loadedSections);
+                        // Set first section as active
+                        if (loadedSections.length > 0) {
+                            setActiveSectionId(loadedSections[0].id);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('[ModeratorScript] Failed to fetch:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchScript();
+    }, [sessionId]);
 
     return (
         <div className={`${styles.container} ${isOpen ? '' : styles.collapsed}`}>
@@ -71,23 +116,29 @@ export default function ModeratorScript() {
 
             {/* Content */}
             <div className={styles.content}>
-                {DEFAULT_SCRIPT.map((section) => (
-                    <div
-                        key={section.id}
-                        className={`${styles.section} ${activeSectionId === section.id ? styles.active : ''}`}
-                        onClick={() => setActiveSectionId(section.id)}
-                    >
-                        <div className={styles.sectionHeader}>
-                            <span className={styles.sectionTitle}>{section.title}</span>
-                            <span className={styles.duration}>{section.duration}</span>
-                        </div>
-                        {activeSectionId === section.id && (
-                            <div className={styles.sectionBody}>
-                                {section.content}
-                            </div>
-                        )}
+                {isLoading ? (
+                    <div style={{ padding: '20px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
+                        Loading script...
                     </div>
-                ))}
+                ) : (
+                    sections.map((section) => (
+                        <div
+                            key={section.id}
+                            className={`${styles.section} ${activeSectionId === section.id ? styles.active : ''}`}
+                            onClick={() => setActiveSectionId(section.id)}
+                        >
+                            <div className={styles.sectionHeader}>
+                                <span className={styles.sectionTitle}>{section.title}</span>
+                                <span className={styles.duration}>{section.duration}</span>
+                            </div>
+                            {activeSectionId === section.id && (
+                                <div className={styles.sectionBody}>
+                                    {section.content}
+                                </div>
+                            )}
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );

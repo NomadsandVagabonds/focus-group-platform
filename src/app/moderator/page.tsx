@@ -440,7 +440,7 @@ function ModeratorContent() {
             </header>
 
             {/* Script panel - fixed overlay */}
-            <ModeratorScript />
+            <ModeratorScript sessionId={resolvedSessionId || undefined} />
 
             {/* Main layout */}
             <div className={styles.mainLayout}>
