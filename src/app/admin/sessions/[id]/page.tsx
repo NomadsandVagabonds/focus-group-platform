@@ -243,6 +243,36 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         Save Notes
                     </button>
                 </div>
+
+                {/* Media Library */}
+                <div className={styles.card} style={{ marginTop: '16px' }}>
+                    <h2 className={styles.cardTitle}>Media Library</h2>
+                    <p style={{ fontSize: '0.8rem', color: '#718096', marginBottom: '12px' }}>
+                        Upload images, videos, audio, or PDFs to present during the session.
+                    </p>
+                    <Link
+                        href={`/admin/sessions/${id}/media`}
+                        className={styles.primaryBtn}
+                        style={{ display: 'inline-block', textDecoration: 'none' }}
+                    >
+                        📁 Manage Media
+                    </Link>
+                </div>
+
+                {/* Script Editor - Coming Soon */}
+                <div className={styles.card} style={{ marginTop: '16px' }}>
+                    <h2 className={styles.cardTitle}>Session Script</h2>
+                    <p style={{ fontSize: '0.8rem', color: '#718096', marginBottom: '12px' }}>
+                        Create sections with estimated times and link to media items.
+                    </p>
+                    <Link
+                        href={`/admin/sessions/${id}/script`}
+                        className={styles.secondaryBtn}
+                        style={{ display: 'inline-block', textDecoration: 'none' }}
+                    >
+                        📝 Edit Script
+                    </Link>
+                </div>
             </div>
 
             {/* Session Analytics */}
