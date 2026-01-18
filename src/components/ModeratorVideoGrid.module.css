@@ -192,6 +192,7 @@
     flex-direction: column;
     flex: 1;
     min-width: 150px;
+    height: 115px;
 }
 
 .notepadLabel {
@@ -289,6 +290,7 @@
 /* Media Browser */
 .mediaBrowser {
     width: 200px;
+    height: 115px;
     flex-shrink: 0;
     background: rgba(45, 55, 72, 0.6);
     border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -299,7 +301,6 @@
     justify-content: center;
     cursor: pointer;
     transition: background 0.2s;
-    padding: 8px;
 }
 
 .mediaBrowser:hover {
