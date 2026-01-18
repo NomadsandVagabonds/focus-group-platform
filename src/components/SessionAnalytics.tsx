@@ -174,6 +174,24 @@ export default function SessionAnalytics({ sessionId }: Props) {
                             stroke="none"
                         />
                     )}
+
+                    {/* X-axis time labels */}
+                    {[0, 0.25, 0.5, 0.75, 1].map(pct => {
+                        const ms = pct * maxMs;
+                        const secs = Math.round(ms / 1000);
+                        return (
+                            <text
+                                key={pct}
+                                x={xScale(ms)}
+                                y={chartHeight - 10}
+                                fill="#718096"
+                                fontSize="10"
+                                textAnchor="middle"
+                            >
+                                {secs}s
+                            </text>
+                        );
+                    })}
                 </svg>
             </div>
 
