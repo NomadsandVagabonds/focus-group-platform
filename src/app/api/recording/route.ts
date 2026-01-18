@@ -63,11 +63,19 @@ export async function POST(request: NextRequest) {
                 filepath: `recordings/${sessionId || roomName}/{room_name}-{time}.mp4`,
             });
 
+            // Use the EncodedOutputs wrapper format (newer API)
+            // This wraps the file output in an object with a 'file' property
+            const output = { file: fileOutput };
+
             // Start room composite recording
             const egress = await egressClient.startRoomCompositeEgress(
                 roomName,
-                fileOutput,
-                'grid-dark' // layout
+                output,
+                {
+                    layout: 'grid-dark',
+                    audioOnly: false,
+                    videoOnly: false,
+                }
             );
 
             activeRecordings.set(roomName, egress.egressId);
