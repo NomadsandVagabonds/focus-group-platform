@@ -74,66 +74,76 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
     console.log('[ModeratorGrid] Remote participants:', remoteParticipantTracks.map(t => t.participant.identity));
     console.log('[ModeratorGrid] Local track:', !!localTrack);
 
-    // Calculate grid columns based on participant count
-    // Always show grid format, never single full-screen
-    const getGridColumns = (count: number) => {
-        if (count <= 0) return 1;
-        if (count === 1) return 1; // Single participant but styled smaller
-        if (count <= 4) return 2;  // 2x2 for 2-4 participants
-        if (count <= 9) return 3;  // 3x3 for 5-9 participants
-        return 4;                   // 4 columns for 10+
+    // Calculate grid layout: 2x2 (4 slots) → 3x2 (6 slots) → 3x3 (9 slots)
+    const getGridConfig = (count: number) => {
+        if (count <= 4) return { cols: 2, rows: 2, total: 4 };   // 2x2
+        if (count <= 6) return { cols: 3, rows: 2, total: 6 };   // 3x2
+        return { cols: 3, rows: 3, total: 9 };                    // 3x3
     };
 
     const participantCount = remoteParticipantTracks.length;
-    const gridCols = getGridColumns(participantCount);
+    const gridConfig = getGridConfig(participantCount);
+
+    // Create array of slots - fill with participants, rest are empty placeholders
+    const slots = Array.from({ length: gridConfig.total }, (_, i) => {
+        if (i < remoteParticipantTracks.length) {
+            return { type: 'participant' as const, trackRef: remoteParticipantTracks[i] };
+        }
+        return { type: 'empty' as const, trackRef: null };
+    });
 
     return (
         <div className={styles.container}>
             {/* Main area - Participant grid */}
             <div className={styles.mainArea}>
-                {remoteParticipantTracks.length > 0 ? (
-                    <div
-                        className={styles.participantGrid}
-                        data-count={participantCount}
-                        style={{
-                            gridTemplateColumns: `repeat(${gridCols}, 1fr)`
-                        }}
-                    >
-                        {remoteParticipantTracks.map((trackRef) => (
-                            <div key={trackRef.participant.identity} className={styles.participantTile}>
-                                {trackRef.publication?.track ? (
-                                    <VideoTrack
-                                        trackRef={trackRef}
-                                        className={styles.video}
-                                    />
-                                ) : (
-                                    <div className={styles.placeholder}>
-                                        <div className={styles.avatar}>👤</div>
-                                    </div>
-                                )}
-                                <div className={styles.participantInfo}>
-                                    <span className={styles.name}>
-                                        {trackRef.participant.identity}
-                                    </span>
-                                    {perceptionValues[trackRef.participant.identity] !== undefined && (
-                                        <span
-                                            className={styles.perceptionBadge}
-                                            style={{
-                                                backgroundColor: getPerceptionColor(perceptionValues[trackRef.participant.identity])
-                                            }}
-                                        >
-                                            {Math.round(perceptionValues[trackRef.participant.identity])}
-                                        </span>
+                <div
+                    className={styles.participantGrid}
+                    style={{
+                        gridTemplateColumns: `repeat(${gridConfig.cols}, 1fr)`,
+                        gridTemplateRows: `repeat(${gridConfig.rows}, 1fr)`
+                    }}
+                >
+                    {slots.map((slot, index) => {
+                        if (slot.type === 'participant' && slot.trackRef) {
+                            const trackRef = slot.trackRef;
+                            return (
+                                <div key={trackRef.participant.identity} className={styles.participantTile}>
+                                    {trackRef.publication?.track ? (
+                                        <VideoTrack
+                                            trackRef={trackRef}
+                                            className={styles.video}
+                                        />
+                                    ) : (
+                                        <div className={styles.placeholder}>
+                                            <div className={styles.avatar}>👤</div>
+                                        </div>
                                     )}
+                                    <div className={styles.participantInfo}>
+                                        <span className={styles.name}>
+                                            {trackRef.participant.identity}
+                                        </span>
+                                        {perceptionValues[trackRef.participant.identity] !== undefined && (
+                                            <span
+                                                className={styles.perceptionBadge}
+                                                style={{
+                                                    backgroundColor: getPerceptionColor(perceptionValues[trackRef.participant.identity])
+                                                }}
+                                            >
+                                                {Math.round(perceptionValues[trackRef.participant.identity])}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
+                            );
+                        }
+                        // Empty slot placeholder
+                        return (
+                            <div key={`empty-${index}`} className={styles.emptySlot}>
+                                <div className={styles.emptyIcon}>👤</div>
                             </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className={styles.waitingMessage}>
-                        <span>Waiting for participants to join...</span>
-                    </div>
-                )}
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Moderator strip - dedicated area below grid, not overlapping */}

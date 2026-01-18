@@ -1,6 +1,7 @@
 .room {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .container {
@@ -17,44 +18,55 @@
 .mainArea {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     padding: 12px;
     padding-bottom: 0;
     min-height: 0;
-    /* prevent overflow issues in flex */
+    overflow: hidden;
 }
 
-/* Participant grid - always grid layout, never single full-screen */
+/* Participant grid - always fills container */
 .participantGrid {
     display: grid;
     gap: 10px;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    /* Grid will be set inline based on participant count */
 }
 
-/* Force minimum grid size even with 1 participant */
-.participantGrid[data-count="1"],
-.participantGrid[data-count="2"] {
-    max-width: 80%;
-    max-height: 80%;
-}
-
+/* Participant tile with video */
 .participantTile {
     position: relative;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    min-height: 120px;
+    min-height: 0;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 16 / 9;
 }
 
-/* Use contain to never crop video */
+/* Empty slot placeholder */
+.emptySlot {
+    position: relative;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emptyIcon {
+    font-size: 3rem;
+    opacity: 0.15;
+}
+
+/* Video uses object-fit to never crop */
 .video {
     width: 100%;
     height: 100%;
@@ -86,6 +98,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 1;
 }
 
 .name {
@@ -124,18 +137,18 @@
     padding: 12px 16px;
     background: rgba(0, 0, 0, 0.4);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .selfView {
-    width: 280px;
-    height: 160px;
+    width: 200px;
+    height: 115px;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
     border: 3px solid var(--color-accent-primary);
     flex-shrink: 0;
     position: relative;
-    aspect-ratio: 16 / 9;
 }
 
 .selfVideo {
@@ -176,16 +189,12 @@
 /* Tablet responsive */
 @media (max-width: 1024px) {
     .selfView {
-        width: 140px;
-        height: 80px;
+        width: 160px;
+        height: 90px;
     }
 
     .participantGrid {
         gap: 8px;
-    }
-
-    .participantTile {
-        min-height: 100px;
     }
 
     .mainArea {
@@ -205,10 +214,6 @@
         gap: 6px;
     }
 
-    .participantTile {
-        min-height: 80px;
-    }
-
     .mainArea {
         padding: 6px;
         padding-bottom: 0;
@@ -221,5 +226,9 @@
     .perceptionBadge {
         font-size: 0.7rem;
         padding: 3px 8px;
+    }
+
+    .emptyIcon {
+        font-size: 2rem;
     }
 }
