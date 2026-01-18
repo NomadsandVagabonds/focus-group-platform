@@ -24,6 +24,139 @@ interface Participant {
     inviteUrl?: string;
 }
 
+// Expandable participant card with notes editor
+function ParticipantCard({
+    participant,
+    onUpdate
+}: {
+    participant: Participant;
+    onUpdate: (updated: Partial<Participant>) => void;
+}) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [notes, setNotes] = useState(participant.notes || '');
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSaveNotes = async () => {
+        setIsSaving(true);
+        try {
+            const res = await fetch(`/api/participants/${participant.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ notes })
+            });
+            if (res.ok) {
+                onUpdate({ id: participant.id, notes });
+            }
+        } catch (error) {
+            console.error('Failed to save notes:', error);
+        }
+        setIsSaving(false);
+    };
+
+    return (
+        <div style={{
+            background: 'rgba(255,255,255,0.05)',
+            borderRadius: '8px',
+            overflow: 'hidden'
+        }}>
+            {/* Header - clickable to expand */}
+            <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px 14px',
+                    cursor: 'pointer'
+                }}
+            >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: 'white', fontWeight: 500, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▶</span>
+                        {participant.email || participant.display_name || 'Participant'}
+                        {participant.notes && <span style={{ color: '#f59e0b', fontSize: '10px' }}>📝</span>}
+                    </div>
+                    <div style={{ color: '#94a3b8', fontSize: '11px', fontFamily: 'monospace', marginLeft: '20px' }}>
+                        Code: {participant.code}
+                    </div>
+                </div>
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(participant.inviteUrl || '');
+                        alert(`Link copied for ${participant.email || participant.code}`);
+                    }}
+                    style={{
+                        background: 'var(--color-accent-primary)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Copy Link
+                </button>
+            </div>
+
+            {/* Expandable notes section */}
+            {isExpanded && (
+                <div style={{
+                    padding: '0 14px 14px 14px',
+                    borderTop: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                    <label style={{
+                        display: 'block',
+                        fontSize: '11px',
+                        color: '#94a3b8',
+                        marginTop: '12px',
+                        marginBottom: '6px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                    }}>
+                        Moderator Notes
+                    </label>
+                    <textarea
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Add notes about this participant (background, talking points, etc.)"
+                        rows={3}
+                        style={{
+                            width: '100%',
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'rgba(0,0,0,0.3)',
+                            color: 'white',
+                            fontSize: '12px',
+                            resize: 'vertical'
+                        }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                        <button
+                            onClick={handleSaveNotes}
+                            disabled={isSaving || notes === (participant.notes || '')}
+                            style={{
+                                background: notes !== (participant.notes || '') ? 'var(--color-accent-primary)' : 'rgba(255,255,255,0.1)',
+                                color: 'white',
+                                border: 'none',
+                                padding: '6px 16px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                cursor: notes !== (participant.notes || '') ? 'pointer' : 'default',
+                                opacity: isSaving ? 0.7 : 1
+                            }}
+                        >
+                            {isSaving ? 'Saving...' : 'Save Notes'}
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 export default function AdminPage() {
     const router = useRouter();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -400,35 +533,17 @@ export default function AdminPage() {
                                         No participants yet. Add some above!
                                     </p>
                                 ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '400px', overflowY: 'auto' }}>
                                         {sessionParticipants.map(p => (
-                                            <div key={p.id} style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                background: 'rgba(255,255,255,0.05)',
-                                                padding: '10px 14px',
-                                                borderRadius: '6px'
-                                            }}>
-                                                <div style={{ flex: 1, minWidth: 0 }}>
-                                                    <div style={{ color: 'white', fontWeight: 500, fontSize: '13px' }}>
-                                                        {p.email || p.display_name || 'Participant'}
-                                                    </div>
-                                                    <div style={{ color: '#94a3b8', fontSize: '11px', fontFamily: 'monospace' }}>
-                                                        Code: {p.code}
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    onClick={() => {
-                                                        navigator.clipboard.writeText(p.inviteUrl || '');
-                                                        alert(`Link copied for ${p.email || p.code}`);
-                                                    }}
-                                                    className={styles.primaryBtn}
-                                                    style={{ width: 'auto', padding: '6px 12px', fontSize: '11px' }}
-                                                >
-                                                    Copy Link
-                                                </button>
-                                            </div>
+                                            <ParticipantCard
+                                                key={p.id}
+                                                participant={p}
+                                                onUpdate={(updated) => {
+                                                    setSessionParticipants(prev =>
+                                                        prev.map(x => x.id === updated.id ? { ...x, ...updated } : x)
+                                                    );
+                                                }}
+                                            />
                                         ))}
                                     </div>
                                 )}

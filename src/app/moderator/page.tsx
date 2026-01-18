@@ -18,6 +18,104 @@ const ModeratorVideoGrid = dynamic(() => import('@/components/ModeratorVideoGrid
     loading: () => <div className={styles.videoPlaceholder}>Loading video...</div>
 });
 
+// Participant accordion component for showing notes
+function ParticipantAccordion({
+    participantId,
+    currentValue,
+    sessionId
+}: {
+    participantId: string;
+    currentValue: number;
+    sessionId: string;
+}) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [notes, setNotes] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchNotes = async () => {
+        if (notes !== null) return; // Already fetched
+        setIsLoading(true);
+        try {
+            // Try to find participant by their display name in the session
+            const res = await fetch(`/api/sessions/${sessionId}`);
+            if (res.ok) {
+                const data = await res.json();
+                const participant = data.participants?.find(
+                    (p: { display_name?: string; code: string }) =>
+                        p.display_name === participantId || p.code === participantId
+                );
+                setNotes(participant?.notes || 'No notes available');
+            }
+        } catch (error) {
+            setNotes('Could not load notes');
+        }
+        setIsLoading(false);
+    };
+
+    const handleToggle = () => {
+        if (!isExpanded) {
+            fetchNotes();
+        }
+        setIsExpanded(!isExpanded);
+    };
+
+    const getValueColor = (value: number) => {
+        if (value < 35) return 'var(--color-dial-negative)';
+        if (value > 65) return 'var(--color-dial-positive)';
+        return 'var(--color-dial-neutral)';
+    };
+
+    return (
+        <div className={styles.participantItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+            <div
+                onClick={handleToggle}
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    padding: '2px 0'
+                }}
+            >
+                <span className={styles.participantName} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{
+                        fontSize: '10px',
+                        transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                        opacity: 0.6
+                    }}>▶</span>
+                    {participantId}
+                </span>
+                <span className={styles.participantValue} style={{ color: getValueColor(currentValue) }}>
+                    {Math.round(currentValue)}
+                </span>
+            </div>
+            {isExpanded && (
+                <div style={{
+                    marginTop: '8px',
+                    padding: '10px 12px',
+                    background: 'rgba(0,0,0,0.2)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: 'var(--color-text-secondary)',
+                    lineHeight: 1.5
+                }}>
+                    <div style={{
+                        fontSize: '10px',
+                        color: 'var(--color-text-muted)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        marginBottom: '6px'
+                    }}>
+                        Notes
+                    </div>
+                    {isLoading ? 'Loading...' : notes}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function ModeratorContent() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get('session') || 'demo-session';
@@ -279,23 +377,16 @@ function ModeratorContent() {
                         </div>
                     </div>
 
-                    {/* Participant list */}
+                    {/* Participant list with accordion */}
                     <div className={styles.participantList}>
                         <h3 className={styles.sectionTitle}>Participants</h3>
                         {Object.entries(perceptionValues).map(([id, value]) => (
-                            <div key={id} className={styles.participantItem}>
-                                <span className={styles.participantName}>{id}</span>
-                                <span
-                                    className={styles.participantValue}
-                                    style={{
-                                        color: value < 35 ? 'var(--color-dial-negative)'
-                                            : value > 65 ? 'var(--color-dial-positive)'
-                                                : 'var(--color-dial-neutral)'
-                                    }}
-                                >
-                                    {Math.round(value)}
-                                </span>
-                            </div>
+                            <ParticipantAccordion
+                                key={id}
+                                participantId={id}
+                                currentValue={value}
+                                sessionId={sessionId}
+                            />
                         ))}
                         {Object.keys(perceptionValues).length === 0 && (
                             <p className={styles.emptyState}>Waiting for participants...</p>
