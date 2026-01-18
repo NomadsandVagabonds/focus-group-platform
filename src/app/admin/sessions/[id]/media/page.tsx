@@ -129,6 +129,26 @@ export default function SessionMediaPage() {
         fetchMedia();
     };
 
+    // Rename handler
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editingName, setEditingName] = useState('');
+
+    const startRename = (item: MediaItem) => {
+        setEditingId(item.id);
+        setEditingName(item.filename);
+    };
+
+    const saveRename = async (id: string) => {
+        if (!editingName.trim()) return;
+        await fetch('/api/session-media', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mediaId: id, filename: editingName.trim() }),
+        });
+        setEditingId(null);
+        fetchMedia();
+    };
+
     // Move handler
     const handleMove = async (id: string, direction: 'up' | 'down') => {
         const index = media.findIndex(m => m.id === id);
@@ -258,10 +278,29 @@ export default function SessionMediaPage() {
                                 {/* Type icon */}
                                 <span style={{ fontSize: '20px' }}>{getTypeIcon(item.file_type)}</span>
 
-                                {/* Filename */}
-                                <span style={{ flex: 1, color: '#1A1A2E', fontWeight: 500 }}>
-                                    {item.filename}
-                                </span>
+                                {/* Filename - click to edit */}
+                                {editingId === item.id ? (
+                                    <input
+                                        type="text"
+                                        value={editingName}
+                                        onChange={(e) => setEditingName(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') saveRename(item.id);
+                                            if (e.key === 'Escape') setEditingId(null);
+                                        }}
+                                        onBlur={() => saveRename(item.id)}
+                                        autoFocus
+                                        style={{ flex: 1, padding: '4px 8px', fontSize: '14px' }}
+                                    />
+                                ) : (
+                                    <span
+                                        style={{ flex: 1, color: '#1A1A2E', fontWeight: 500, cursor: 'pointer' }}
+                                        onClick={() => startRename(item)}
+                                        title="Click to rename"
+                                    >
+                                        {item.filename}
+                                    </span>
+                                )}
 
                                 {/* Preview link */}
                                 <a

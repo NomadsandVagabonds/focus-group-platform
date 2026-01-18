@@ -140,15 +140,19 @@ export async function POST(request: NextRequest) {
 
 /**
  * PUT /api/session-media
- * Update media order
+ * Update media order or filename
  */
 export async function PUT(request: NextRequest) {
     try {
-        const { mediaId, displayOrder } = await request.json();
+        const { mediaId, displayOrder, filename } = await request.json();
+
+        const updates: Record<string, unknown> = {};
+        if (displayOrder !== undefined) updates.display_order = displayOrder;
+        if (filename !== undefined) updates.filename = filename;
 
         const { error } = await supabase
             .from('session_media')
-            .update({ display_order: displayOrder })
+            .update(updates)
             .eq('id', mediaId);
 
         if (error) {
