@@ -119,7 +119,12 @@ function ParticipantAccordion({
 function ModeratorContent() {
     const searchParams = useSearchParams();
     const sessionCodeOrId = searchParams.get('session') || 'demo-session';
-    const moderatorId = searchParams.get('user') || `moderator-${Date.now()}`;
+
+    // IMPORTANT: Use useState to keep moderatorId stable across re-renders
+    // Without this, Date.now() would generate a new ID on every render, causing infinite token requests!
+    const [moderatorId] = useState(() =>
+        searchParams.get('user') || `moderator-${Date.now()}`
+    );
 
     const [token, setToken] = useState<string | null>(null);
     const [tokenError, setTokenError] = useState<string | null>(null);
@@ -165,6 +170,7 @@ function ModeratorContent() {
     // Get LiveKit token with moderator privileges (after session is resolved)
     useEffect(() => {
         if (!resolvedSessionId) return;
+        if (token) return; // Already have a token, don't refetch
 
         async function getToken() {
             try {
@@ -190,7 +196,7 @@ function ModeratorContent() {
             }
         }
         getToken();
-    }, [resolvedSessionId, moderatorId]);
+    }, [resolvedSessionId, moderatorId, token]);
 
     // Handle room connection - set up data channel subscriptions
     const handleRoomConnected = useCallback((room: Room) => {

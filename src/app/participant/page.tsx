@@ -41,6 +41,8 @@ function ParticipantContent() {
 
     // Get LiveKit token and handle persistence
     useEffect(() => {
+        if (token) return; // Already have a token, don't refetch
+
         async function getToken() {
             try {
                 // If we found a saved session ID in localStorage, use it if none provided in URL
@@ -66,7 +68,7 @@ function ParticipantContent() {
             }
         }
         getToken();
-    }, [sessionId, userId]);
+    }, [sessionId, userId, token]);
 
     // Handle manual logout
     const handleLogout = useCallback(() => {
