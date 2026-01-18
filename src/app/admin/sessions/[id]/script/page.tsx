@@ -25,13 +25,52 @@ export default function ScriptEditorPage() {
     const router = useRouter();
     const sessionId = params.id as string;
 
-    const [sections, setSections] = useState<ScriptSection[]>([
-        { id: '1', title: 'Introduction', estimatedMinutes: 5, content: 'Welcome participants and explain the session format.' },
-        { id: '2', title: 'Main Discussion', estimatedMinutes: 30, content: 'Present key topics and facilitate discussion.' },
-        { id: '3', title: 'Wrap Up', estimatedMinutes: 10, content: 'Summarize key points and thank participants.' },
-    ]);
+    const [sections, setSections] = useState<ScriptSection[]>([]);
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasChanges, setHasChanges] = useState(false);
+
+    // Fetch script sections from API
+    useEffect(() => {
+        async function fetchScript() {
+            try {
+                const res = await fetch(`/api/session-scripts?sessionId=${sessionId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.sections && data.sections.length > 0) {
+                        // Transform from API format to local format
+                        const loadedSections = data.sections.map((s: {
+                            section_id: string;
+                            title: string;
+                            estimated_minutes: number;
+                            content: string;
+                            media_tag?: string;
+                        }) => ({
+                            id: s.section_id,
+                            title: s.title,
+                            estimatedMinutes: s.estimated_minutes,
+                            content: s.content || '',
+                            mediaTag: s.media_tag,
+                        }));
+                        setSections(loadedSections);
+                    } else {
+                        // Default sections for new script
+                        setSections([
+                            { id: '1', title: 'Introduction', estimatedMinutes: 5, content: 'Welcome participants and explain the session format.' },
+                            { id: '2', title: 'Main Discussion', estimatedMinutes: 30, content: 'Present key topics and facilitate discussion.' },
+                            { id: '3', title: 'Wrap Up', estimatedMinutes: 10, content: 'Summarize key points and thank participants.' },
+                        ]);
+                    }
+                }
+            } catch (error) {
+                console.error('[Script] Failed to fetch:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchScript();
+    }, [sessionId]);
 
     // Fetch media for this session
     useEffect(() => {
@@ -41,6 +80,29 @@ export default function ScriptEditorPage() {
             .catch(() => setMedia([]));
     }, [sessionId]);
 
+    // Save script to API
+    const saveScript = async () => {
+        setIsSaving(true);
+        try {
+            const res = await fetch('/api/session-scripts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId, sections }),
+            });
+            if (res.ok) {
+                setHasChanges(false);
+                alert('Script saved!');
+            } else {
+                alert('Failed to save script');
+            }
+        } catch (error) {
+            console.error('[Script] Save error:', error);
+            alert('Failed to save script');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const addSection = useCallback(() => {
         setSections(prev => [...prev, {
             id: Date.now().toString(),
@@ -48,14 +110,17 @@ export default function ScriptEditorPage() {
             estimatedMinutes: 5,
             content: ''
         }]);
+        setHasChanges(true);
     }, []);
 
     const updateSection = useCallback((id: string, updates: Partial<ScriptSection>) => {
         setSections(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+        setHasChanges(true);
     }, []);
 
     const removeSection = useCallback((id: string) => {
         setSections(prev => prev.filter(s => s.id !== id));
+        setHasChanges(true);
     }, []);
 
     const moveSection = useCallback((id: string, direction: 'up' | 'down') => {
@@ -64,10 +129,12 @@ export default function ScriptEditorPage() {
             if (direction === 'up' && idx > 0) {
                 const newArr = [...prev];
                 [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
+                setHasChanges(true);
                 return newArr;
             } else if (direction === 'down' && idx < prev.length - 1) {
                 const newArr = [...prev];
                 [newArr[idx], newArr[idx + 1]] = [newArr[idx + 1], newArr[idx]];
+                setHasChanges(true);
                 return newArr;
             }
             return prev;
@@ -88,8 +155,16 @@ export default function ScriptEditorPage() {
                     <span style={{ color: '#718096', fontSize: '0.9rem' }}>
                         Total: {totalMinutes} min ({sections.length} sections)
                     </span>
-                    <button className={styles.primaryBtn} onClick={addSection}>
+                    <button className={styles.secondaryBtn} onClick={addSection}>
                         + Add Section
+                    </button>
+                    <button
+                        className={styles.primaryBtn}
+                        onClick={saveScript}
+                        disabled={isSaving || !hasChanges}
+                        style={{ opacity: (isSaving || !hasChanges) ? 0.6 : 1 }}
+                    >
+                        {isSaving ? 'Saving...' : hasChanges ? '💾 Save Script' : '✓ Saved'}
                     </button>
                 </div>
             </div>
@@ -97,7 +172,11 @@ export default function ScriptEditorPage() {
             <div style={{ display: 'flex', gap: '24px', marginTop: '20px' }}>
                 {/* Script Sections */}
                 <div style={{ flex: 2 }}>
-                    {sections.map((section, idx) => (
+                    {isLoading ? (
+                        <div className={styles.card} style={{ textAlign: 'center', padding: '40px', color: '#718096' }}>
+                            Loading script...
+                        </div>
+                    ) : sections.map((section, idx) => (
                         <div key={section.id} className={styles.card} style={{ marginBottom: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
