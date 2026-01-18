@@ -12,7 +12,6 @@ import {
 } from '@/lib/livekit-data';
 import styles from './page.module.css';
 import ModeratorScript from '@/components/ModeratorScript';
-import ModeratorControlBar from '@/components/ModeratorControlBar';
 
 const ModeratorVideoGrid = dynamic(() => import('@/components/ModeratorVideoGrid'), {
     ssr: false,
@@ -519,9 +518,6 @@ function ModeratorContent() {
                     </div>
                 </aside>
             </div>
-
-            {/* Control Bar at bottom */}
-            <ModeratorControlBar />
         </div>
     );
 }

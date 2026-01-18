@@ -3,8 +3,6 @@
     flex-direction: column;
     min-height: 100vh;
     background: var(--color-bg-primary);
-    padding-bottom: 110px;
-    /* Room for control bar */
 }
 
 .header {

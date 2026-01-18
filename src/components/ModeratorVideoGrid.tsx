@@ -146,8 +146,9 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                 </div>
             </div>
 
-            {/* Moderator strip - dedicated area below grid, not overlapping */}
+            {/* Moderator control strip - integrated at bottom of video grid */}
             <div className={styles.moderatorStrip}>
+                {/* Self-view */}
                 {localTrack && (
                     <div className={styles.selfView}>
                         {localTrack.publication?.track ? (
@@ -161,12 +162,31 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                         <span className={styles.selfLabel}>You (Moderator)</span>
                     </div>
                 )}
-                <span className={styles.moderatorStatus}>
-                    {remoteParticipantTracks.length === 0
-                        ? 'Waiting for participants...'
-                        : `${remoteParticipantTracks.length} participant${remoteParticipantTracks.length !== 1 ? 's' : ''} connected`
-                    }
-                </span>
+
+                {/* Notepad */}
+                <div className={styles.notepadContainer}>
+                    <div className={styles.notepadLabel}>Session Notes</div>
+                    <textarea
+                        className={styles.notepad}
+                        placeholder="Take notes during the session..."
+                    />
+                </div>
+
+                {/* Timer */}
+                <div className={styles.timerContainer}>
+                    <div className={styles.timerDisplay}>60:00</div>
+                    <div className={styles.timerButtons}>
+                        <button className={styles.timerBtn}>START</button>
+                        <button className={styles.timerBtnSecondary}>RESET</button>
+                    </div>
+                </div>
+
+                {/* Media Browser */}
+                <div className={styles.mediaBrowser}>
+                    <span className={styles.mediaIcon}>📁</span>
+                    <span className={styles.mediaLabel}>Media Library</span>
+                    <span className={styles.mediaStatus}>0 items</span>
+                </div>
             </div>
         </div>
     );
