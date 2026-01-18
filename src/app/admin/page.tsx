@@ -330,12 +330,13 @@ export default function AdminPage() {
                 {!isAuthenticated ? (
                     <div className={styles.card}>
                         <h2 className={styles.title}>Admin Login</h2>
-                        <form onSubmit={handleLogin} className={styles.form}>
+                        <form onSubmit={handleLogin} className={styles.form} autoComplete="off">
                             <div className={styles.field}>
                                 <label htmlFor="email">Email</label>
                                 <input
                                     id="email"
-                                    type="email"
+                                    type="text"
+                                    autoComplete="off"
                                     placeholder="admin@resonant.com"
                                     defaultValue="admin@resonant.com"
                                 />
@@ -344,7 +345,8 @@ export default function AdminPage() {
                                 <label htmlFor="password">Password</label>
                                 <input
                                     id="password"
-                                    type="password"
+                                    type="text"
+                                    autoComplete="off"
                                     placeholder="••••••••"
                                     defaultValue="password"
                                 />
