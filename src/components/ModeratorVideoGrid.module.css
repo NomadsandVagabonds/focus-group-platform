@@ -323,6 +323,122 @@
     font-size: 0.6rem;
 }
 
+/* Media Browser Wrapper for dropdown positioning */
+.mediaBrowserWrapper {
+    position: relative;
+    width: 200px;
+    flex-shrink: 0;
+}
+
+/* Dropdown */
+.mediaDropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: #1A1A2E;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.mediaDropdownItem {
+    padding: 10px 12px;
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mediaDropdownItem:hover {
+    background: rgba(154, 51, 36, 0.3);
+}
+
+.mediaDropdownItem:last-child {
+    border-bottom: none;
+}
+
+.mediaDropdownEmpty {
+    padding: 16px;
+    color: #718096;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* Presentation Overlay */
+.presentationOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.stopPresentingBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 8px 16px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 51;
+}
+
+.stopPresentingBtn:hover {
+    background: #c53030;
+}
+
+.presentedImage {
+    max-width: 90%;
+    max-height: 85%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.presentedVideo {
+    max-width: 90%;
+    max-height: 85%;
+    border-radius: 8px;
+}
+
+.presentedAudio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: #e2e8f0;
+    font-size: 1.5rem;
+}
+
+.presentedAudio audio {
+    width: 400px;
+}
+
+.presentedPdf {
+    width: 80%;
+    height: 85%;
+    border: none;
+    border-radius: 8px;
+    background: white;
+}
+
 /* Tablet responsive */
 @media (max-width: 1024px) {
     .selfView {
