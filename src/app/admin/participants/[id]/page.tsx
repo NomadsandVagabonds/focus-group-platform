@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use, useRef } from 'react';
 import Link from 'next/link';
 import styles from '../../admin.module.css';
+import ParticipantRatingData from '@/components/ParticipantRatingData';
 
 interface Participant {
     id: string;
@@ -387,11 +388,19 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
             {/* Rating Data Section */}
             <div className={styles.card}>
                 <h2 className={styles.cardTitle}>Rating Data</h2>
-                <div className={styles.emptyState} style={{ padding: '24px' }}>
-                    <p style={{ color: '#718096' }}>
-                        Rating data will appear here after the participant joins a live session.
-                    </p>
-                </div>
+                {session ? (
+                    <ParticipantRatingData
+                        sessionId={session.id}
+                        participantCode={participant.code}
+                        participantName={displayName}
+                    />
+                ) : (
+                    <div className={styles.emptyState} style={{ padding: '24px' }}>
+                        <p style={{ color: '#718096' }}>
+                            Session not found.
+                        </p>
+                    </div>
+                )}
             </div>
         </>
     );
