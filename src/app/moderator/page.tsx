@@ -11,6 +11,7 @@ import {
     PerceptionDataPoint,
 } from '@/lib/livekit-data';
 import styles from './page.module.css';
+import ModeratorScript from '@/components/ModeratorScript';
 
 const ModeratorVideoGrid = dynamic(() => import('@/components/ModeratorVideoGrid'), {
     ssr: false,
@@ -182,6 +183,7 @@ function ModeratorContent() {
 
     return (
         <div className={styles.container}>
+            <ModeratorScript />
             {/* Header */}
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
