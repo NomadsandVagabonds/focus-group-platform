@@ -19,16 +19,16 @@ const ParticipantVideoGrid = dynamic(() => import('@/components/ParticipantVideo
 
 function ParticipantContent() {
     const searchParams = useSearchParams();
+
+    // Support both new validated params and legacy params for backwards compatibility
     const sessionId = searchParams.get('session') || 'demo-session';
+    const participantId = searchParams.get('pid') || null; // From validated login
+    const displayName = searchParams.get('name') || searchParams.get('user') || 'Participant';
 
     // Use useState to keep userId stable across re-renders
     const [userId, setUserId] = useState(() => {
-        // Check localStorage first, then URL, then generate new
-        if (typeof window !== 'undefined') {
-            const savedId = localStorage.getItem('fg_participant_id');
-            if (savedId) return savedId;
-        }
-        return searchParams.get('user') || `participant-${Date.now()}`;
+        // Use display name for LiveKit identity
+        return displayName || `participant-${Date.now()}`;
     });
 
     const [token, setToken] = useState<string | null>(null);
