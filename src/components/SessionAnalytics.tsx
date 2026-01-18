@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import VideoChartPlayer from './VideoChartPlayer';
 
 interface SliderEvent {
     participantId: string;
@@ -37,6 +38,7 @@ export default function SessionAnalytics({ sessionId }: Props) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
+    const [videoUrl, setVideoUrl] = useState<string>('');
 
     useEffect(() => {
         async function fetchData() {
@@ -95,6 +97,65 @@ export default function SessionAnalytics({ sessionId }: Props) {
     return (
         <div style={{ marginTop: '20px' }}>
             <h3 style={{ color: '#9A3324', marginBottom: '12px', fontSize: '1rem', fontWeight: 600 }}>Session Analytics</h3>
+
+            {/* Video Replay Section */}
+            {videoUrl ? (
+                <VideoChartPlayer
+                    videoUrl={videoUrl}
+                    events={data.events}
+                    aggregates={data.aggregates}
+                    durationMs={data.durationMs || 0}
+                />
+            ) : (
+                <div style={{
+                    background: '#F7FAFC',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    marginBottom: '20px',
+                    border: '1px solid #E2E8F0'
+                }}>
+                    <div style={{ color: '#4A5568', fontSize: '12px', marginBottom: '8px', fontWeight: 500 }}>
+                        📹 Session Replay (Optional)
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <input
+                            type="text"
+                            placeholder="Paste S3 video URL to enable synced replay..."
+                            value={videoUrl}
+                            onChange={(e) => setVideoUrl(e.target.value)}
+                            style={{
+                                flex: 1,
+                                padding: '8px 12px',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '6px',
+                                fontSize: '13px'
+                            }}
+                        />
+                        <button
+                            onClick={() => {
+                                // Try to construct URL from S3 bucket
+                                const bucket = 'resonant-recordings';
+                                const testUrl = `https://${bucket}.s3.amazonaws.com/resonant/${sessionId}/`;
+                                window.open(testUrl, '_blank');
+                            }}
+                            style={{
+                                padding: '8px 12px',
+                                background: 'white',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                cursor: 'pointer',
+                                color: '#4A5568'
+                            }}
+                        >
+                            🔍 Browse S3
+                        </button>
+                    </div>
+                    <div style={{ color: '#718096', fontSize: '11px', marginTop: '8px' }}>
+                        Recording stored at: s3://bucket/resonant/{sessionId}/
+                    </div>
+                </div>
+            )}
 
             {/* Stats row */}
             <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
