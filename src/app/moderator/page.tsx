@@ -24,13 +24,17 @@ function ParticipantAccordion({
     currentValue,
     sessionId,
     isMuted,
-    hasHandRaised
+    hasHandRaised,
+    hasSpoken,
+    onToggleSpoken
 }: {
     participantId: string;
     currentValue: number | undefined;
     sessionId: string;
     isMuted: boolean;
     hasHandRaised: boolean;
+    hasSpoken: boolean;
+    onToggleSpoken: () => void;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [notes, setNotes] = useState<string | null>(null);
@@ -88,6 +92,23 @@ function ParticipantAccordion({
                         transition: 'transform 0.2s',
                         opacity: 0.6
                     }}>▶</span>
+                    {/* Has spoken checkbox */}
+                    <input
+                        type="checkbox"
+                        checked={hasSpoken}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            onToggleSpoken();
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        title={hasSpoken ? 'Has spoken' : 'Not yet spoken'}
+                        style={{
+                            width: '14px',
+                            height: '14px',
+                            cursor: 'pointer',
+                            accentColor: '#38a169'
+                        }}
+                    />
                     {/* Status indicators */}
                     {hasHandRaised && <span title="Hand raised" style={{ fontSize: '12px' }}>✋</span>}
                     <span
@@ -99,7 +120,7 @@ function ParticipantAccordion({
                     >
                         {isMuted ? '🔇' : '🎤'}
                     </span>
-                    {participantId}
+                    <span style={{ opacity: hasSpoken ? 0.5 : 1 }}>{participantId}</span>
                 </span>
                 {currentValue !== undefined ? (
                     <span className={styles.participantValue} style={{ color: getValueColor(currentValue) }}>
@@ -164,6 +185,9 @@ function ModeratorContent() {
         handRaises: {},
         connectedParticipants: []
     });
+
+    // Track who has spoken/been called on (local only, not persisted)
+    const [hasSpoken, setHasSpoken] = useState<Set<string>>(new Set());
 
     const roomRef = useRef<Room | null>(null);
     const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -546,6 +570,18 @@ function ModeratorContent() {
                                 sessionId={resolvedSessionId || ''}
                                 isMuted={participantState.mutedParticipants.has(id)}
                                 hasHandRaised={!!participantState.handRaises[id]}
+                                hasSpoken={hasSpoken.has(id)}
+                                onToggleSpoken={() => {
+                                    setHasSpoken(prev => {
+                                        const next = new Set(prev);
+                                        if (next.has(id)) {
+                                            next.delete(id);
+                                        } else {
+                                            next.add(id);
+                                        }
+                                        return next;
+                                    });
+                                }}
                             />
                         ))}
                         {participantState.connectedParticipants.length === 0 && (
