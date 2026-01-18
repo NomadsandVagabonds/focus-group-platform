@@ -43,10 +43,25 @@ export default function SessionAnalytics({ sessionId }: Props) {
     useEffect(() => {
         async function fetchData() {
             try {
+                // Fetch slider data
                 const res = await fetch(`/api/slider-data?sessionId=${sessionId}`);
                 if (!res.ok) throw new Error('Failed to fetch analytics');
                 const json = await res.json();
                 setData(json);
+
+                // Auto-fetch recording URL from S3
+                try {
+                    const recordingsRes = await fetch(`/api/recordings?sessionId=${sessionId}`);
+                    if (recordingsRes.ok) {
+                        const recordingsJson = await recordingsRes.json();
+                        if (recordingsJson.latestUrl) {
+                            setVideoUrl(recordingsJson.latestUrl);
+                        }
+                    }
+                } catch (recordingErr) {
+                    console.log('[Analytics] No recording found:', recordingErr);
+                    // Not an error - recording might not exist yet
+                }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
             } finally {
