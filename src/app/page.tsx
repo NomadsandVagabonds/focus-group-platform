@@ -34,114 +34,96 @@ export default function HomePage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.hero}>
-        <div className={styles.logoContainer}>
-          <div className={styles.logo}>📊</div>
-          <h1 className={styles.title}>
-            <span className={styles.gradientText}>Focus</span>Group
-          </h1>
-        </div>
-        <p className={styles.subtitle}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.logoMark}>R</div>
+        <h1 className={styles.logoText}>Resonant</h1>
+      </header>
+
+      {/* Main content */}
+      <main className={styles.main}>
+        <p className={styles.tagline}>
           Real-time perception tracking for qualitative research
         </p>
-      </div>
 
-      <div className={styles.cardContainer}>
-        {/* Mode tabs */}
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${mode === 'create' ? styles.active : ''}`}
-            onClick={() => setMode('create')}
-          >
-            Create Session
-          </button>
-          <button
-            className={`${styles.tab} ${mode === 'join' ? styles.active : ''}`}
-            onClick={() => setMode('join')}
-          >
-            Join Session
-          </button>
-        </div>
-
-        {mode === 'create' ? (
-          <form onSubmit={handleCreateSession} className={styles.form}>
-            <div className={styles.field}>
-              <label>Session Name</label>
-              <input
-                type="text"
-                value={sessionName}
-                onChange={(e) => setSessionName(e.target.value)}
-                placeholder="e.g., Ad Testing Session 1"
-              />
-            </div>
-            <div className={styles.field}>
-              <label>Your Name (Moderator)</label>
-              <input
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="e.g., Dr. Smith"
-              />
-            </div>
-            <button type="submit" className={styles.primaryBtn}>
+        {/* Card */}
+        <div className={styles.card}>
+          {/* Mode tabs */}
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${mode === 'create' ? styles.active : ''}`}
+              onClick={() => setMode('create')}
+            >
               Create Session
-              <span className={styles.arrow}>→</span>
             </button>
-          </form>
-        ) : (
-          <form onSubmit={handleJoinSession} className={styles.form}>
-            <div className={styles.field}>
-              <label>Session ID</label>
-              <input
-                type="text"
-                value={sessionId}
-                onChange={(e) => setSessionId(e.target.value)}
-                placeholder="Enter session ID or paste join link"
-                required
-              />
-            </div>
-            <div className={styles.field}>
-              <label>Your Name</label>
-              <input
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="e.g., Participant 1"
-              />
-            </div>
-            <button type="submit" className={styles.primaryBtn}>
+            <button
+              className={`${styles.tab} ${mode === 'join' ? styles.active : ''}`}
+              onClick={() => setMode('join')}
+            >
               Join Session
-              <span className={styles.arrow}>→</span>
             </button>
-          </form>
-        )}
-      </div>
+          </div>
 
-      <div className={styles.features}>
-        <div className={styles.feature}>
-          <span className={styles.featureIcon}>📹</span>
-          <h3>10-Person Video</h3>
-          <p>8 participants + moderator + screen share</p>
+          {mode === 'create' ? (
+            <form onSubmit={handleCreateSession} className={styles.form}>
+              <div className={styles.field}>
+                <label htmlFor="sessionName">Session Name</label>
+                <input
+                  id="sessionName"
+                  type="text"
+                  value={sessionName}
+                  onChange={(e) => setSessionName(e.target.value)}
+                  placeholder="e.g., Climate Messaging Study"
+                />
+              </div>
+              <div className={styles.field}>
+                <label htmlFor="moderatorName">Moderator Name</label>
+                <input
+                  id="moderatorName"
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="e.g., Dr. Smith"
+                />
+              </div>
+              <button type="submit" className={styles.primaryBtn}>
+                Create Session
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleJoinSession} className={styles.form}>
+              <div className={styles.field}>
+                <label htmlFor="sessionCode">Session Code</label>
+                <input
+                  id="sessionCode"
+                  type="text"
+                  value={sessionId}
+                  onChange={(e) => setSessionId(e.target.value)}
+                  placeholder="Enter session code"
+                  required
+                />
+              </div>
+              <div className={styles.field}>
+                <label htmlFor="displayName">Display Name</label>
+                <input
+                  id="displayName"
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="How should we call you?"
+                />
+              </div>
+              <button type="submit" className={styles.primaryBtn}>
+                Join Session
+              </button>
+            </form>
+          )}
         </div>
-        <div className={styles.feature}>
-          <span className={styles.featureIcon}>📊</span>
-          <h3>Perception Dial</h3>
-          <p>Frank Luntz-style continuous feedback</p>
-        </div>
-        <div className={styles.feature}>
-          <span className={styles.featureIcon}>⚡</span>
-          <h3>250ms Tracking</h3>
-          <p>High-granularity sentiment capture</p>
-        </div>
-        <div className={styles.feature}>
-          <span className={styles.featureIcon}>📱</span>
-          <h3>Mobile First</h3>
-          <p>Touch-optimized slider interface</p>
-        </div>
-      </div>
+      </main>
 
+      {/* Footer */}
       <footer className={styles.footer}>
-        <p>Built for qualitative research and focus group facilitation</p>
+        <p>© 2026 Resonant Research Tools</p>
       </footer>
     </div>
   );
