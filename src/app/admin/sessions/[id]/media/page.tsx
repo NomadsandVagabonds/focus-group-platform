@@ -54,7 +54,7 @@ export default function SessionMediaPage() {
         fetchMedia();
     }, [fetchMedia]);
 
-    // Upload handler
+    // Upload handler - uses pre-signed URL to bypass Vercel's 4.5MB limit
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
@@ -64,24 +64,45 @@ export default function SessionMediaPage() {
         let errorCount = 0;
 
         for (const file of Array.from(files)) {
-            const formData = new FormData();
-            formData.append('sessionId', sessionId);
-            formData.append('file', file);
-
             try {
-                console.log('[MediaUpload] Uploading:', file.name);
-                const res = await fetch('/api/session-media', {
+                console.log('[MediaUpload] Getting upload URL for:', file.name);
+
+                // Step 1: Get pre-signed URL from our API
+                const urlRes = await fetch('/api/session-media/upload-url', {
                     method: 'POST',
-                    body: formData,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId,
+                        filename: file.name,
+                        contentType: file.type,
+                    }),
                 });
 
-                if (res.ok) {
+                if (!urlRes.ok) {
+                    const errData = await urlRes.json();
+                    console.error('[MediaUpload] Failed to get URL:', errData);
+                    errorCount++;
+                    continue;
+                }
+
+                const { uploadUrl } = await urlRes.json();
+                console.log('[MediaUpload] Got upload URL, uploading to S3...');
+
+                // Step 2: Upload directly to S3 using pre-signed URL
+                const uploadRes = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    body: file,
+                    headers: {
+                        'Content-Type': file.type,
+                    },
+                });
+
+                if (uploadRes.ok) {
                     successCount++;
                     console.log('[MediaUpload] Success:', file.name);
                 } else {
                     errorCount++;
-                    const errData = await res.json();
-                    console.error('[MediaUpload] Failed:', file.name, errData);
+                    console.error('[MediaUpload] S3 upload failed:', uploadRes.status);
                 }
             } catch (error) {
                 errorCount++;
@@ -93,6 +114,8 @@ export default function SessionMediaPage() {
 
         if (errorCount > 0) {
             alert(`Upload: ${successCount} succeeded, ${errorCount} failed. Check console for details.`);
+        } else if (successCount > 0) {
+            console.log(`[MediaUpload] All ${successCount} files uploaded successfully!`);
         }
 
         fetchMedia();
