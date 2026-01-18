@@ -86,6 +86,9 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
         console.log('[Participant] Hand raise:', newState);
     }, [room, handRaised, localParticipant]);
 
+    // Muted by moderator state
+    const [isMutedByMod, setIsMutedByMod] = useState(false);
+
     // Listen for data channel messages from moderator
     useEffect(() => {
         if (!room) return;
@@ -109,6 +112,16 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
                 if (data.type === 'handRaiseClear' && data.participantId === localParticipant.identity) {
                     setHandRaised(false);
                     console.log('[Participant] Hand lowered by moderator');
+                }
+
+                // Mute command from moderator
+                if (data.type === 'muteCommand') {
+                    const isForMe = data.participantId === 'all' || data.participantId === localParticipant.identity;
+                    if (isForMe) {
+                        setIsMutedByMod(data.muted);
+                        localParticipant.setMicrophoneEnabled(!data.muted);
+                        console.log('[Participant] Muted by moderator:', data.muted);
+                    }
                 }
             } catch (e) {
                 console.error('[Participant] Failed to parse data:', e);
@@ -215,7 +228,7 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
                 </button>
 
                 {/* Self view - first (left side) */}
-                <div className={styles.selfTile}>
+                <div className={`${styles.selfTile} ${isMutedByMod ? styles.mutedBorder : ''}`}>
                     {localTrack?.publication?.track ? (
                         <VideoTrack
                             trackRef={localTrack}
@@ -226,6 +239,10 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
                     )}
                     <span className={styles.smallLabel}>
                         You {lowPowerMode && '⚡'}
+                    </span>
+                    {/* Mute indicator */}
+                    <span className={`${styles.micIndicator} ${isMutedByMod ? styles.micIndicatorMuted : ''}`}>
+                        {isMutedByMod ? '🔇' : '🎤'}
                     </span>
                 </div>
 

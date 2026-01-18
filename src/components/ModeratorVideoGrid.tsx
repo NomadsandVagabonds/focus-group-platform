@@ -112,45 +112,66 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
         return () => { room.off('dataReceived', handleData); };
     }, [room]);
 
+    // Muted participants tracking (local state for UI)
+    const [mutedParticipants, setMutedParticipants] = useState<Set<string>>(new Set());
+    const [modMuted, setModMuted] = useState(false);
+
+    // Broadcast mute command to participants
+    const broadcastMuteCommand = useCallback((participantId: string | 'all', muted: boolean) => {
+        if (!room?.localParticipant) return;
+        const encoder = new TextEncoder();
+        const payload = encoder.encode(JSON.stringify({
+            type: 'muteCommand',
+            participantId,
+            muted
+        }));
+        room.localParticipant.publishData(payload, { reliable: true });
+    }, [room]);
+
     // Mute all participants (except self)
     const muteAll = useCallback(() => {
         if (!room) return;
+        const allIds = new Set<string>();
         room.remoteParticipants.forEach(participant => {
-            participant.audioTrackPublications.forEach(pub => {
-                if (pub.isSubscribed) {
-                    pub.setSubscribed(false);
-                }
-            });
+            if (!participant.identity.toLowerCase().includes('moderator')) {
+                allIds.add(participant.identity);
+            }
         });
+        setMutedParticipants(allIds);
+        broadcastMuteCommand('all', true);
         console.log('[Moderator] Muted all participants');
-    }, [room]);
+    }, [room, broadcastMuteCommand]);
 
     // Unmute all participants
     const unmuteAll = useCallback(() => {
-        if (!room) return;
-        room.remoteParticipants.forEach(participant => {
-            participant.audioTrackPublications.forEach(pub => {
-                if (!pub.isSubscribed) {
-                    pub.setSubscribed(true);
-                }
-            });
-        });
+        setMutedParticipants(new Set());
+        broadcastMuteCommand('all', false);
         console.log('[Moderator] Unmuted all participants');
-    }, [room]);
+    }, [broadcastMuteCommand]);
 
     // Toggle mute for a specific participant
     const toggleParticipantMute = useCallback((participantId: string) => {
-        if (!room) return;
-        const participant = room.remoteParticipants.get(participantId);
-        if (participant) {
-            participant.audioTrackPublications.forEach(pub => {
-                if (pub.isSubscribed && pub.track) {
-                    // Toggle subscription (mutes/unmutes for moderator only)
-                    pub.setSubscribed(!pub.isSubscribed);
-                }
-            });
-        }
-    }, [room]);
+        setMutedParticipants(prev => {
+            const next = new Set(prev);
+            if (next.has(participantId)) {
+                next.delete(participantId);
+                broadcastMuteCommand(participantId, false);
+            } else {
+                next.add(participantId);
+                broadcastMuteCommand(participantId, true);
+            }
+            return next;
+        });
+    }, [broadcastMuteCommand]);
+
+    // Toggle moderator's own mic (doesn't affect media)
+    const toggleModMute = useCallback(() => {
+        if (!localParticipant) return;
+        const newMuted = !modMuted;
+        setModMuted(newMuted);
+        localParticipant.setMicrophoneEnabled(!newMuted);
+        console.log('[Moderator] Self mute:', newMuted);
+    }, [localParticipant, modMuted]);
 
     // Clear hand raise for a participant
     const clearHandRaise = useCallback((participantId: string) => {
@@ -271,6 +292,7 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                             const trackRef = slot.trackRef;
                             const participantId = trackRef.participant.identity;
                             const hasHandRaised = !!handRaises[participantId];
+                            const isMuted = mutedParticipants.has(participantId);
 
                             return (
                                 <SpeakingTile key={participantId} participant={trackRef.participant}>
@@ -298,27 +320,30 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
 
                                     {/* Mic control - click to toggle mute */}
                                     <button
-                                        className={styles.micControl}
+                                        className={`${styles.micControl} ${isMuted ? styles.micMuted : ''}`}
                                         onClick={() => toggleParticipantMute(participantId)}
-                                        title="Toggle participant audio"
+                                        title={isMuted ? 'Click to unmute' : 'Click to mute'}
                                     >
-                                        🎤
+                                        {isMuted ? '🔇' : '🎤'}
                                     </button>
 
+                                    {/* Perception badge - bottom right */}
+                                    {perceptionValues[participantId] !== undefined && (
+                                        <span
+                                            className={styles.perceptionBadge}
+                                            style={{
+                                                backgroundColor: getPerceptionColor(perceptionValues[participantId])
+                                            }}
+                                        >
+                                            {Math.round(perceptionValues[participantId])}
+                                        </span>
+                                    )}
+
+                                    {/* Name - top bar */}
                                     <div className={styles.participantInfo}>
                                         <span className={styles.name}>
                                             {participantId}
                                         </span>
-                                        {perceptionValues[participantId] !== undefined && (
-                                            <span
-                                                className={styles.perceptionBadge}
-                                                style={{
-                                                    backgroundColor: getPerceptionColor(perceptionValues[participantId])
-                                                }}
-                                            >
-                                                {Math.round(perceptionValues[participantId])}
-                                            </span>
-                                        )}
                                     </div>
                                 </SpeakingTile>
                             );
@@ -406,6 +431,15 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
 
                 {/* Audio Controls */}
                 <div className={styles.audioControls}>
+                    {/* Moderator self-mute */}
+                    <button
+                        className={`${styles.modMuteBtn} ${modMuted ? styles.modMuted : ''}`}
+                        onClick={toggleModMute}
+                        title={modMuted ? 'Unmute yourself' : 'Mute yourself'}
+                    >
+                        {modMuted ? '🔇 Mic Off' : '🎤 Mic On'}
+                    </button>
+
                     {handRaiseCount > 0 && (
                         <span className={styles.handRaiseCount}>
                             ✋ {handRaiseCount}

@@ -229,6 +229,44 @@
     border-radius: 4px;
 }
 
+/* Mute indicator on self tile */
+.micIndicator {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: rgba(34, 197, 94, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.micIndicatorMuted {
+    background: rgba(239, 68, 68, 0.9) !important;
+    animation: mutePulse 1s ease-in-out infinite;
+}
+
+@keyframes mutePulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Muted border on self tile */
+.mutedBorder {
+    border-color: rgba(239, 68, 68, 0.8) !important;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4) !important;
+}
+
 /* Tablet responsive */
 @media (max-width: 1024px) {
     .selfTile {
