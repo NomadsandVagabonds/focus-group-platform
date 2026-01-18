@@ -60,21 +60,41 @@ export default function SessionMediaPage() {
         if (!files || files.length === 0) return;
 
         setIsUploading(true);
+        let successCount = 0;
+        let errorCount = 0;
+
         for (const file of Array.from(files)) {
             const formData = new FormData();
             formData.append('sessionId', sessionId);
             formData.append('file', file);
 
             try {
-                await fetch('/api/session-media', {
+                console.log('[MediaUpload] Uploading:', file.name);
+                const res = await fetch('/api/session-media', {
                     method: 'POST',
                     body: formData,
                 });
+
+                if (res.ok) {
+                    successCount++;
+                    console.log('[MediaUpload] Success:', file.name);
+                } else {
+                    errorCount++;
+                    const errData = await res.json();
+                    console.error('[MediaUpload] Failed:', file.name, errData);
+                }
             } catch (error) {
-                console.error('Upload failed:', error);
+                errorCount++;
+                console.error('[MediaUpload] Error:', error);
             }
         }
+
         setIsUploading(false);
+
+        if (errorCount > 0) {
+            alert(`Upload: ${successCount} succeeded, ${errorCount} failed. Check console for details.`);
+        }
+
         fetchMedia();
         e.target.value = ''; // Reset input
     };
