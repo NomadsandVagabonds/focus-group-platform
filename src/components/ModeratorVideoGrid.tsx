@@ -10,6 +10,7 @@ import {
     useConnectionState,
     useLocalParticipant,
     useParticipants,
+    useIsSpeaking,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { Track, Room, ConnectionState, Participant } from 'livekit-client';
@@ -48,6 +49,16 @@ function RoomHandler({
     }, [room, connectionState, onRoomConnected, onRoomDisconnected]);
 
     return null;
+}
+
+// Wrapper component to detect speaking state per participant
+function SpeakingTile({ participant, children }: { participant: Participant; children: React.ReactNode }) {
+    const isSpeaking = useIsSpeaking(participant);
+    return (
+        <div className={`${styles.participantTile} ${isSpeaking ? styles.speaking : ''}`}>
+            {children}
+        </div>
+    );
 }
 
 function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValues?: Record<string, number>; sessionId?: string }) {
@@ -162,7 +173,7 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                         if (slot.type === 'participant' && slot.trackRef) {
                             const trackRef = slot.trackRef;
                             return (
-                                <div key={trackRef.participant.identity} className={styles.participantTile}>
+                                <SpeakingTile key={trackRef.participant.identity} participant={trackRef.participant}>
                                     {trackRef.publication?.track ? (
                                         <VideoTrack
                                             trackRef={trackRef}
@@ -188,7 +199,7 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                                             </span>
                                         )}
                                     </div>
-                                </div>
+                                </SpeakingTile>
                             );
                         }
                         // Empty slot placeholder
