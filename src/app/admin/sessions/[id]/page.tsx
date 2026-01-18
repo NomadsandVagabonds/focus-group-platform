@@ -247,7 +247,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Session Analytics */}
             <div className={styles.card} style={{ marginTop: '20px' }}>
-                <SessionAnalytics sessionId={id} />
+                <SessionAnalytics sessionId={session.id} />
             </div>
 
             {/* Add Participant Modal */}
