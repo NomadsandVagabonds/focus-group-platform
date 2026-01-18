@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     LiveKitRoom,
     VideoTrack,
@@ -11,7 +11,7 @@ import {
     useLocalParticipant,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { Track, Room, ConnectionState } from 'livekit-client';
+import { Track, Room, ConnectionState, DataPacket_Kind, RoomEvent } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
 import styles from './ParticipantVideoGrid.module.css';
 
@@ -20,6 +20,13 @@ interface ParticipantVideoGridProps {
     serverUrl: string;
     onRoomConnected?: (room: Room) => void;
     onRoomDisconnected?: () => void;
+}
+
+interface MediaItem {
+    id: string;
+    filename: string;
+    file_type: string;
+    url: string;
 }
 
 function RoomHandler({
@@ -48,7 +55,36 @@ function RoomHandler({
 }
 
 function ParticipantLayout() {
+    const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
+
+    // Media presentation state (received from moderator)
+    const [presentingMedia, setPresentingMedia] = useState<MediaItem | null>(null);
+
+    // Listen for data channel messages from moderator
+    useEffect(() => {
+        if (!room) return;
+
+        const handleData = (payload: Uint8Array) => {
+            try {
+                const decoder = new TextDecoder();
+                const data = JSON.parse(decoder.decode(payload));
+                if (data.type === 'media') {
+                    console.log('[Participant] Received media broadcast:', data);
+                    if (data.action === 'present' && data.media) {
+                        setPresentingMedia(data.media);
+                    } else if (data.action === 'stop') {
+                        setPresentingMedia(null);
+                    }
+                }
+            } catch (e) {
+                console.error('[Participant] Failed to parse data:', e);
+            }
+        };
+
+        room.on(RoomEvent.DataReceived, handleData);
+        return () => { room.off(RoomEvent.DataReceived, handleData); };
+    }, [room]);
 
     // Get all camera tracks
     const tracks = useTracks(
@@ -74,12 +110,30 @@ function ParticipantLayout() {
         t => t !== moderatorTrack
     );
 
-    console.log('[ParticipantGrid] Moderator track:', moderatorTrack?.participant.identity);
-    console.log('[ParticipantGrid] Other participants:', otherParticipants.length);
-    console.log('[ParticipantGrid] Local track:', localTrack?.participant.identity);
-
     return (
         <div className={styles.container}>
+            {/* Media Overlay - shows when moderator is presenting */}
+            {presentingMedia && (
+                <div className={styles.mediaOverlay}>
+                    {presentingMedia.file_type === 'image' && (
+                        <img src={presentingMedia.url} alt={presentingMedia.filename} className={styles.overlayMedia} />
+                    )}
+                    {presentingMedia.file_type === 'video' && (
+                        <video src={presentingMedia.url} autoPlay controls={false} className={styles.overlayMedia} />
+                    )}
+                    {presentingMedia.file_type === 'audio' && (
+                        <div className={styles.overlayAudio}>
+                            <span style={{ fontSize: '4rem' }}>🔊</span>
+                            <audio src={presentingMedia.url} autoPlay />
+                            <span>{presentingMedia.filename}</span>
+                        </div>
+                    )}
+                    {presentingMedia.file_type === 'pdf' && (
+                        <iframe src={presentingMedia.url} className={styles.overlayPdf} title={presentingMedia.filename} />
+                    )}
+                </div>
+            )}
+
             {/* Main area - Moderator/Featured video */}
             <div className={styles.mainArea}>
                 {moderatorTrack ? (

@@ -51,6 +51,7 @@ function RoomHandler({
 }
 
 function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValues?: Record<string, number>; sessionId?: string }) {
+    const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
     const participants = useParticipants();
 
@@ -86,11 +87,26 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
     const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
     const toggleMediaDropdown = useCallback(() => setShowMediaDropdown(s => !s), []);
+
+    // Broadcast media to all participants via data channel
+    const broadcastMedia = useCallback((mediaData: { action: 'present' | 'stop'; media?: MediaItem }) => {
+        if (!room?.localParticipant) return;
+        const encoder = new TextEncoder();
+        const payload = encoder.encode(JSON.stringify({ type: 'media', ...mediaData }));
+        room.localParticipant.publishData(payload, { reliable: true });
+        console.log('[Media] Broadcast:', mediaData);
+    }, [room]);
+
     const presentMedia = useCallback((item: MediaItem) => {
         setPresentingMedia(item);
         setShowMediaDropdown(false);
-    }, []);
-    const stopPresenting = useCallback(() => setPresentingMedia(null), []);
+        broadcastMedia({ action: 'present', media: item });
+    }, [broadcastMedia]);
+
+    const stopPresenting = useCallback(() => {
+        setPresentingMedia(null);
+        broadcastMedia({ action: 'stop' });
+    }, [broadcastMedia]);
 
     // Get all camera tracks
     const tracks = useTracks(
