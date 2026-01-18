@@ -137,6 +137,8 @@ function ModeratorContent() {
 
     const roomRef = useRef<Room | null>(null);
     const unsubscribeRef = useRef<(() => void) | null>(null);
+    const isRecordingRef = useRef(false);
+    const pendingEventsRef = useRef<{ participantId: string; value: number; timestamp: number }[]>([]);
 
     // First, resolve session code to UUID (if it's a code like PILOT-001)
     useEffect(() => {
@@ -210,6 +212,14 @@ function ModeratorContent() {
             // Individual perception updates
             (data: PerceptionDataPoint) => {
                 console.log('Received perception update:', data.userId, data.value);
+                // Save to pending events if recording
+                if (isRecordingRef.current) {
+                    pendingEventsRef.current.push({
+                        participantId: data.userId,
+                        value: data.value,
+                        timestamp: data.timestamp,
+                    });
+                }
             },
             // Aggregate updates (calculated locally by aggregator)
             (data: AggregateData) => {
@@ -246,6 +256,35 @@ function ModeratorContent() {
         };
     }, []);
 
+    // Periodic flush of pending slider events (every 5 seconds during recording)
+    useEffect(() => {
+        const flushInterval = setInterval(async () => {
+            if (isRecordingRef.current && pendingEventsRef.current.length > 0 && resolvedSessionId) {
+                const eventsToFlush = [...pendingEventsRef.current];
+                pendingEventsRef.current = [];
+
+                try {
+                    await fetch('/api/slider-data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'batch',
+                            sessionId: resolvedSessionId,
+                            events: eventsToFlush,
+                        }),
+                    });
+                    console.log(`[Moderator] Flushed ${eventsToFlush.length} slider events`);
+                } catch (err) {
+                    console.error('[Moderator] Failed to flush slider events:', err);
+                    // Put events back if flush failed
+                    pendingEventsRef.current = [...eventsToFlush, ...pendingEventsRef.current];
+                }
+            }
+        }, 5000);
+
+        return () => clearInterval(flushInterval);
+    }, [resolvedSessionId]);
+
     // Calculate current average
     const currentAverage = aggregateData.length > 0
         ? Math.round(aggregateData[aggregateData.length - 1].mean)
@@ -277,6 +316,7 @@ function ModeratorContent() {
                 ]);
 
                 if (recordingRes.ok && sliderRes.ok) {
+                    isRecordingRef.current = true;
                     setIsRecording(true);
                     console.log('[Moderator] Recording started');
                 } else {
@@ -306,6 +346,20 @@ function ModeratorContent() {
                 ]);
 
                 if (recordingRes.ok) {
+                    isRecordingRef.current = false;
+                    // Flush any remaining pending events
+                    if (pendingEventsRef.current.length > 0) {
+                        await fetch('/api/slider-data', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'batch',
+                                sessionId: resolvedSessionId,
+                                events: pendingEventsRef.current,
+                            }),
+                        });
+                        pendingEventsRef.current = [];
+                    }
                     setIsRecording(false);
                     console.log('[Moderator] Recording stopped');
                 } else {
