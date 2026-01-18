@@ -187,20 +187,50 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
 
             {/* Moderator control strip - integrated at bottom of video grid */}
             <div className={styles.moderatorStrip}>
-                {/* Self-view */}
-                {localTrack && (
-                    <div className={styles.selfView}>
-                        {localTrack.publication?.track ? (
+                {/* Self-view OR presenting media */}
+                <div className={styles.selfView}>
+                    {presentingMedia ? (
+                        // Show presenting media in the self-view slot
+                        <div className={styles.mediaPresentation}>
+                            {presentingMedia.file_type === 'image' && (
+                                <img src={presentingMedia.url} alt={presentingMedia.filename} className={styles.presentedMedia} />
+                            )}
+                            {presentingMedia.file_type === 'video' && (
+                                <video
+                                    src={presentingMedia.url}
+                                    controls
+                                    autoPlay
+                                    className={styles.presentedMedia}
+                                    onEnded={stopPresenting}
+                                />
+                            )}
+                            {presentingMedia.file_type === 'audio' && (
+                                <div className={styles.audioPresentation}>
+                                    <span>🔊</span>
+                                    <audio src={presentingMedia.url} controls autoPlay onEnded={stopPresenting} />
+                                </div>
+                            )}
+                            {presentingMedia.file_type === 'pdf' && (
+                                <iframe src={presentingMedia.url} className={styles.presentedMedia} title={presentingMedia.filename} />
+                            )}
+                            <span className={styles.selfLabel}>▶️ {presentingMedia.filename}</span>
+                        </div>
+                    ) : localTrack && localTrack.publication?.track ? (
+                        // Show camera when not presenting
+                        <>
                             <VideoTrack
                                 trackRef={localTrack}
                                 className={styles.selfVideo}
                             />
-                        ) : (
+                            <span className={styles.selfLabel}>You (Moderator)</span>
+                        </>
+                    ) : (
+                        <>
                             <div className={styles.selfPlaceholder}>📹</div>
-                        )}
-                        <span className={styles.selfLabel}>You (Moderator)</span>
-                    </div>
-                )}
+                            <span className={styles.selfLabel}>You (Moderator)</span>
+                        </>
+                    )}
+                </div>
 
                 {/* Notepad - no title, just placeholder */}
                 <div className={styles.notepadContainer}>
@@ -226,68 +256,37 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                     </div>
                 </div>
 
-                {/* Media Browser - clickable with dropdown */}
-                <div className={styles.mediaBrowserWrapper}>
-                    <div className={styles.mediaBrowser} onClick={toggleMediaDropdown}>
-                        <span className={styles.mediaIcon}>{presentingMedia ? '▶️' : '📁'}</span>
-                        <span className={styles.mediaLabel}>{presentingMedia ? presentingMedia.filename : 'Media Library'}</span>
-                        <span className={styles.mediaStatus}>
-                            {presentingMedia ? '(presenting)' : `${media.length} items`}
-                        </span>
+                {/* Media Library - inline scrollable list */}
+                <div className={styles.mediaLibrary}>
+                    <div className={styles.mediaLibraryHeader}>
+                        📁 Media ({media.length})
+                        {presentingMedia && (
+                            <button className={styles.stopPresentingSmall} onClick={stopPresenting}>
+                                ⏹ Stop
+                            </button>
+                        )}
                     </div>
-
-                    {/* Dropdown list */}
-                    {showMediaDropdown && (
-                        <div className={styles.mediaDropdown}>
-                            {presentingMedia && (
-                                <div className={styles.mediaDropdownItem} onClick={stopPresenting} style={{ color: '#fc8181' }}>
-                                    ⏹ Stop Presenting
+                    <div className={styles.mediaList}>
+                        {media.length === 0 ? (
+                            <div className={styles.mediaEmpty}>No media</div>
+                        ) : (
+                            media.map(item => (
+                                <div
+                                    key={item.id}
+                                    className={`${styles.mediaItem} ${presentingMedia?.id === item.id ? styles.mediaItemActive : ''}`}
+                                    onClick={() => presentMedia(item)}
+                                    title={item.filename}
+                                >
+                                    {item.file_type === 'image' ? '🖼️' :
+                                        item.file_type === 'video' ? '🎬' :
+                                            item.file_type === 'audio' ? '🔊' : '📄'}
+                                    <span className={styles.mediaItemName}>{item.filename}</span>
                                 </div>
-                            )}
-                            {media.length === 0 ? (
-                                <div className={styles.mediaDropdownEmpty}>No media uploaded</div>
-                            ) : (
-                                media.map(item => (
-                                    <div
-                                        key={item.id}
-                                        className={styles.mediaDropdownItem}
-                                        onClick={() => presentMedia(item)}
-                                    >
-                                        {item.file_type === 'image' ? '🖼️' :
-                                            item.file_type === 'video' ? '🎬' :
-                                                item.file_type === 'audio' ? '🔊' :
-                                                    item.file_type === 'pdf' ? '📄' : '📁'} {item.filename}
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    )}
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
-
-            {/* Presentation Overlay - shows on top when presenting media */}
-            {presentingMedia && (
-                <div className={styles.presentationOverlay}>
-                    <button className={styles.stopPresentingBtn} onClick={stopPresenting}>
-                        ✕ Stop Presenting
-                    </button>
-                    {presentingMedia.file_type === 'image' && (
-                        <img src={presentingMedia.url} alt={presentingMedia.filename} className={styles.presentedImage} />
-                    )}
-                    {presentingMedia.file_type === 'video' && (
-                        <video src={presentingMedia.url} controls autoPlay className={styles.presentedVideo} onEnded={stopPresenting} />
-                    )}
-                    {presentingMedia.file_type === 'audio' && (
-                        <div className={styles.presentedAudio}>
-                            <span>🔊 {presentingMedia.filename}</span>
-                            <audio src={presentingMedia.url} controls autoPlay onEnded={stopPresenting} />
-                        </div>
-                    )}
-                    {presentingMedia.file_type === 'pdf' && (
-                        <iframe src={presentingMedia.url} className={styles.presentedPdf} title={presentingMedia.filename} />
-                    )}
-                </div>
-            )}
         </div>
     );
 }
