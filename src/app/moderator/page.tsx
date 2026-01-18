@@ -118,40 +118,79 @@ function ParticipantAccordion({
 
 function ModeratorContent() {
     const searchParams = useSearchParams();
-    const sessionId = searchParams.get('session') || 'demo-session';
+    const sessionCodeOrId = searchParams.get('session') || 'demo-session';
     const moderatorId = searchParams.get('user') || `moderator-${Date.now()}`;
 
     const [token, setToken] = useState<string | null>(null);
+    const [tokenError, setTokenError] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [aggregateData, setAggregateData] = useState<AggregateData[]>([]);
     const [perceptionValues, setPerceptionValues] = useState<Record<string, number>>({});
     const [participantCount, setParticipantCount] = useState(0);
+    const [resolvedSessionId, setResolvedSessionId] = useState<string | null>(null);
 
     const roomRef = useRef<Room | null>(null);
     const unsubscribeRef = useRef<(() => void) | null>(null);
 
-    // Get LiveKit token with moderator privileges
+    // First, resolve session code to UUID (if it's a code like PILOT-001)
     useEffect(() => {
+        async function resolveSession() {
+            // Check if it's already a UUID (contains hyphens and is 36 chars)
+            const isUuid = sessionCodeOrId.length === 36 && sessionCodeOrId.includes('-');
+            if (isUuid) {
+                setResolvedSessionId(sessionCodeOrId);
+                return;
+            }
+
+            // It's a session code, look it up
+            try {
+                const res = await fetch(`/api/sessions?code=${sessionCodeOrId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.id) {
+                        setResolvedSessionId(data.id);
+                        return;
+                    }
+                }
+                // Fallback: use the code as-is (for backward compatibility)
+                setResolvedSessionId(sessionCodeOrId);
+            } catch {
+                setResolvedSessionId(sessionCodeOrId);
+            }
+        }
+        resolveSession();
+    }, [sessionCodeOrId]);
+
+    // Get LiveKit token with moderator privileges (after session is resolved)
+    useEffect(() => {
+        if (!resolvedSessionId) return;
+
         async function getToken() {
             try {
                 const res = await fetch('/api/token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        roomName: sessionId,
+                        roomName: resolvedSessionId,
                         participantName: moderatorId,
                         isModerator: true,
+                        moderatorSecret: process.env.NEXT_PUBLIC_MODERATOR_SECRET,
                     }),
                 });
                 const data = await res.json();
+                if (!res.ok) {
+                    setTokenError(data.error || 'Failed to authenticate as moderator');
+                    return;
+                }
                 setToken(data.token);
             } catch (error) {
                 console.error('Failed to get token:', error);
+                setTokenError('Connection error');
             }
         }
         getToken();
-    }, [sessionId, moderatorId]);
+    }, [resolvedSessionId, moderatorId]);
 
     // Handle room connection - set up data channel subscriptions
     const handleRoomConnected = useCallback((room: Room) => {
@@ -217,8 +256,8 @@ function ModeratorContent() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'start',
-                            roomName: sessionId,
-                            sessionId: sessionId,
+                            roomName: resolvedSessionId,
+                            sessionId: resolvedSessionId,
                         }),
                     }),
                     fetch('/api/slider-data', {
@@ -226,7 +265,7 @@ function ModeratorContent() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'start',
-                            sessionId: sessionId,
+                            sessionId: resolvedSessionId,
                         }),
                     }),
                 ]);
@@ -247,7 +286,7 @@ function ModeratorContent() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'stop',
-                            roomName: sessionId,
+                            roomName: resolvedSessionId,
                         }),
                     }),
                     fetch('/api/slider-data', {
@@ -255,7 +294,7 @@ function ModeratorContent() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'stop',
-                            sessionId: sessionId,
+                            sessionId: resolvedSessionId,
                         }),
                     }),
                 ]);
@@ -271,13 +310,13 @@ function ModeratorContent() {
             console.error('[Moderator] Recording error:', error);
             alert('Recording error. Check console for details.');
         }
-    }, [isRecording, sessionId]);
+    }, [isRecording, resolvedSessionId]);
 
     // Copy join link
     const copyJoinLink = useCallback(() => {
-        const url = `${window.location.origin}/participant?session=${sessionId}`;
+        const url = `${window.location.origin}/participant?session=${resolvedSessionId}`;
         navigator.clipboard.writeText(url);
-    }, [sessionId]);
+    }, [resolvedSessionId]);
 
     return (
         <div className={styles.container}>
@@ -291,7 +330,7 @@ function ModeratorContent() {
                     </div>
                     <div className={styles.sessionBadge}>
                         <span className={styles.sessionLabel}>Session:</span>
-                        <span className={styles.sessionId}>{sessionId}</span>
+                        <span className={styles.sessionId}>{sessionCodeOrId}</span>
                     </div>
                 </div>
 
@@ -330,7 +369,24 @@ function ModeratorContent() {
             <div className={styles.mainLayout}>
                 {/* Video grid */}
                 <div className={styles.videoSection}>
-                    {token && (
+                    {tokenError ? (
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                            color: '#ef4444',
+                            textAlign: 'center',
+                            padding: '2rem'
+                        }}>
+                            <h2 style={{ marginBottom: '1rem' }}>Authentication Failed</h2>
+                            <p>{tokenError}</p>
+                            <p style={{ marginTop: '1rem', color: '#718096', fontSize: '0.875rem' }}>
+                                Please access this page through the admin dashboard.
+                            </p>
+                        </div>
+                    ) : token ? (
                         <ModeratorVideoGrid
                             token={token}
                             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://demo.livekit.cloud'}
@@ -338,6 +394,8 @@ function ModeratorContent() {
                             onRoomConnected={handleRoomConnected}
                             onRoomDisconnected={handleRoomDisconnected}
                         />
+                    ) : (
+                        <div className={styles.videoPlaceholder}>Connecting...</div>
                     )}
                 </div>
 
@@ -372,7 +430,7 @@ function ModeratorContent() {
                         <div className={styles.joinInfo}>
                             <p>Participants can join at:</p>
                             <code className={styles.joinUrl}>
-                                /participant?session={sessionId}
+                                /participant?session={resolvedSessionId}
                             </code>
                         </div>
                     </div>
@@ -385,7 +443,7 @@ function ModeratorContent() {
                                 key={id}
                                 participantId={id}
                                 currentValue={value}
-                                sessionId={sessionId}
+                                sessionId={resolvedSessionId || ''}
                             />
                         ))}
                         {Object.keys(perceptionValues).length === 0 && (

@@ -3,10 +3,32 @@ import { supabase } from '@/lib/supabase';
 
 /**
  * GET /api/sessions
- * List all sessions
+ * List all sessions OR look up one by code (?code=XXX)
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        const { searchParams } = new URL(request.url);
+        const code = searchParams.get('code');
+
+        // If code is provided, look up single session
+        if (code) {
+            const { data: session, error } = await supabase
+                .from('sessions')
+                .select('*')
+                .eq('code', code.toUpperCase())
+                .single();
+
+            if (error || !session) {
+                return NextResponse.json(
+                    { error: 'Session not found' },
+                    { status: 404 }
+                );
+            }
+
+            return NextResponse.json(session);
+        }
+
+        // Otherwise list all sessions
         const { data: sessions, error } = await supabase
             .from('sessions')
             .select('*')
