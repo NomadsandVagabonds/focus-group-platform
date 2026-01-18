@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import VideoChartPlayer from './VideoChartPlayer';
+import WordReactionMap from './WordReactionMap';
 
 interface SliderEvent {
     participantId: string;
@@ -360,6 +361,15 @@ export default function SessionAnalytics({ sessionId }: Props) {
                         )}
                     </svg>
                 </div>
+            )}
+
+            {/* Word Reaction Map */}
+            {transcriptWords.length > 0 && data.events.length > 0 && (
+                <WordReactionMap
+                    words={transcriptWords}
+                    events={data.events}
+                    windowSeconds={5}
+                />
             )}
 
             {/* Export button */}
