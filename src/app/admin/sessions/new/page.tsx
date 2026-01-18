@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import styles from '../admin.module.css';
+import styles from '../../admin.module.css';
 
 export default function NewSessionPage() {
     const router = useRouter();
