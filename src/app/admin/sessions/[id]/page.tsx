@@ -21,6 +21,7 @@ interface Participant {
     display_name?: string;
     email?: string;
     notes?: string;
+    metadata?: { isBackup?: boolean; name?: string };
 }
 
 export default function SessionDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -154,7 +155,8 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                     ) : (
                         <div className={styles.participantList}>
-                            {participants.map(p => (
+                            {/* Regular participants first */}
+                            {participants.filter(p => !p.metadata?.isBackup).map(p => (
                                 <div
                                     key={p.id}
                                     className={styles.participantItem}
@@ -162,7 +164,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 >
                                     <div className={styles.participantInfo}>
                                         <div className={styles.participantName}>
-                                            {p.name || p.display_name || 'Participant'}
+                                            {p.metadata?.name || p.display_name || 'Participant'}
                                         </div>
                                         <div className={styles.participantCode}>
                                             Code: {p.code}
@@ -179,76 +181,114 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                     </button>
                                 </div>
                             ))}
+
+                            {/* Backup slots - styled differently */}
+                            {participants.filter(p => p.metadata?.isBackup).length > 0 && (
+                                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px dashed #E2E8F0' }}>
+                                    <div style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                                        Backup Slots (use if participant code fails)
+                                    </div>
+                                    {participants.filter(p => p.metadata?.isBackup).map(p => (
+                                        <div
+                                            key={p.id}
+                                            className={styles.participantItem}
+                                            onClick={() => router.push(`/admin/participants/${p.id}`)}
+                                            style={{ opacity: 0.7, background: '#F7FAFC' }}
+                                        >
+                                            <div className={styles.participantInfo}>
+                                                <div className={styles.participantName}>
+                                                    🔄 {p.display_name || p.code}
+                                                </div>
+                                                <div className={styles.participantCode}>
+                                                    Code: {p.code}
+                                                </div>
+                                            </div>
+                                            <button
+                                                className={styles.copyBtn}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    copyInviteUrl(p);
+                                                }}
+                                            >
+                                                Copy Link
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         </div>
                     )}
+            </div>
+
+            {/* Session Info */}
+            <div className={styles.card}>
+                <h2 className={styles.cardTitle}>Session Info</h2>
+
+                <div className={styles.inviteBox}>
+                    <label>Join URL</label>
+                    <code>{window.location.origin}/join/{session.code}?p=[CODE]</code>
                 </div>
 
-                {/* Session Info */}
-                <div className={styles.card}>
-                    <h2 className={styles.cardTitle}>Session Info</h2>
+                <div className={styles.field}>
+                    <label>Moderator Notes</label>
+                    <textarea
+                        placeholder="Add notes about this session..."
+                        defaultValue={session.moderator_notes || ''}
+                        rows={4}
+                    />
+                </div>
 
-                    <div className={styles.inviteBox}>
-                        <label>Join URL</label>
-                        <code>{window.location.origin}/join/{session.code}?p=[CODE]</code>
-                    </div>
+                <button className={styles.secondaryBtn}>
+                    Save Notes
+                </button>
+            </div>
+        </div >
+
+            {/* Add Participant Modal */ }
+    {
+        showAddModal && (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000
+            }}>
+                <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
+                    <h2 className={styles.cardTitle}>Add Participant</h2>
 
                     <div className={styles.field}>
-                        <label>Moderator Notes</label>
-                        <textarea
-                            placeholder="Add notes about this session..."
-                            defaultValue={session.moderator_notes || ''}
-                            rows={4}
+                        <label>Participant Name</label>
+                        <input
+                            type="text"
+                            value={newParticipantName}
+                            onChange={(e) => setNewParticipantName(e.target.value)}
+                            placeholder="e.g., Margaret Johnson"
+                            autoFocus
                         />
                     </div>
 
-                    <button className={styles.secondaryBtn}>
-                        Save Notes
-                    </button>
-                </div>
-            </div>
-
-            {/* Add Participant Modal */}
-            {showAddModal && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000
-                }}>
-                    <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
-                        <h2 className={styles.cardTitle}>Add Participant</h2>
-
-                        <div className={styles.field}>
-                            <label>Participant Name</label>
-                            <input
-                                type="text"
-                                value={newParticipantName}
-                                onChange={(e) => setNewParticipantName(e.target.value)}
-                                placeholder="e.g., Margaret Johnson"
-                                autoFocus
-                            />
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '12px' }}>
-                            <button className={styles.primaryBtn} onClick={addParticipant}>
-                                Add Participant
-                            </button>
-                            <button
-                                className={styles.secondaryBtn}
-                                onClick={() => setShowAddModal(false)}
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <button className={styles.primaryBtn} onClick={addParticipant}>
+                            Add Participant
+                        </button>
+                        <button
+                            className={styles.secondaryBtn}
+                            onClick={() => setShowAddModal(false)}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
-            )}
+            </div>
+        )
+    }
         </>
     );
 }

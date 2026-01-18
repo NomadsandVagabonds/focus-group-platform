@@ -78,9 +78,32 @@ export async function POST(request: NextRequest) {
             createdParticipants = created || [];
         }
 
+        // Always create backup participant slots (BACKUP1-BACKUP5)
+        const backupParticipants = [];
+        for (let i = 1; i <= 5; i++) {
+            backupParticipants.push({
+                session_id: session.id,
+                code: `BACKUP${i}`,
+                display_name: `Backup ${i}`,
+                notes: 'Emergency backup slot - assign to participant if their code fails',
+                metadata: { isBackup: true }
+            });
+        }
+
+        const { data: backups, error: backupError } = await supabase
+            .from('participants')
+            .insert(backupParticipants)
+            .select();
+
+        if (backupError) {
+            console.error('Failed to create backup participants:', backupError);
+            // Don't fail the session creation, just log
+        }
+
         return NextResponse.json({
             session,
-            participants: createdParticipants
+            participants: createdParticipants,
+            backups: backups || []
         });
 
     } catch (error) {
