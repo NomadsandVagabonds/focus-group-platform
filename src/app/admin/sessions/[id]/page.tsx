@@ -217,78 +217,77 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 </div>
                             )}
                         </div>
-                        </div>
                     )}
-            </div>
-
-            {/* Session Info */}
-            <div className={styles.card}>
-                <h2 className={styles.cardTitle}>Session Info</h2>
-
-                <div className={styles.inviteBox}>
-                    <label>Join URL</label>
-                    <code>{window.location.origin}/join/{session.code}?p=[CODE]</code>
                 </div>
 
-                <div className={styles.field}>
-                    <label>Moderator Notes</label>
-                    <textarea
-                        placeholder="Add notes about this session..."
-                        defaultValue={session.moderator_notes || ''}
-                        rows={4}
-                    />
-                </div>
+                {/* Session Info */}
+                <div className={styles.card}>
+                    <h2 className={styles.cardTitle}>Session Info</h2>
 
-                <button className={styles.secondaryBtn}>
-                    Save Notes
-                </button>
-            </div>
-        </div >
-
-            {/* Add Participant Modal */ }
-    {
-        showAddModal && (
-            <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0,0,0,0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000
-            }}>
-                <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
-                    <h2 className={styles.cardTitle}>Add Participant</h2>
+                    <div className={styles.inviteBox}>
+                        <label>Join URL</label>
+                        <code>{window.location.origin}/join/{session.code}?p=[CODE]</code>
+                    </div>
 
                     <div className={styles.field}>
-                        <label>Participant Name</label>
-                        <input
-                            type="text"
-                            value={newParticipantName}
-                            onChange={(e) => setNewParticipantName(e.target.value)}
-                            placeholder="e.g., Margaret Johnson"
-                            autoFocus
+                        <label>Moderator Notes</label>
+                        <textarea
+                            placeholder="Add notes about this session..."
+                            defaultValue={session.moderator_notes || ''}
+                            rows={4}
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                        <button className={styles.primaryBtn} onClick={addParticipant}>
-                            Add Participant
-                        </button>
-                        <button
-                            className={styles.secondaryBtn}
-                            onClick={() => setShowAddModal(false)}
-                        >
-                            Cancel
-                        </button>
-                    </div>
+                    <button className={styles.secondaryBtn}>
+                        Save Notes
+                    </button>
                 </div>
-            </div>
-        )
-    }
+            </div >
+
+            {/* Add Participant Modal */}
+            {
+                showAddModal && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000
+                    }}>
+                        <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
+                            <h2 className={styles.cardTitle}>Add Participant</h2>
+
+                            <div className={styles.field}>
+                                <label>Participant Name</label>
+                                <input
+                                    type="text"
+                                    value={newParticipantName}
+                                    onChange={(e) => setNewParticipantName(e.target.value)}
+                                    placeholder="e.g., Margaret Johnson"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <button className={styles.primaryBtn} onClick={addParticipant}>
+                                    Add Participant
+                                </button>
+                                <button
+                                    className={styles.secondaryBtn}
+                                    onClick={() => setShowAddModal(false)}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </>
     );
 }
