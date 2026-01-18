@@ -26,7 +26,7 @@ export default function NewSessionPage() {
                 .map(line => {
                     const parts = line.split(',').map(p => p.trim());
                     return {
-                        email: parts[0] || null,
+                        name: parts[0] || null,  // First part is name, not email
                         notes: parts[1] || null
                     };
                 });
@@ -84,11 +84,11 @@ export default function NewSessionPage() {
                             id="participants"
                             value={participants}
                             onChange={(e) => setParticipants(e.target.value)}
-                            placeholder="Enter one participant per line:&#10;email@example.com, Notes about participant&#10;another@example.com, More notes"
+                            placeholder="Enter one participant per line:&#10;John Smith, Notes about participant&#10;Jane Doe, More notes"
                             rows={6}
                         />
                         <small style={{ color: '#718096', fontSize: '12px' }}>
-                            Format: email, notes (comma-separated). You can also add participants after creating the session.
+                            Format: Name, Notes (comma-separated). You can also add participants after creating the session.
                         </small>
                     </div>
 

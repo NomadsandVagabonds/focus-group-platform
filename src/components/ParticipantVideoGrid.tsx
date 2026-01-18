@@ -111,9 +111,17 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
     ) || remoteParticipantTracks[0];
 
     // Other participants (excluding moderator)
-    const otherParticipants = remoteParticipantTracks.filter(
+    let otherParticipants = remoteParticipantTracks.filter(
         t => t !== moderatorTrack
     );
+
+    // LOW POWER MODE: Limit to max 2 other participants (4-grid: self + mod + 2 others)
+    // This reduces incoming bandwidth/CPU, NOT the user's outgoing camera
+    if (lowPowerMode && otherParticipants.length > 2) {
+        // TODO: prioritize by recent speaking activity
+        // For now, just take first 2
+        otherParticipants = otherParticipants.slice(0, 2);
+    }
 
     return (
         <div className={styles.container}>
@@ -171,12 +179,7 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
             <div className={styles.bottomBar}>
                 {/* Self view - first (left side) */}
                 <div className={styles.selfTile}>
-                    {lowPowerMode ? (
-                        <div className={styles.smallPlaceholder} style={{ background: 'rgba(250, 204, 21, 0.2)' }}>
-                            ⚡
-                            <span style={{ fontSize: '8px', marginTop: '2px' }}>Low Power</span>
-                        </div>
-                    ) : localTrack?.publication?.track ? (
+                    {localTrack?.publication?.track ? (
                         <VideoTrack
                             trackRef={localTrack}
                             className={styles.smallVideo}
@@ -184,7 +187,9 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
                     ) : (
                         <div className={styles.smallPlaceholder}>📹</div>
                     )}
-                    <span className={styles.smallLabel}>You</span>
+                    <span className={styles.smallLabel}>
+                        You {lowPowerMode && '⚡'}
+                    </span>
                 </div>
 
                 {/* Other participants */}
@@ -220,8 +225,8 @@ export default function ParticipantVideoGrid({
             token={token}
             serverUrl={serverUrl}
             connect={true}
-            video={!lowPowerMode}  // Disable camera in low power mode
-            audio={true}           // Always keep audio
+            video={true}   // Camera ALWAYS on - participants must be visible
+            audio={true}   // Audio always on
             className={styles.room}
         >
             <RoomHandler

@@ -158,9 +158,9 @@ function ParticipantContent() {
                         alignItems: 'center',
                         gap: '4px'
                     }}
-                    title={lowPowerMode ? 'Camera disabled to save bandwidth' : 'Enable low power mode'}
+                    title={lowPowerMode ? 'Showing fewer videos to save bandwidth' : 'Reduce video streams if lagging'}
                 >
-                    ⚡ {lowPowerMode ? 'Low Power ON' : 'Low Power'}
+                    ⚡ {lowPowerMode ? 'Lite View' : 'Lite View'}
                 </button>
             </header>
 
