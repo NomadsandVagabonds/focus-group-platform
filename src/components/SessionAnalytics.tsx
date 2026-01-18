@@ -29,6 +29,12 @@ interface SessionAnalyticsData {
     aggregates: AggregatePoint[];
 }
 
+interface TranscriptWord {
+    word: string;
+    start: number;
+    end: number;
+}
+
 interface Props {
     sessionId: string;
 }
@@ -39,6 +45,7 @@ export default function SessionAnalytics({ sessionId }: Props) {
     const [error, setError] = useState<string | null>(null);
     const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
     const [videoUrl, setVideoUrl] = useState<string>('');
+    const [transcriptWords, setTranscriptWords] = useState<TranscriptWord[]>([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -61,6 +68,20 @@ export default function SessionAnalytics({ sessionId }: Props) {
                 } catch (recordingErr) {
                     console.log('[Analytics] No recording found:', recordingErr);
                     // Not an error - recording might not exist yet
+                }
+
+                // Fetch transcript if available
+                try {
+                    const transcriptRes = await fetch(`/api/transcribe?sessionId=${sessionId}`);
+                    if (transcriptRes.ok) {
+                        const transcriptJson = await transcriptRes.json();
+                        if (transcriptJson.transcription?.words) {
+                            setTranscriptWords(transcriptJson.transcription.words);
+                            console.log('[Analytics] Loaded transcript:', transcriptJson.transcription.words.length, 'words');
+                        }
+                    }
+                } catch (transcriptErr) {
+                    console.log('[Analytics] No transcript found:', transcriptErr);
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
@@ -120,6 +141,7 @@ export default function SessionAnalytics({ sessionId }: Props) {
                     events={data.events}
                     aggregates={data.aggregates}
                     durationMs={data.durationMs || 0}
+                    transcriptWords={transcriptWords}
                 />
             ) : (
                 <div style={{
