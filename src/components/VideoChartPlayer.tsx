@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import TranscriptOverlay from './TranscriptOverlay';
 
 interface SliderEvent {
     participantId: string;
@@ -17,14 +18,21 @@ interface AggregatePoint {
     count: number;
 }
 
+interface TranscriptWord {
+    word: string;
+    start: number;
+    end: number;
+}
+
 interface Props {
     videoUrl: string;
     events: SliderEvent[];
     aggregates: AggregatePoint[];
     durationMs: number;
+    transcriptWords?: TranscriptWord[];
 }
 
-export default function VideoChartPlayer({ videoUrl, events, aggregates, durationMs }: Props) {
+export default function VideoChartPlayer({ videoUrl, events, aggregates, durationMs, transcriptWords }: Props) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [currentTimeMs, setCurrentTimeMs] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -127,6 +135,14 @@ export default function VideoChartPlayer({ videoUrl, events, aggregates, duratio
                     }}
                 />
             </div>
+
+            {/* Transcript Overlay (karaoke-style) */}
+            {transcriptWords && transcriptWords.length > 0 && (
+                <TranscriptOverlay
+                    words={transcriptWords}
+                    currentTimeSeconds={currentTimeMs / 1000}
+                />
+            )}
 
             {/* Synced Chart */}
             <div style={{
