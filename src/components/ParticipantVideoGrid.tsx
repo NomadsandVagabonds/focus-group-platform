@@ -66,6 +66,26 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
     // Media presentation state (received from moderator)
     const [presentingMedia, setPresentingMedia] = useState<MediaItem | null>(null);
 
+    // Hand raise state
+    const [handRaised, setHandRaised] = useState(false);
+
+    // Toggle hand raise and broadcast to room
+    const toggleHandRaise = useCallback(() => {
+        if (!room?.localParticipant) return;
+
+        const newState = !handRaised;
+        setHandRaised(newState);
+
+        const encoder = new TextEncoder();
+        const payload = encoder.encode(JSON.stringify({
+            type: 'handRaise',
+            participantId: localParticipant.identity,
+            raised: newState
+        }));
+        room.localParticipant.publishData(payload, { reliable: true });
+        console.log('[Participant] Hand raise:', newState);
+    }, [room, handRaised, localParticipant]);
+
     // Listen for data channel messages from moderator
     useEffect(() => {
         if (!room) return;
@@ -74,6 +94,8 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
             try {
                 const decoder = new TextDecoder();
                 const data = JSON.parse(decoder.decode(payload));
+
+                // Media presentation messages
                 if (data.type === 'media') {
                     console.log('[Participant] Received media broadcast:', data);
                     if (data.action === 'present' && data.media) {
@@ -82,6 +104,12 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
                         setPresentingMedia(null);
                     }
                 }
+
+                // Hand raise clear message from moderator
+                if (data.type === 'handRaiseClear' && data.participantId === localParticipant.identity) {
+                    setHandRaised(false);
+                    console.log('[Participant] Hand lowered by moderator');
+                }
             } catch (e) {
                 console.error('[Participant] Failed to parse data:', e);
             }
@@ -89,7 +117,7 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
 
         room.on(RoomEvent.DataReceived, handleData);
         return () => { room.off(RoomEvent.DataReceived, handleData); };
-    }, [room]);
+    }, [room, localParticipant]);
 
     // Get all camera tracks
     const tracks = useTracks(
@@ -177,6 +205,15 @@ function ParticipantLayout({ lowPowerMode = false }: { lowPowerMode?: boolean })
 
             {/* Bottom bar - Self + other participants */}
             <div className={styles.bottomBar}>
+                {/* Hand raise button */}
+                <button
+                    className={`${styles.handRaiseBtn} ${handRaised ? styles.handRaiseActive : ''}`}
+                    onClick={toggleHandRaise}
+                    title={handRaised ? 'Lower hand' : 'Raise hand to speak'}
+                >
+                    ✋
+                </button>
+
                 {/* Self view - first (left side) */}
                 <div className={styles.selfTile}>
                     {localTrack?.publication?.track ? (

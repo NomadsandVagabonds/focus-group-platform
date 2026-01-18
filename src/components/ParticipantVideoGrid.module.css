@@ -135,6 +135,47 @@
     min-height: 120px;
 }
 
+/* Hand raise button */
+.handRaiseBtn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(45, 55, 72, 0.8);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.handRaiseBtn:hover {
+    background: rgba(251, 191, 36, 0.3);
+    border-color: rgba(251, 191, 36, 0.5);
+    transform: scale(1.05);
+}
+
+.handRaiseActive {
+    background: rgba(251, 191, 36, 0.9) !important;
+    border-color: #fbbf24 !important;
+    animation: handPulse 0.8s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+@keyframes handPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+}
+
 /* Regular participant tiles in bottom bar */
 .smallTile {
     position: relative;

@@ -80,6 +80,96 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
     const [showMediaDropdown, setShowMediaDropdown] = useState(false);
     const [presentingMedia, setPresentingMedia] = useState<MediaItem | null>(null);
 
+    // Hand raise tracking - participantId -> timestamp
+    const [handRaises, setHandRaises] = useState<Record<string, number>>({});
+
+    // Listen for hand raise data channel messages
+    useEffect(() => {
+        if (!room) return;
+
+        const handleData = (payload: Uint8Array, participant?: { identity: string }) => {
+            try {
+                const decoder = new TextDecoder();
+                const data = JSON.parse(decoder.decode(payload));
+                if (data.type === 'handRaise') {
+                    const participantId = participant?.identity || data.participantId;
+                    if (data.raised) {
+                        setHandRaises(prev => ({ ...prev, [participantId]: Date.now() }));
+                    } else {
+                        setHandRaises(prev => {
+                            const next = { ...prev };
+                            delete next[participantId];
+                            return next;
+                        });
+                    }
+                }
+            } catch (e) {
+                // Not JSON or not a hand raise message
+            }
+        };
+
+        room.on('dataReceived', handleData);
+        return () => { room.off('dataReceived', handleData); };
+    }, [room]);
+
+    // Mute all participants (except self)
+    const muteAll = useCallback(() => {
+        if (!room) return;
+        room.remoteParticipants.forEach(participant => {
+            participant.audioTrackPublications.forEach(pub => {
+                if (pub.isSubscribed) {
+                    pub.setSubscribed(false);
+                }
+            });
+        });
+        console.log('[Moderator] Muted all participants');
+    }, [room]);
+
+    // Unmute all participants
+    const unmuteAll = useCallback(() => {
+        if (!room) return;
+        room.remoteParticipants.forEach(participant => {
+            participant.audioTrackPublications.forEach(pub => {
+                if (!pub.isSubscribed) {
+                    pub.setSubscribed(true);
+                }
+            });
+        });
+        console.log('[Moderator] Unmuted all participants');
+    }, [room]);
+
+    // Toggle mute for a specific participant
+    const toggleParticipantMute = useCallback((participantId: string) => {
+        if (!room) return;
+        const participant = room.remoteParticipants.get(participantId);
+        if (participant) {
+            participant.audioTrackPublications.forEach(pub => {
+                if (pub.isSubscribed && pub.track) {
+                    // Toggle subscription (mutes/unmutes for moderator only)
+                    pub.setSubscribed(!pub.isSubscribed);
+                }
+            });
+        }
+    }, [room]);
+
+    // Clear hand raise for a participant
+    const clearHandRaise = useCallback((participantId: string) => {
+        setHandRaises(prev => {
+            const next = { ...prev };
+            delete next[participantId];
+            return next;
+        });
+        // Notify participant to lower hand
+        if (room?.localParticipant) {
+            const encoder = new TextEncoder();
+            const payload = encoder.encode(JSON.stringify({
+                type: 'handRaiseClear',
+                participantId
+            }));
+            room.localParticipant.publishData(payload, { reliable: true });
+        }
+    }, [room]);
+
     // Fetch media for this session
     useEffect(() => {
         if (!sessionId) return;
@@ -162,6 +252,9 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
         return { type: 'empty' as const, trackRef: null };
     });
 
+    // Count active hand raises
+    const handRaiseCount = Object.keys(handRaises).length;
+
     return (
         <div className={styles.container}>
             {/* Main area - Participant grid */}
@@ -176,8 +269,11 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                     {slots.map((slot, index) => {
                         if (slot.type === 'participant' && slot.trackRef) {
                             const trackRef = slot.trackRef;
+                            const participantId = trackRef.participant.identity;
+                            const hasHandRaised = !!handRaises[participantId];
+
                             return (
-                                <SpeakingTile key={trackRef.participant.identity} participant={trackRef.participant}>
+                                <SpeakingTile key={participantId} participant={trackRef.participant}>
                                     {trackRef.publication?.track ? (
                                         <VideoTrack
                                             trackRef={trackRef}
@@ -188,18 +284,39 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                                             <div className={styles.avatar}>👤</div>
                                         </div>
                                     )}
+
+                                    {/* Hand raise indicator - click to clear */}
+                                    {hasHandRaised && (
+                                        <button
+                                            className={styles.handRaiseIndicator}
+                                            onClick={() => clearHandRaise(participantId)}
+                                            title="Click to lower hand"
+                                        >
+                                            ✋
+                                        </button>
+                                    )}
+
+                                    {/* Mic control - click to toggle mute */}
+                                    <button
+                                        className={styles.micControl}
+                                        onClick={() => toggleParticipantMute(participantId)}
+                                        title="Toggle participant audio"
+                                    >
+                                        🎤
+                                    </button>
+
                                     <div className={styles.participantInfo}>
                                         <span className={styles.name}>
-                                            {trackRef.participant.identity}
+                                            {participantId}
                                         </span>
-                                        {perceptionValues[trackRef.participant.identity] !== undefined && (
+                                        {perceptionValues[participantId] !== undefined && (
                                             <span
                                                 className={styles.perceptionBadge}
                                                 style={{
-                                                    backgroundColor: getPerceptionColor(perceptionValues[trackRef.participant.identity])
+                                                    backgroundColor: getPerceptionColor(perceptionValues[participantId])
                                                 }}
                                             >
-                                                {Math.round(perceptionValues[trackRef.participant.identity])}
+                                                {Math.round(perceptionValues[participantId])}
                                             </span>
                                         )}
                                     </div>
@@ -284,6 +401,34 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
                             {isRunning ? 'STOP' : 'START'}
                         </button>
                         <button className={styles.timerBtnSecondary} onClick={resetTimer}>RESET</button>
+                    </div>
+                </div>
+
+                {/* Audio Controls */}
+                <div className={styles.audioControls}>
+                    <div className={styles.audioControlsHeader}>
+                        🎙️ Audio
+                        {handRaiseCount > 0 && (
+                            <span className={styles.handRaiseCount}>
+                                ✋ {handRaiseCount}
+                            </span>
+                        )}
+                    </div>
+                    <div className={styles.audioButtons}>
+                        <button
+                            className={styles.muteBtn}
+                            onClick={muteAll}
+                            title="Mute all participants"
+                        >
+                            🔇 Mute All
+                        </button>
+                        <button
+                            className={styles.unmuteBtn}
+                            onClick={unmuteAll}
+                            title="Unmute all participants"
+                        >
+                            🔊 Unmute All
+                        </button>
                     </div>
                 </div>
 
