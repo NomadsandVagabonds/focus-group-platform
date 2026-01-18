@@ -406,14 +406,11 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
 
                 {/* Audio Controls */}
                 <div className={styles.audioControls}>
-                    <div className={styles.audioControlsHeader}>
-                        🎙️ Audio
-                        {handRaiseCount > 0 && (
-                            <span className={styles.handRaiseCount}>
-                                ✋ {handRaiseCount}
-                            </span>
-                        )}
-                    </div>
+                    {handRaiseCount > 0 && (
+                        <span className={styles.handRaiseCount}>
+                            ✋ {handRaiseCount}
+                        </span>
+                    )}
                     <div className={styles.audioButtons}>
                         <button
                             className={styles.muteBtn}
