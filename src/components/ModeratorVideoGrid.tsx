@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     LiveKitRoom,
     VideoTrack,
@@ -52,6 +52,22 @@ function RoomHandler({
 function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<string, number> }) {
     const { localParticipant } = useLocalParticipant();
     const participants = useParticipants();
+
+    // Timer state
+    const [timerSeconds, setTimerSeconds] = useState(60 * 60); // 60 minutes
+    const [isRunning, setIsRunning] = useState(false);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout | null = null;
+        if (isRunning && timerSeconds > 0) {
+            interval = setInterval(() => setTimerSeconds(s => Math.max(0, s - 1)), 1000);
+        }
+        return () => { if (interval) clearInterval(interval); };
+    }, [isRunning, timerSeconds]);
+
+    const toggleTimer = useCallback(() => setIsRunning(r => !r), []);
+    const resetTimer = useCallback(() => { setIsRunning(false); setTimerSeconds(60 * 60); }, []);
+    const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
     // Get all camera tracks
     const tracks = useTracks(
@@ -163,25 +179,31 @@ function ModeratorLayout({ perceptionValues = {} }: { perceptionValues?: Record<
                     </div>
                 )}
 
-                {/* Notepad */}
+                {/* Notepad - no title, just placeholder */}
                 <div className={styles.notepadContainer}>
-                    <div className={styles.notepadLabel}>Session Notes</div>
                     <textarea
                         className={styles.notepad}
                         placeholder="Take notes during the session..."
                     />
                 </div>
 
-                {/* Timer */}
+                {/* Timer - functional */}
                 <div className={styles.timerContainer}>
-                    <div className={styles.timerDisplay}>60:00</div>
+                    <div className={styles.timerDisplay} style={{ color: timerSeconds <= 300 ? (timerSeconds <= 60 ? '#fc8181' : '#f6ad55') : '#e2e8f0' }}>
+                        {formatTime(timerSeconds)}
+                    </div>
                     <div className={styles.timerButtons}>
-                        <button className={styles.timerBtn}>START</button>
-                        <button className={styles.timerBtnSecondary}>RESET</button>
+                        <button
+                            className={isRunning ? styles.timerBtnStop : styles.timerBtn}
+                            onClick={toggleTimer}
+                        >
+                            {isRunning ? 'STOP' : 'START'}
+                        </button>
+                        <button className={styles.timerBtnSecondary} onClick={resetTimer}>RESET</button>
                     </div>
                 </div>
 
-                {/* Media Browser */}
+                {/* Media Browser - fixed width */}
                 <div className={styles.mediaBrowser}>
                     <span className={styles.mediaIcon}>📁</span>
                     <span className={styles.mediaLabel}>Media Library</span>

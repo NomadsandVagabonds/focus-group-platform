@@ -190,8 +190,8 @@
 .notepadContainer {
     display: flex;
     flex-direction: column;
-    width: 200px;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 150px;
 }
 
 .notepadLabel {
@@ -257,6 +257,21 @@
     background: #2f855a;
 }
 
+.timerBtnStop {
+    padding: 4px 12px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.timerBtnStop:hover {
+    background: #c53030;
+}
+
 .timerBtnSecondary {
     padding: 4px 12px;
     background: #4a5568;
@@ -274,8 +289,8 @@
 
 /* Media Browser */
 .mediaBrowser {
-    flex: 1;
-    min-width: 150px;
+    width: 200px;
+    flex-shrink: 0;
     height: 80px;
     background: rgba(45, 55, 72, 0.6);
     border: 1px dashed rgba(255, 255, 255, 0.2);
