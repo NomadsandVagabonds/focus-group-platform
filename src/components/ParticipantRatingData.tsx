@@ -136,7 +136,7 @@ export default function ParticipantRatingData({ sessionId, participantCode, part
                         ref={videoRef}
                         src={videoUrl}
                         controls
-                        style={{ width: '100%', display: 'block' }}
+                        style={{ width: '100%', display: 'block', minHeight: '55vh' }}
                     />
 
                     {/* Chart overlay bar */}
