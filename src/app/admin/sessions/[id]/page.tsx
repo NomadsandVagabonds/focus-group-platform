@@ -4,6 +4,7 @@ import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../../admin.module.css';
+import SessionAnalytics from '@/components/SessionAnalytics';
 
 interface Session {
     id: string;
@@ -242,7 +243,12 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         Save Notes
                     </button>
                 </div>
-            </div >
+            </div>
+
+            {/* Session Analytics */}
+            <div className={styles.card} style={{ marginTop: '20px' }}>
+                <SessionAnalytics sessionId={id} />
+            </div>
 
             {/* Add Participant Modal */}
             {
