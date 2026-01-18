@@ -6,6 +6,7 @@
     background: var(--color-bg-secondary);
     border-radius: var(--radius-md);
     width: 100%;
+    overflow: visible;
 }
 
 /* Rating prompt */
