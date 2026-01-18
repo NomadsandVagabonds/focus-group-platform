@@ -98,7 +98,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)'
+                background: '#F5F0E8'
             }}>
                 <div style={{
                     background: 'white',
@@ -112,7 +112,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                         <div style={{
                             width: '48px',
                             height: '48px',
-                            background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                            background: '#9A3324',
                             borderRadius: '12px',
                             display: 'flex',
                             alignItems: 'center',
@@ -178,7 +178,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                             style={{
                                 width: '100%',
                                 padding: '0.875rem',
-                                background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                                background: '#9A3324',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '8px',
