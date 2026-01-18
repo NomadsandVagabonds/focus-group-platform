@@ -8,6 +8,7 @@ import styles from '../../admin.module.css';
 export default function NewSessionPage() {
     const router = useRouter();
     const [sessionName, setSessionName] = useState('');
+    const [scheduledAt, setScheduledAt] = useState('');
     const [participants, setParticipants] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +27,7 @@ export default function NewSessionPage() {
                 .map(line => {
                     const parts = line.split(',').map(p => p.trim());
                     return {
-                        name: parts[0] || null,  // First part is name, not email
+                        name: parts[0] || null,
                         notes: parts[1] || null
                     };
                 });
@@ -36,6 +37,7 @@ export default function NewSessionPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: sessionName,
+                    scheduled_at: scheduledAt || undefined,
                     participants: participantList.length > 0 ? participantList : undefined
                 }),
             });
@@ -72,10 +74,24 @@ export default function NewSessionPage() {
                             type="text"
                             value={sessionName}
                             onChange={(e) => setSessionName(e.target.value)}
-                            placeholder="e.g., Climate Messaging Study"
+                            placeholder="e.g., Focus Group F - Economic Concerns"
                             autoFocus
                             required
                         />
+                    </div>
+
+                    <div className={styles.field}>
+                        <label htmlFor="scheduledAt">Scheduled Date & Time</label>
+                        <input
+                            id="scheduledAt"
+                            type="datetime-local"
+                            value={scheduledAt}
+                            onChange={(e) => setScheduledAt(e.target.value)}
+                            style={{ width: 'auto' }}
+                        />
+                        <small style={{ color: '#718096', fontSize: '12px' }}>
+                            Optional. Helps you remember when the session is planned.
+                        </small>
                     </div>
 
                     <div className={styles.field}>

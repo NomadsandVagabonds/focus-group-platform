@@ -11,6 +11,7 @@ interface Session {
     name: string;
     code: string;
     status: 'scheduled' | 'live' | 'completed';
+    scheduled_at?: string;
     moderator_notes?: string;
     created_at: string;
 }
@@ -121,6 +122,17 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         <span className={`${styles.statusBadge} ${getStatusClass(session.status)}`} style={{ marginLeft: '12px' }}>
                             {session.status}
                         </span>
+                        {session.scheduled_at && (
+                            <span style={{ marginLeft: '12px', color: '#4A5568', fontSize: '0.9rem' }}>
+                                📅 {new Date(session.scheduled_at).toLocaleString('en-US', {
+                                    weekday: 'short',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit'
+                                })}
+                            </span>
+                        )}
                     </p>
                 </div>
                 <button
@@ -254,43 +266,51 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                         <textarea
                             placeholder="Add notes about this session..."
                             defaultValue={session.moderator_notes || ''}
-                            rows={4}
+                            rows={3}
                         />
                     </div>
 
-                    <button className={styles.secondaryBtn}>
+                    <button className={styles.secondaryBtn} style={{ marginBottom: '16px' }}>
                         Save Notes
                     </button>
-                </div>
 
-                {/* Media Library */}
-                <div className={styles.card} style={{ marginTop: '16px' }}>
-                    <h2 className={styles.cardTitle}>Media Library</h2>
-                    <p style={{ fontSize: '0.8rem', color: '#718096', marginBottom: '12px' }}>
-                        Upload images, videos, audio, or PDFs to present during the session.
-                    </p>
-                    <Link
-                        href={`/admin/sessions/${id}/media`}
-                        className={styles.primaryBtn}
-                        style={{ display: 'inline-block', textDecoration: 'none' }}
-                    >
-                        📁 Manage Media
-                    </Link>
-                </div>
-
-                {/* Script Editor - Coming Soon */}
-                <div className={styles.card} style={{ marginTop: '16px' }}>
-                    <h2 className={styles.cardTitle}>Session Script</h2>
-                    <p style={{ fontSize: '0.8rem', color: '#718096', marginBottom: '12px' }}>
-                        Create sections with estimated times and link to media items.
-                    </p>
-                    <Link
-                        href={`/admin/sessions/${id}/script`}
-                        className={styles.secondaryBtn}
-                        style={{ display: 'inline-block', textDecoration: 'none' }}
-                    >
-                        📝 Edit Script
-                    </Link>
+                    {/* Quick Links */}
+                    <div style={{
+                        display: 'flex',
+                        gap: '12px',
+                        borderTop: '1px solid #E2E8F0',
+                        paddingTop: '16px',
+                        marginTop: '8px'
+                    }}>
+                        <Link
+                            href={`/admin/sessions/${id}/media`}
+                            className={styles.secondaryBtn}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                textDecoration: 'none',
+                                flex: 1,
+                                justifyContent: 'center'
+                            }}
+                        >
+                            📁 Media
+                        </Link>
+                        <Link
+                            href={`/admin/sessions/${id}/script`}
+                            className={styles.secondaryBtn}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                textDecoration: 'none',
+                                flex: 1,
+                                justifyContent: 'center'
+                            }}
+                        >
+                            📝 Script
+                        </Link>
+                    </div>
                 </div>
             </div>
 
