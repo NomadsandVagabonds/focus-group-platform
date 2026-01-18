@@ -94,25 +94,25 @@ export default function SessionAnalytics({ sessionId }: Props) {
 
     return (
         <div style={{ marginTop: '20px' }}>
-            <h3 style={{ color: '#e2e8f0', marginBottom: '12px' }}>Session Analytics</h3>
+            <h3 style={{ color: '#9A3324', marginBottom: '12px', fontSize: '1rem', fontWeight: 600 }}>Session Analytics</h3>
 
             {/* Stats row */}
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 16px', borderRadius: '6px' }}>
-                    <div style={{ color: '#718096', fontSize: '12px' }}>Duration</div>
-                    <div style={{ color: '#e2e8f0', fontSize: '18px', fontWeight: 600 }}>
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <div style={{ background: '#F7FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ color: '#718096', fontSize: '11px', textTransform: 'uppercase' }}>Duration</div>
+                    <div style={{ color: '#1A1A2E', fontSize: '18px', fontWeight: 600 }}>
                         {data.durationMs ? formatDuration(data.durationMs) : 'N/A'}
                     </div>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 16px', borderRadius: '6px' }}>
-                    <div style={{ color: '#718096', fontSize: '12px' }}>Data Points</div>
-                    <div style={{ color: '#e2e8f0', fontSize: '18px', fontWeight: 600 }}>
+                <div style={{ background: '#F7FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ color: '#718096', fontSize: '11px', textTransform: 'uppercase' }}>Data Points</div>
+                    <div style={{ color: '#9A3324', fontSize: '18px', fontWeight: 600 }}>
                         {data.eventCount.toLocaleString()}
                     </div>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 16px', borderRadius: '6px' }}>
-                    <div style={{ color: '#718096', fontSize: '12px' }}>Participants</div>
-                    <div style={{ color: '#e2e8f0', fontSize: '18px', fontWeight: 600 }}>
+                <div style={{ background: '#F7FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ color: '#718096', fontSize: '11px', textTransform: 'uppercase' }}>Participants</div>
+                    <div style={{ color: '#1A1A2E', fontSize: '18px', fontWeight: 600 }}>
                         {data.participants.length}
                     </div>
                 </div>
@@ -120,12 +120,13 @@ export default function SessionAnalytics({ sessionId }: Props) {
 
             {/* Aggregate chart */}
             <div style={{
-                background: 'rgba(0,0,0,0.3)',
+                background: '#F7FAFC',
                 padding: '16px',
                 borderRadius: '8px',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                border: '1px solid #E2E8F0'
             }}>
-                <div style={{ color: '#a0aec0', fontSize: '12px', marginBottom: '8px' }}>
+                <div style={{ color: '#4A5568', fontSize: '12px', marginBottom: '8px', fontWeight: 500 }}>
                     Average Perception Over Time
                 </div>
                 <svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
@@ -197,16 +198,16 @@ export default function SessionAnalytics({ sessionId }: Props) {
 
             {/* Participant selector */}
             <div style={{ marginBottom: '16px' }}>
-                <label style={{ color: '#a0aec0', fontSize: '12px', marginRight: '8px' }}>
+                <label style={{ color: '#4A5568', fontSize: '12px', marginRight: '8px' }}>
                     View Individual:
                 </label>
                 <select
                     value={selectedParticipant || ''}
                     onChange={(e) => setSelectedParticipant(e.target.value || null)}
                     style={{
-                        background: '#2d3748',
-                        color: '#e2e8f0',
-                        border: '1px solid #4a5568',
+                        background: 'white',
+                        color: '#1A1A2E',
+                        border: '1px solid #E2E8F0',
                         borderRadius: '4px',
                         padding: '6px 10px',
                         fontSize: '14px'
@@ -222,11 +223,12 @@ export default function SessionAnalytics({ sessionId }: Props) {
             {/* Individual participant data */}
             {selectedParticipant && participantEvents.length > 0 && (
                 <div style={{
-                    background: 'rgba(0,0,0,0.3)',
+                    background: '#F7FAFC',
                     padding: '16px',
-                    borderRadius: '8px'
+                    borderRadius: '8px',
+                    border: '1px solid #E2E8F0'
                 }}>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', marginBottom: '8px' }}>
+                    <div style={{ color: '#4A5568', fontSize: '12px', marginBottom: '8px', fontWeight: 500 }}>
                         {selectedParticipant}&apos;s Perception ({participantEvents.length} data points)
                     </div>
                     <svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
@@ -270,11 +272,12 @@ export default function SessionAnalytics({ sessionId }: Props) {
                     style={{
                         display: 'inline-block',
                         padding: '8px 16px',
-                        background: '#4a5568',
-                        color: '#e2e8f0',
-                        borderRadius: '4px',
+                        background: '#9A3324',
+                        color: 'white',
+                        borderRadius: '6px',
                         textDecoration: 'none',
-                        fontSize: '14px'
+                        fontSize: '14px',
+                        fontWeight: 500
                     }}
                 >
                     📥 Export JSON Data
