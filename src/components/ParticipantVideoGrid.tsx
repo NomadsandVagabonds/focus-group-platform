@@ -13,6 +13,7 @@ import {
 import '@livekit/components-styles';
 import { Track, Room, ConnectionState, DataPacket_Kind, RoomEvent } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
+import { useVisibilityPause } from '@/hooks/useVisibilityPause';
 import styles from './ParticipantVideoGrid.module.css';
 
 interface ParticipantVideoGridProps {
@@ -57,6 +58,9 @@ function RoomHandler({
 function ParticipantLayout() {
     const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
+
+    // Auto-pause video when tab is hidden (saves bandwidth)
+    useVisibilityPause(localParticipant);
 
     // Media presentation state (received from moderator)
     const [presentingMedia, setPresentingMedia] = useState<MediaItem | null>(null);

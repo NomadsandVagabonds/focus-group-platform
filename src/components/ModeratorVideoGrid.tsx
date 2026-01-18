@@ -15,6 +15,7 @@ import {
 import '@livekit/components-styles';
 import { Track, Room, ConnectionState, Participant } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
+import { useVisibilityPause } from '@/hooks/useVisibilityPause';
 import styles from './ModeratorVideoGrid.module.css';
 
 interface ModeratorVideoGridProps {
@@ -65,6 +66,9 @@ function ModeratorLayout({ perceptionValues = {}, sessionId }: { perceptionValue
     const room = useRoomContext();
     const { localParticipant } = useLocalParticipant();
     const participants = useParticipants();
+
+    // Auto-pause video when tab is hidden (saves bandwidth)
+    useVisibilityPause(localParticipant);
 
     // Timer state
     const [timerSeconds, setTimerSeconds] = useState(60 * 60); // 60 minutes
