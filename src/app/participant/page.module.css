@@ -13,7 +13,9 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-sm) var(--space-md);
-    background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    background: #1e293b;
+    /* Slate-800 */
+    border-bottom: 1px solid var(--color-accent-secondary);
     flex-shrink: 0;
 }
 
@@ -27,6 +29,23 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.logoutBtn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logoutBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .connectionStatus {

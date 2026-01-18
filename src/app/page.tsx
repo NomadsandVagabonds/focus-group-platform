@@ -1,31 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 
-export default function HomePage() {
+function JoinContent() {
   const router = useRouter();
-  const [sessionName, setSessionName] = useState('');
-  const [userName, setUserName] = useState('');
-  const [sessionId, setSessionId] = useState('');
-  const [mode, setMode] = useState<'create' | 'join'>('create');
+  const searchParams = useSearchParams();
 
-  const handleCreateSession = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const response = await fetch('/api/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: sessionName || 'Focus Group Session',
-        moderatorId: userName || 'Moderator',
-      }),
-    });
-
-    const session = await response.json();
-    router.push(`/moderator?session=${session.id}&user=${encodeURIComponent(userName || 'Moderator')}`);
-  };
+  const [userName, setUserName] = useState(searchParams.get('p') || '');
+  const [sessionId, setSessionId] = useState(searchParams.get('session') || '');
 
   const handleJoinSession = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,76 +32,53 @@ export default function HomePage() {
 
         {/* Card */}
         <div className={styles.card}>
-          {/* Mode tabs */}
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${mode === 'create' ? styles.active : ''}`}
-              onClick={() => setMode('create')}
-            >
-              Create Session
-            </button>
-            <button
-              className={`${styles.tab} ${mode === 'join' ? styles.active : ''}`}
-              onClick={() => setMode('join')}
-            >
+          <div className={styles.tabs} style={{ borderBottom: 'none', padding: '1rem 1.5rem 0' }}>
+            <h2 style={{
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              color: '#1A1A2E',
+              margin: 0,
+              textAlign: 'center',
+              width: '100%'
+            }}>
               Join Session
-            </button>
+            </h2>
           </div>
 
-          {mode === 'create' ? (
-            <form onSubmit={handleCreateSession} className={styles.form}>
-              <div className={styles.field}>
-                <label htmlFor="sessionName">Session Name</label>
-                <input
-                  id="sessionName"
-                  type="text"
-                  value={sessionName}
-                  onChange={(e) => setSessionName(e.target.value)}
-                  placeholder="e.g., Climate Messaging Study"
-                />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="moderatorName">Moderator Name</label>
-                <input
-                  id="moderatorName"
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="e.g., Dr. Smith"
-                />
-              </div>
-              <button type="submit" className={styles.primaryBtn}>
-                Create Session
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleJoinSession} className={styles.form}>
-              <div className={styles.field}>
-                <label htmlFor="sessionCode">Session Code</label>
-                <input
-                  id="sessionCode"
-                  type="text"
-                  value={sessionId}
-                  onChange={(e) => setSessionId(e.target.value)}
-                  placeholder="Enter session code"
-                  required
-                />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="displayName">Display Name</label>
-                <input
-                  id="displayName"
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="How should we call you?"
-                />
-              </div>
-              <button type="submit" className={styles.primaryBtn}>
-                Join Session
-              </button>
-            </form>
-          )}
+          <form onSubmit={handleJoinSession} className={styles.form}>
+            <div className={styles.field}>
+              <label htmlFor="sessionCode">Session Code</label>
+              <input
+                id="sessionCode"
+                type="text"
+                value={sessionId}
+                onChange={(e) => setSessionId(e.target.value)}
+                placeholder="Enter session code"
+                required
+                autoFocus={!sessionId}
+              />
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="displayName">Display Name</label>
+              <input
+                id="displayName"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="How should we call you?"
+                autoFocus={!!sessionId && !userName}
+              />
+            </div>
+            <button type="submit" className={styles.primaryBtn}>
+              Join Session
+            </button>
+          </form>
+        </div>
+
+        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+          <a href="/admin" style={{ color: '#718096', fontSize: '0.875rem', textDecoration: 'none' }}>
+            Moderator login →
+          </a>
         </div>
       </main>
 
@@ -126,5 +87,13 @@ export default function HomePage() {
         <p>© 2026 Resonant Research Tools</p>
       </footer>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <JoinContent />
+    </Suspense>
   );
 }

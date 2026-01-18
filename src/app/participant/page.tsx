@@ -22,7 +22,14 @@ function ParticipantContent() {
     const sessionId = searchParams.get('session') || 'demo-session';
 
     // Use useState to keep userId stable across re-renders
-    const [userId] = useState(() => searchParams.get('user') || `participant-${Date.now()}`);
+    const [userId, setUserId] = useState(() => {
+        // Check localStorage first, then URL, then generate new
+        if (typeof window !== 'undefined') {
+            const savedId = localStorage.getItem('fg_participant_id');
+            if (savedId) return savedId;
+        }
+        return searchParams.get('user') || `participant-${Date.now()}`;
+    });
 
     const [token, setToken] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
@@ -32,27 +39,47 @@ function ParticipantContent() {
     const roomRef = useRef<Room | null>(null);
     const isConnectedRef = useRef(false);
 
-    // Get LiveKit token
+    // Get LiveKit token and handle persistence
     useEffect(() => {
         async function getToken() {
             try {
+                // If we found a saved session ID in localStorage, use it if none provided in URL
+                const targetSessionId = sessionId;
+
                 const res = await fetch('/api/token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        roomName: sessionId,
+                        roomName: targetSessionId,
                         participantName: userId,
                         isModerator: false,
                     }),
                 });
                 const data = await res.json();
                 setToken(data.token);
+
+                // Persist session details once we have a valid token
+                localStorage.setItem('fg_session_id', targetSessionId);
+                localStorage.setItem('fg_participant_id', userId);
             } catch (error) {
                 console.error('Failed to get token:', error);
             }
         }
         getToken();
     }, [sessionId, userId]);
+
+    // Handle manual logout
+    const handleLogout = useCallback(() => {
+        if (roomRef.current) {
+            roomRef.current.disconnect();
+        }
+        setToken(null);
+        setIsConnected(false);
+        localStorage.removeItem('fg_session_id');
+        localStorage.removeItem('fg_participant_id');
+        // Force reload to clear state and generate new ID if needed
+        window.location.href = '/';
+    }, []);
 
     // Handle room connection
     const handleRoomConnected = useCallback((room: Room) => {
@@ -95,7 +122,16 @@ function ParticipantContent() {
         <div className={styles.container}>
             {/* Header - compact */}
             <header className={styles.header}>
-                <button className={styles.backBtn}>← Session</button>
+                {isConnected ? (
+                    <button onClick={handleLogout} className={styles.logoutBtn}>
+                        Leave Session
+                    </button>
+                ) : (
+                    <button className={styles.backBtn} onClick={() => window.location.href = '/'}>
+                        ← Back
+                    </button>
+                )}
+
                 <div className={styles.connectionStatus}>
                     <span
                         className={styles.statusDot}

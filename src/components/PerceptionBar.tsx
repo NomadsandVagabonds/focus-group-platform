@@ -43,9 +43,30 @@ export default function PerceptionBar({
     const valueRef = useRef(value);
     const onValueChangeRef = useRef(onValueChange);
 
+    // Load saved value on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('fg_perception_value');
+            if (saved) {
+                const parsed = parseInt(saved, 10);
+                if (!isNaN(parsed) && parsed !== value) {
+                    setValue(parsed);
+                    // Also notify parent immediately so data stream is consistent
+                    if (onValueChange) {
+                        onValueChange(parsed, Date.now());
+                    }
+                }
+            }
+        }
+    }, [onValueChange]); // Only run once on mount (deps are stable)
+
     // Keep refs updated
     useEffect(() => {
         valueRef.current = value;
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('fg_perception_value', value.toString());
+        }
     }, [value]);
 
     useEffect(() => {

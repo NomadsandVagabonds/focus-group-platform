@@ -7,9 +7,11 @@
   --color-bg-elevated: #1a1a25;
   --color-bg-glass: rgba(26, 26, 37, 0.85);
 
-  --color-accent-primary: #6366f1;
-  --color-accent-secondary: #8b5cf6;
-  --color-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  --color-accent-primary: #e53e3e;
+  /* Crimson (Lighter for dark mode) */
+  --color-accent-secondary: #9a3324;
+  /* Crimson (Brand) */
+  --color-accent-gradient: linear-gradient(135deg, #e53e3e 0%, #9a3324 100%);
 
   --color-text-primary: #f8fafc;
   --color-text-secondary: #94a3b8;

@@ -39,22 +39,24 @@ export default function MarketingPage() {
 
             {/* Hero Section */}
             <section className={styles.hero}>
-                <div className={styles.heroTag}>The Science of Sentiment</div>
+                <div className={styles.heroTag}>AI Safety & Governance</div>
                 <h1 className={styles.heroTitle}>
-                    Real-time perception tracking<br />
-                    <span style={{ color: '#4A5568', fontStyle: 'italic' }}>for the modern political landscape.</span>
+                    Safeguarding the future<br />
+                    <span style={{ color: '#4A5568', fontStyle: 'italic' }}>through rigorous public inquiry.</span>
                 </h1>
                 <p className={styles.heroSub}>
-                    Go beyond simple polling. Capture second-by-second emotional reactions
-                    to speeches, ads, and debates with our high-fidelity dial testing platform.
+                    Resonant unites rigorous public opinion research with scalable education testing to
+                    build the bipartisan momentum necessary for responsible AI governance. We provide the
+                    high-fidelity perception tracking tools needed to align advanced AI development with
+                    authentic public values.
                 </p>
 
                 <div className="flex gap-4">
                     <a href="#" className={styles.demoBtn} style={{ padding: '0.8rem 2rem', fontSize: '1rem' }}>
-                        Start Your Research
+                        View Research Methodology
                     </a>
                     <Link href="/redesign/portal" className={styles.loginBtn} style={{ padding: '0.8rem 2rem', fontSize: '1rem', background: 'white' }}>
-                        Join Focus Group
+                        Join Research Session
                     </Link>
                 </div>
 
@@ -86,31 +88,37 @@ export default function MarketingPage() {
 
             {/* Features Grid */}
             <section className={styles.features}>
-                <h2 className={styles.sectionTitle}>Unlock Unbiased Insights</h2>
+                <h2 className={styles.sectionTitle}>Data for the public good</h2>
 
                 <div className={styles.grid}>
                     <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>⚡️</div>
-                        <h3 className={styles.featureTitle}>Zero-Latency Feedback</h3>
+                        <div className={styles.featureIcon}>🔍</div>
+                        <h3 className={styles.featureTitle}>Research Integrity</h3>
                         <p className={styles.featureDesc}>
-                            Eliminate groupthink. Capture individual, private responses
-                            every 250ms as participants watch live media streams.
+                            We design robust qualitative and quantitative studies that reveal voter sentiment,
+                            stakeholder priorities, and policy trade-offs. Our tools capture authentic,
+                            privacy-preserved reactions free from groupthink or moderator bias, ensuring
+                            your data reflects true public opinion.
                         </p>
                     </div>
                     <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>📊</div>
-                        <h3 className={styles.featureTitle}>Instant Analytics</h3>
+                        <div className={styles.featureIcon}>⚡️</div>
+                        <h3 className={styles.featureTitle}>Policy Education</h3>
                         <p className={styles.featureDesc}>
-                            No post-processing required. View aggregate sentiment overlays
-                            and demographic breakouts in real-time as the session unfolds.
+                            Our field-tested education campaigns align messages with local context.
+                            We help researchers test how specific educational materials resonate across
+                            diverse demographic subgroups to inform the safety discourse and build
+                            durable coalitions for progress.
                         </p>
                     </div>
                     <div className={styles.featureCard}>
                         <div className={styles.featureIcon}>🛡️</div>
-                        <h3 className={styles.featureTitle}>Institutional Security</h3>
+                        <h3 className={styles.featureTitle}>Actionable Governance</h3>
                         <p className={styles.featureDesc}>
-                            Built for sensitive political research. End-to-end encryption,
-                            anonymous participant IDs, and strict data governance.
+                            We transform complex technical insights into data-driven policy briefs.
+                            Resonant translates millisecond-level reaction logs into the compelling
+                            narratives needed to resonate with public officials and their constituents,
+                            turning raw data into legislative momentum.
                         </p>
                     </div>
                 </div>
