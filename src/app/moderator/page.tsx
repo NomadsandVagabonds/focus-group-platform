@@ -187,7 +187,10 @@ function ModeratorContent() {
             {/* Header */}
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <h1 className={styles.title}>Focus Group Moderator</h1>
+                    <div className={styles.logo}>
+                        <span className={styles.logoMark}>R</span>
+                        <span className={styles.logoText}>Resonant</span>
+                    </div>
                     <div className={styles.sessionBadge}>
                         <span className={styles.sessionLabel}>Session:</span>
                         <span className={styles.sessionId}>{sessionId}</span>

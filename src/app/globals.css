@@ -1,30 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Color Palette - Dark theme with focus group accent */
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-elevated: #1a1a25;
-  --color-bg-glass: rgba(26, 26, 37, 0.85);
+  /* Color Palette - Warm Charcoal "Dimmed Conference Room" */
+  --color-bg-primary: #1A1D24;
+  --color-bg-secondary: #252A33;
+  --color-bg-elevated: #2E3440;
+  --color-bg-glass: rgba(37, 42, 51, 0.9);
 
-  --color-accent-primary: #e53e3e;
-  /* Crimson (Lighter for dark mode) */
-  --color-accent-secondary: #9a3324;
-  /* Crimson (Brand) */
-  --color-accent-gradient: linear-gradient(135deg, #e53e3e 0%, #9a3324 100%);
+  /* Login page colors */
+  --color-cream: #F5F0E8;
+  --color-burgundy: #9A3324;
+  --color-burgundy-light: #B84A39;
+  --color-slate: #4A5568;
 
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  /* Primary accents - Burgundy from login */
+  --color-accent-primary: #9A3324;
+  --color-accent-secondary: #7A2A1E;
+  --color-accent-gradient: linear-gradient(135deg, #B84A39 0%, #9A3324 100%);
 
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  /* Text - Warm off-white */
+  --color-text-primary: #F0EDE8;
+  --color-text-secondary: #9A9590;
+  --color-text-muted: #6B6560;
 
-  /* Perception Dial Colors */
+  /* Status colors - keep functional */
+  --color-success: #6B8B6B;
+  --color-warning: #C9A55C;
+  --color-danger: #9A3324;
+
+  /* Perception Dial Colors - keep semantic */
   --color-dial-negative: #ef4444;
   --color-dial-neutral: #f59e0b;
   --color-dial-positive: #22c55e;
+
+  /* Border */
+  --color-border: #3A414D;
+  --color-surface: #2E3440;
 
   /* Spacing */
   --space-xs: 4px;
@@ -40,14 +51,15 @@
   --radius-lg: 20px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+  /* Shadows - warmer */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(154, 51, 36, 0.3);
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Transitions */
