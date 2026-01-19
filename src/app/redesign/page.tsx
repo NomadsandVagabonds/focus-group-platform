@@ -1,8 +1,99 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './home.module.css';
+import DimensionalProblem from '@/components/DimensionalProblem';
+
+// Hero Carousel Component
+function HeroCarousel() {
+    const [activeSlide, setActiveSlide] = useState(0);
+    const slides = [
+        { id: 'analytics', label: 'Focus Groups' },
+        { id: 'sankey', label: 'Research' },
+    ];
+
+    return (
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            background: 'linear-gradient(180deg, rgba(154,51,36,0.03) 0%, rgba(154,51,36,0.08) 100%)',
+            padding: '2rem',
+            height: '100%',
+        }}>
+            {/* Decorative elements */}
+            <div style={{
+                position: 'absolute',
+                top: '10%',
+                right: '5%',
+                width: '250px',
+                height: '250px',
+                borderRadius: '50%',
+                border: '1px solid rgba(154,51,36,0.12)',
+                opacity: 0.4,
+                pointerEvents: 'none'
+            }} />
+
+            {/* Slide Container */}
+            <div style={{
+                width: '95%',
+                height: '80%',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 40px 80px -20px rgba(0,0,0,0.3)',
+                border: '1px solid rgba(154,51,36,0.1)',
+                position: 'relative',
+                background: '#fff'
+            }}>
+                {activeSlide === 0 ? (
+                    <img
+                        src="/analytics-screenshot.png"
+                        alt="Session analytics showing perception data over time"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'top left',
+                            display: 'block'
+                        }}
+                    />
+                ) : (
+                    <DimensionalProblem />
+                )}
+            </div>
+
+            {/* Slide Indicators */}
+            <div style={{
+                display: 'flex',
+                gap: '8px',
+                marginTop: '1.5rem',
+            }}>
+                {slides.map((slide, i) => (
+                    <button
+                        key={slide.id}
+                        onClick={() => setActiveSlide(i)}
+                        style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: '20px',
+                            border: activeSlide === i ? '2px solid #9A3324' : '1px solid rgba(154,51,36,0.3)',
+                            background: activeSlide === i ? 'rgba(154,51,36,0.1)' : 'rgba(255,255,255,0.8)',
+                            color: activeSlide === i ? '#9A3324' : '#666',
+                            fontSize: '0.75rem',
+                            fontWeight: activeSlide === i ? 600 : 400,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                        }}
+                    >
+                        {slide.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default function MarketingPage() {
     return (
@@ -101,59 +192,8 @@ export default function MarketingPage() {
                     </div>
                 </div>
 
-                {/* Right side - Animated Viz Area */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    background: 'linear-gradient(180deg, rgba(154,51,36,0.03) 0%, rgba(154,51,36,0.08) 100%)'
-                }}>
-                    {/* Decorative elements */}
-                    <div style={{
-                        position: 'absolute',
-                        top: '15%',
-                        right: '10%',
-                        width: '300px',
-                        height: '300px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(154,51,36,0.15)',
-                        opacity: 0.5
-                    }} />
-                    <div style={{
-                        position: 'absolute',
-                        bottom: '20%',
-                        left: '5%',
-                        width: '200px',
-                        height: '200px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(154,51,36,0.1)',
-                        opacity: 0.4
-                    }} />
-
-                    {/* Analytics Screenshot */}
-                    <div style={{
-                        width: '95%',
-                        height: '80%',
-                        borderRadius: '16px',
-                        overflow: 'hidden',
-                        boxShadow: '0 40px 80px -20px rgba(0,0,0,0.3)',
-                        border: '1px solid rgba(154,51,36,0.1)',
-                        position: 'relative'
-                    }}>
-                        <img
-                            src="/analytics-screenshot.png"
-                            alt="Session analytics showing perception data over time"
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                objectPosition: 'top left',
-                                display: 'block'
-                            }}
-                        />
-                    </div>
-                </div>
+                {/* Right side - Carousel Viz Area */}
+                <HeroCarousel />
 
                 {/* Scroll indicator */}
                 <div style={{
