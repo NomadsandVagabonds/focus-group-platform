@@ -216,18 +216,16 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                         >
                                             Copy Link
                                         </button>
-                                        {session.status === 'live' && (
-                                            <button
-                                                className={styles.copyBtn}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setKickConfirm({ participant: p });
-                                                }}
-                                                style={{ background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' }}
-                                            >
-                                                Kick
-                                            </button>
-                                        )}
+                                        <button
+                                            className={styles.copyBtn}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setKickConfirm({ participant: p });
+                                            }}
+                                            style={{ background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' }}
+                                        >
+                                            Kick
+                                        </button>
                                     </div>
                                 </div>
                             ))}
