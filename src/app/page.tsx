@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import styles from './page.module.css';
+
+// Dynamically import LogoSplash to avoid SSR issues
+const LogoSplash = dynamic(() => import('@/components/LogoSplash'), { ssr: false });
 
 interface ValidationResult {
   valid: boolean;
@@ -16,6 +20,10 @@ interface ValidationResult {
 function JoinContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Check if user arrived with URL params (skip splash for invite links)
+  const hasUrlParams = searchParams.get('session') || searchParams.get('p');
+  const [showSplash, setShowSplash] = useState(!hasUrlParams);
 
   // Form state
   const [sessionCode, setSessionCode] = useState(searchParams.get('session') || '');
@@ -77,6 +85,11 @@ function JoinContent() {
 
     router.push(`/participant?${params.toString()}`);
   };
+
+  // Show splash animation on clean root domain load
+  if (showSplash) {
+    return <LogoSplash onComplete={() => setShowSplash(false)} />;
+  }
 
   return (
     <div className={styles.container}>
