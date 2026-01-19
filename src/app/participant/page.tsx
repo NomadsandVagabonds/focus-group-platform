@@ -102,7 +102,7 @@ function ParticipantContent() {
     }, []);
 
     // Handle perception value changes - use ref to avoid stale closure
-    const handlePerceptionChange = useCallback((value: number, timestamp: number) => {
+    const handlePerceptionChange = useCallback((value: number, timestamp: number, lastInteractionTime: number) => {
         console.log('[Participant] handlePerceptionChange - value:', value, 'connected:', isConnectedRef.current);
 
         if (!isConnectedRef.current) {
@@ -115,6 +115,7 @@ function ParticipantContent() {
             sessionId,
             timestamp,
             value,
+            lastInteractionTime,
         };
 
         console.log('[Participant] Sending perception data:', value);

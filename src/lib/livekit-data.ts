@@ -12,6 +12,7 @@ export interface PerceptionDataPoint {
     timestamp: number;
     value: number;
     mediaTimestamp?: number;
+    lastInteractionTime?: number; // When user last moved the slider
 }
 
 export interface AggregateData {

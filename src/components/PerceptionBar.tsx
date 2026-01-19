@@ -5,7 +5,7 @@ import styles from './PerceptionBar.module.css';
 
 interface PerceptionBarProps {
     /** Callback fired at granular intervals with current value */
-    onValueChange?: (value: number, timestamp: number) => void;
+    onValueChange?: (value: number, timestamp: number, lastInteractionTime: number) => void;
     /** Tracking interval in milliseconds (default: 250ms) */
     intervalMs?: number;
     /** Initial value (0-100) */
@@ -42,6 +42,7 @@ export default function PerceptionBar({
     // Use ref for value to avoid recreating interval on every change
     const valueRef = useRef(value);
     const onValueChangeRef = useRef(onValueChange);
+    const lastInteractionTimeRef = useRef(Date.now()); // Track when user last moved slider
 
     // Load saved value on mount
     useEffect(() => {
@@ -103,6 +104,7 @@ export default function PerceptionBar({
         const newValue = getValueFromPosition(e.clientX);
         setValue(newValue);
         triggerHaptic(newValue);
+        lastInteractionTimeRef.current = Date.now();
 
         (e.target as HTMLElement).setPointerCapture(e.pointerId);
     }, [getValueFromPosition, triggerHaptic]);
@@ -112,6 +114,7 @@ export default function PerceptionBar({
         const newValue = getValueFromPosition(e.clientX);
         setValue(newValue);
         triggerHaptic(newValue);
+        lastInteractionTimeRef.current = Date.now();
     }, [isDragging, getValueFromPosition, triggerHaptic]);
 
     const handlePointerUp = useCallback((e: React.PointerEvent) => {
@@ -123,6 +126,7 @@ export default function PerceptionBar({
     const handleEmojiClick = useCallback((presetValue: number) => {
         setValue(presetValue);
         triggerHaptic(presetValue);
+        lastInteractionTimeRef.current = Date.now();
     }, [triggerHaptic]);
 
     // Handle keyboard arrow controls
@@ -133,11 +137,15 @@ export default function PerceptionBar({
         switch (e.key) {
             case 'ArrowLeft':
             case 'ArrowDown':
+            case 'a':
+            case 'A':
                 e.preventDefault();
                 newValue = Math.max(0, valueRef.current - step);
                 break;
             case 'ArrowRight':
             case 'ArrowUp':
+            case 'd':
+            case 'D':
                 e.preventDefault();
                 newValue = Math.min(100, valueRef.current + step);
                 break;
@@ -147,6 +155,7 @@ export default function PerceptionBar({
 
         setValue(newValue);
         triggerHaptic(newValue);
+        lastInteractionTimeRef.current = Date.now();
     }, [triggerHaptic]);
 
     // Keyboard listener
@@ -164,7 +173,7 @@ export default function PerceptionBar({
         intervalRef.current = setInterval(() => {
             if (onValueChangeRef.current) {
                 console.log('[PerceptionBar] Reporting value:', valueRef.current);
-                onValueChangeRef.current(valueRef.current, Date.now());
+                onValueChangeRef.current(valueRef.current, Date.now(), lastInteractionTimeRef.current);
             }
         }, intervalMs);
 
