@@ -131,41 +131,24 @@ export default function MarketingPage() {
                         opacity: 0.4
                     }} />
 
-                    {/* Main viz placeholder */}
+                    {/* Analytics Screenshot */}
                     <div style={{
-                        width: '85%',
-                        aspectRatio: '1/1',
-                        maxWidth: '500px',
-                        background: 'rgba(255,255,255,0.7)',
-                        backdropFilter: 'blur(20px)',
-                        borderRadius: '24px',
-                        border: '1px solid rgba(154,51,36,0.1)',
-                        boxShadow: '0 40px 80px -20px rgba(154,51,36,0.15)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '2rem',
-                        position: 'relative'
+                        width: '90%',
+                        maxWidth: '600px',
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        boxShadow: '0 40px 80px -20px rgba(0,0,0,0.3)',
+                        border: '1px solid rgba(154,51,36,0.1)'
                     }}>
-                        <div style={{
-                            fontSize: '0.8rem',
-                            color: '#9A3324',
-                            fontWeight: 600,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.1em',
-                            marginBottom: '1rem'
-                        }}>
-                            Live Perception Data
-                        </div>
-                        <div style={{
-                            color: '#8B7355',
-                            fontStyle: 'italic',
-                            fontSize: '0.95rem',
-                            textAlign: 'center'
-                        }}>
-                            Interactive visualization<br />or platform screenshot
-                        </div>
+                        <img
+                            src="/analytics-screenshot.png"
+                            alt="Session analytics showing perception data over time"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block'
+                            }}
+                        />
                     </div>
                 </div>
 
