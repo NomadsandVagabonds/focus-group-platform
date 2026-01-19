@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import styles from './home.module.css';
+import styles from '../home.module.css';
 
 export default function PolicyPositionsPage() {
     return (
