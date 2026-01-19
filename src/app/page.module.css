@@ -33,7 +33,7 @@
   color: #1A1A2E;
   margin: 0;
   letter-spacing: -0.02em;
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: var(--font-serif);
 }
 
 /* Main content */

@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+/* Tiempos - Brand Title Font */
+@font-face {
+  font-family: 'Tiempos';
+  src: url('/fonts/tiempos.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Color Palette - Warm Charcoal "Dimmed Conference Room" */
   --color-bg-primary: #1A1D24;
@@ -59,7 +68,7 @@
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Georgia', 'Times New Roman', serif;
+  --font-serif: 'Tiempos', 'Georgia', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Transitions */

@@ -105,7 +105,7 @@
 }
 
 .heroTitle {
-    font-family: 'Georgia', serif;
+    font-family: 'Tiempos', 'Georgia', serif;
     font-size: 3.5rem;
     line-height: 1.1;
     color: #1A1A2E;
@@ -160,7 +160,7 @@
 }
 
 .sectionTitle {
-    font-family: 'Georgia', serif;
+    font-family: 'Tiempos', 'Georgia', serif;
     font-size: 2.25rem;
     text-align: center;
     margin-bottom: 4rem;
@@ -201,7 +201,7 @@
 }
 
 .featureTitle {
-    font-family: 'Georgia', serif;
+    font-family: 'Tiempos', 'Georgia', serif;
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 0.75rem;
@@ -223,7 +223,7 @@
 }
 
 .ctaTitle {
-    font-family: 'Georgia', serif;
+    font-family: 'Tiempos', 'Georgia', serif;
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
 }
