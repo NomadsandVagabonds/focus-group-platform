@@ -110,6 +110,7 @@ export default function MarketingPage() {
                     <a href="#mission" className={styles.marketingNavLink}>Mission</a>
                     <a href="#platform" className={styles.marketingNavLink}>Platform</a>
                     <a href="#research" className={styles.marketingNavLink}>Research</a>
+                    <Link href="/redesign/positions" className={styles.marketingNavLink}>Positions</Link>
                     <a href="#contact" className={styles.marketingNavLink}>Contact</a>
                 </div>
 
