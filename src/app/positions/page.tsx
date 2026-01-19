@@ -9,20 +9,20 @@ export default function PolicyPositionsPage() {
         <div className={styles.container}>
             {/* Navigation */}
             <nav className={styles.marketingHeader}>
-                <Link href="/redesign" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
+                <Link href="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
                     <img src="/logo.png" alt="R" style={{ width: 36, height: 36, borderRadius: 4 }} />
                     <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 'bold', color: '#1A1A2E' }}>Resonant</span>
                 </Link>
 
                 <div className={styles.marketingNav}>
-                    <Link href="/redesign#mission" className={styles.marketingNavLink}>Mission</Link>
-                    <Link href="/redesign#platform" className={styles.marketingNavLink}>Platform</Link>
-                    <Link href="/redesign#research" className={styles.marketingNavLink}>Research</Link>
-                    <Link href="/redesign/positions" className={styles.marketingNavLink} style={{ color: '#9A3324' }}>Positions</Link>
+                    <Link href="/#mission" className={styles.marketingNavLink}>Mission</Link>
+                    <Link href="/#platform" className={styles.marketingNavLink}>Platform</Link>
+                    <Link href="/#research" className={styles.marketingNavLink}>Research</Link>
+                    <Link href="/positions" className={styles.marketingNavLink} style={{ color: '#9A3324' }}>Positions</Link>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Link href="/" style={{
+                    <Link href="/join" style={{
                         background: '#9A3324',
                         color: 'white',
                         padding: '0.6rem 1.25rem',
@@ -260,12 +260,12 @@ export default function PolicyPositionsPage() {
                             marginBottom: '1rem',
                             marginTop: 0
                         }}>
-                            Transparency and disclosure
+                            Lab transparency and accountability
                         </h2>
                         <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: '#2D3748', marginBottom: '1.5rem' }}>
-                            The public deserves to know when content is AI-generated and what data powers
-                            these systems. We support mandatory watermarking, content labeling, and
-                            training data transparency requirements.
+                            Technology moving this quickly requires clear visibility for policymakers and the public.
+                            We support mandatory model cards reporting, structured disclosure requirements for frontier
+                            labs, and robust whistleblower protections for employees who raise safety concerns.
                         </p>
                         <div style={{
                             display: 'flex',
@@ -275,12 +275,12 @@ export default function PolicyPositionsPage() {
                             borderRadius: '8px'
                         }}>
                             <div>
-                                <span style={{ fontWeight: 700, color: '#9A3324', fontSize: '1.5rem' }}>50%</span>
-                                <span style={{ color: '#4A5568', marginLeft: '0.5rem' }}>highly worried about deepfakes</span>
+                                <span style={{ fontWeight: 700, color: '#9A3324', fontSize: '1.5rem' }}>82%</span>
+                                <span style={{ color: '#4A5568', marginLeft: '0.5rem' }}>don't trust tech executives to self-regulate</span>
                             </div>
                             <div>
-                                <span style={{ fontWeight: 700, color: '#9A3324', fontSize: '1.5rem' }}>40%</span>
-                                <span style={{ color: '#4A5568', marginLeft: '0.5rem' }}>highly worried about misinformation</span>
+                                <span style={{ fontWeight: 700, color: '#9A3324', fontSize: '1.5rem' }}>67%</span>
+                                <span style={{ color: '#4A5568', marginLeft: '0.5rem' }}>say Congress does too little on AI</span>
                             </div>
                         </div>
                     </div>
@@ -325,11 +325,11 @@ export default function PolicyPositionsPage() {
             }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                        <Link href="/redesign" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Home</Link>
-                        <Link href="/redesign#mission" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Mission</Link>
-                        <Link href="/redesign#research" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Research</Link>
-                        <Link href="/redesign/positions" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Positions</Link>
-                        <Link href="/redesign/ethics" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Ethics</Link>
+                        <Link href="/" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Home</Link>
+                        <Link href="/#mission" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Mission</Link>
+                        <Link href="/#research" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Research</Link>
+                        <Link href="/positions" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Positions</Link>
+                        <Link href="/ethics" style={{ color: '#E2E8F0', textDecoration: 'none' }}>Ethics</Link>
                     </div>
                     <p style={{ fontSize: '0.85rem', color: '#A0AEC0' }}>
                         Resonant is a research organization focused on AI governance.

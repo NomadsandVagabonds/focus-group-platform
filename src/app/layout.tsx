@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "Resonant - Focus Group Platform",
   description: "A real-time focus group platform with perception tracking",
   keywords: ["focus group", "perception analyzer", "dial testing", "qualitative research", "video conferencing"],
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

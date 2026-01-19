@@ -19,11 +19,11 @@ export default function EthicsPage() {
                 alignItems: 'center',
                 justifyContent: 'space-between'
             }}>
-                <Link href="/redesign" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
                     <img src="/logo.png" alt="R" style={{ width: 32, height: 32, borderRadius: 4 }} />
                     <span style={{ fontFamily: 'Georgia', fontSize: '1.25rem', fontWeight: 'bold', color: '#1A1A2E' }}>Resonant</span>
                 </Link>
-                <Link href="/redesign" style={{ color: '#9A3324', textDecoration: 'none', fontSize: '0.9rem' }}>
+                <Link href="/" style={{ color: '#9A3324', textDecoration: 'none', fontSize: '0.9rem' }}>
                     ← Back to Home
                 </Link>
             </header>

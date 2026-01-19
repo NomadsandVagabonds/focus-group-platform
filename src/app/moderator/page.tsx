@@ -174,6 +174,7 @@ function ModeratorContent() {
     const [perceptionValues, setPerceptionValues] = useState<Record<string, number>>({});
     const [participantCount, setParticipantCount] = useState(0);
     const [resolvedSessionId, setResolvedSessionId] = useState<string | null>(null);
+    const [sessionName, setSessionName] = useState<string | null>(null);
 
     // Participant state from video grid (muted, hand raises, connected)
     const [participantState, setParticipantState] = useState<{
@@ -201,6 +202,16 @@ function ModeratorContent() {
             const isUuid = sessionCodeOrId.length === 36 && sessionCodeOrId.includes('-');
             if (isUuid) {
                 setResolvedSessionId(sessionCodeOrId);
+                // Fetch session name for UUID
+                try {
+                    const res = await fetch(`/api/sessions/${sessionCodeOrId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setSessionName(data.session?.name || 'Session');
+                    }
+                } catch {
+                    setSessionName('Session');
+                }
                 return;
             }
 
@@ -211,13 +222,16 @@ function ModeratorContent() {
                     const data = await res.json();
                     if (data.id) {
                         setResolvedSessionId(data.id);
+                        setSessionName(data.name || sessionCodeOrId);
                         return;
                     }
                 }
                 // Fallback: use the code as-is (for backward compatibility)
                 setResolvedSessionId(sessionCodeOrId);
+                setSessionName(sessionCodeOrId);
             } catch {
                 setResolvedSessionId(sessionCodeOrId);
+                setSessionName(sessionCodeOrId);
             }
         }
         resolveSession();
@@ -438,7 +452,7 @@ function ModeratorContent() {
                     </div>
                     <div className={styles.sessionBadge}>
                         <span className={styles.sessionLabel}>Session:</span>
-                        <span className={styles.sessionId}>{sessionCodeOrId}</span>
+                        <span className={styles.sessionId}>{sessionName || 'Loading...'}</span>
                     </div>
                 </div>
 

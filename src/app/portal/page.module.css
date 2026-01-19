@@ -1,0 +1,337 @@
+/* 
+ * Resonant - Institutional Design System 
+ * Palette: Cream #F5F0E8, Crimson #9A3324, Slate #4A5568
+ */
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #F5F0E8;
+    color: #1A1A2E;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Background Image Layer */
+.backgroundLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    background-image: url('/academic-bg.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.85;
+    /* Soften the background */
+    mix-blend-mode: multiply;
+    pointer-events: none;
+}
+
+/* Header */
+.header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 3rem;
+    width: 100%;
+    /* enhanced readability */
+    background: rgba(245, 240, 232, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(74, 85, 104, 0.1);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logoMark {
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    object-fit: contain;
+    box-shadow: 0 2px 8px rgba(154, 51, 36, 0.2);
+}
+
+.logoText {
+    font-family: 'Tiempos', 'Georgia', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1A1A2E;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.navLink {
+    color: #1A1A2E;
+    /* Darker than slate for better contrast */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+    position: relative;
+}
+
+.navLink:hover {
+    color: #9A3324;
+}
+
+.navLink::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #9A3324;
+    transition: width 0.2s ease;
+}
+
+.navLink:hover::after {
+    width: 100%;
+}
+
+/* Main Content */
+.main {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    width: 100%;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    /* Added visibility fix: glass card behind everything */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 3rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.heading {
+    font-family: 'Tiempos', 'Georgia', serif;
+    font-size: 2.5rem;
+    line-height: 1.2;
+    color: #1A1A2E;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    /* Improve contrast against background lines */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(245, 240, 232, 0.8);
+}
+
+.subHeading {
+    font-size: 1.125rem;
+    color: #4A5568;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    max-width: 480px;
+}
+
+/* Card Component */
+.card {
+    background: #FFFFFF;
+    /* Removed double-glass effect since wrapper is now glass */
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 0;
+    /* Content padding handled by children */
+    box-shadow: none;
+    /* Flat look inside the glass wrapper */
+    width: 100%;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 20px 50px -12px rgba(0, 0, 0, 0.12),
+        0 4px 20px -4px rgba(0, 0, 0, 0.06);
+}
+
+/* Tab System */
+.tabHeader {
+    display: flex;
+    background: #F8F9FA;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.tabBtn {
+    flex: 1;
+    padding: 1.25rem 1rem;
+    border: none;
+    background: transparent;
+    color: #64748B;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.tabBtn:hover {
+    color: #1A1A2E;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.tabBtn.active {
+    color: #9A3324;
+    background: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.tabBtn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #9A3324;
+}
+
+/* Forms */
+.formPanel {
+    padding: 2.5rem 2rem;
+    text-align: left;
+}
+
+.field {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4A5568;
+    margin-bottom: 0.5rem;
+}
+
+.input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #1A1A2E;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    background: #FFFFFF;
+    border-color: #9A3324;
+    box-shadow: 0 0 0 3px rgba(154, 51, 36, 0.1);
+}
+
+.input::placeholder {
+    color: #CBD5E0;
+}
+
+.helperText {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+/* Actions */
+.submitBtn {
+    width: 100%;
+    padding: 1rem;
+    background-color: #9A3324;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submitBtn:hover {
+    background-color: #822215;
+    transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+    background-color: #CBD5E0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Footer */
+.footer {
+    position: relative;
+    z-index: 10;
+    padding: 2rem;
+    text-align: center;
+}
+
+.copyright {
+    font-size: 0.8rem;
+    color: #1A1A2E;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Mobile Tweaks */
+@media (max-width: 640px) {
+    .header {
+        padding: 1.5rem;
+    }
+
+    .logoText {
+        font-size: 1.5rem;
+    }
+
+    .main {
+        padding: 1rem;
+    }
+
+    .heading {
+        font-size: 2rem;
+    }
+
+    .formPanel {
+        padding: 1.5rem;
+    }
+}
