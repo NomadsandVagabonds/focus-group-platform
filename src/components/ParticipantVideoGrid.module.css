@@ -246,19 +246,7 @@
 
 .micIndicatorMuted {
     background: rgba(239, 68, 68, 0.9) !important;
-    animation: mutePulse 1s ease-in-out infinite;
-}
-
-@keyframes mutePulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.6;
-    }
+    /* No animation - solid color is less distracting during extended mute periods */
 }
 
 /* Muted border on self tile */
