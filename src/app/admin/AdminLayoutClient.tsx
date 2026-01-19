@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import styles from './admin.module.css';
 
@@ -11,7 +11,6 @@ interface AdminLayoutClientProps {
 
 export default function AdminLayoutClient({ children }: AdminLayoutClientProps) {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -21,7 +20,9 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
     useEffect(() => {
         async function checkAuth() {
             // First check if there's a token in the URL
-            const urlToken = searchParams.get('token');
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlToken = urlParams.get('token');
+
             if (urlToken) {
                 try {
                     const res = await fetch('/api/admin-auth', {
@@ -32,7 +33,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                     if (res.ok) {
                         setIsAuthenticated(true);
                         // Clean up URL (remove token from query string)
-                        window.history.replaceState({}, '', pathname);
+                        window.history.replaceState({}, '', pathname || '/admin');
                         return;
                     }
                 } catch {
@@ -49,7 +50,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
             }
         }
         checkAuth();
-    }, [searchParams, pathname]);
+    }, [pathname]);
 
     // Handle login
     const handleLogin = async (e: React.FormEvent) => {
