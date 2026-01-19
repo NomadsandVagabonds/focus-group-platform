@@ -133,19 +133,22 @@ export default function MarketingPage() {
 
                     {/* Analytics Screenshot */}
                     <div style={{
-                        width: '90%',
-                        maxWidth: '600px',
+                        width: '95%',
+                        height: '80%',
                         borderRadius: '16px',
                         overflow: 'hidden',
                         boxShadow: '0 40px 80px -20px rgba(0,0,0,0.3)',
-                        border: '1px solid rgba(154,51,36,0.1)'
+                        border: '1px solid rgba(154,51,36,0.1)',
+                        position: 'relative'
                     }}>
                         <img
                             src="/analytics-screenshot.png"
                             alt="Session analytics showing perception data over time"
                             style={{
                                 width: '100%',
-                                height: 'auto',
+                                height: '100%',
+                                objectFit: 'cover',
+                                objectPosition: 'top left',
                                 display: 'block'
                             }}
                         />
@@ -335,20 +338,26 @@ export default function MarketingPage() {
                         durable coalitions for governance.
                     </p>
 
-                    {/* Research Preview Placeholder */}
+                    {/* Sankey Visualization */}
                     <div style={{
+                        width: '100%',
+                        maxWidth: '1000px',
                         aspectRatio: '16/9',
-                        background: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D8 100%)',
                         borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        border: '2px dashed #C4B8A8',
-                        color: '#8B7355',
-                        maxWidth: '800px',
-                        margin: '0 auto'
+                        overflow: 'hidden',
+                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+                        margin: '0 auto',
+                        border: '1px solid rgba(154,51,36,0.1)'
                     }}>
-                        <span style={{ fontSize: '1rem', fontStyle: 'italic' }}>Interactive research visualization — 16:9</span>
+                        <iframe
+                            src="https://nomads-liard.vercel.app/mats-research/dimensional-problem/index.html"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                border: 'none'
+                            }}
+                            title="AI Safety Messaging Research - Dimensional Problem"
+                        />
                     </div>
                 </div>
             </section>
