@@ -16,10 +16,31 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Check authentication status on mount
+    // Check authentication status on mount (including URL token)
     useEffect(() => {
         async function checkAuth() {
             try {
+                // Check for token in URL (for shareable links)
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlToken = urlParams.get('token');
+
+                if (urlToken) {
+                    // Try to authenticate with token
+                    const tokenRes = await fetch('/api/admin-auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: urlToken }),
+                    });
+
+                    if (tokenRes.ok) {
+                        // Remove token from URL for security
+                        window.history.replaceState({}, '', window.location.pathname);
+                        setIsAuthenticated(true);
+                        return;
+                    }
+                }
+
+                // Regular cookie-based auth check
                 const res = await fetch('/api/admin-auth');
                 setIsAuthenticated(res.ok);
             } catch {
