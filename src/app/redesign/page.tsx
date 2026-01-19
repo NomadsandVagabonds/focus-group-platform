@@ -253,18 +253,21 @@ export default function MarketingPage() {
                             exactly when their thinking changes.
                         </p>
                     </div>
-                    {/* Focus Group Image Placeholder */}
+                    {/* Focus Group Platform Screenshot */}
                     <div style={{
-                        aspectRatio: '4/3',
-                        background: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D8 100%)',
                         borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        border: '2px dashed #C4B8A8',
-                        color: '#8B7355'
+                        overflow: 'hidden',
+                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
                     }}>
-                        <span style={{ fontSize: '1rem', fontStyle: 'italic' }}>Focus group platform — 4:3</span>
+                        <img
+                            src="/platform-screenshot.png"
+                            alt="Resonant focus group platform showing moderator view with live perception tracking"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block'
+                            }}
+                        />
                     </div>
                 </div>
             </section>
