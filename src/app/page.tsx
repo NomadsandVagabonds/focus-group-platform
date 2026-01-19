@@ -82,7 +82,7 @@ function JoinContent() {
     <div className={styles.container}>
       {/* Header */}
       <header className={styles.header}>
-        <div className={styles.logoMark}>R</div>
+        <img src="/logo.png" alt="R" className={styles.logoMark} />
         <h1 className={styles.logoText}>Resonant</h1>
       </header>
 

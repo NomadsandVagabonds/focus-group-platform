@@ -16,7 +16,7 @@ export default function MarketingPage() {
             {/* Navigation */}
             <nav className={styles.marketingHeader}>
                 <div className="flex items-center gap-2">
-                    <div style={{ width: 32, height: 32, background: '#9A3324', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', borderRadius: 4, fontFamily: 'Georgia' }}>R</div>
+                    <img src="/logo.png" alt="R" style={{ width: 32, height: 32, borderRadius: 4 }} />
                     <span style={{ fontFamily: 'Georgia', fontSize: '1.25rem', fontWeight: 'bold' }}>Resonant</span>
                 </div>
 

@@ -79,7 +79,7 @@ function RedesignContent() {
             {/* Header */}
             <header className={styles.header}>
                 <div className={styles.brand}>
-                    <div className={styles.logoMark}>R</div>
+                    <img src="/logo.png" alt="R" className={styles.logoMark} />
                     <h1 className={styles.logoText}>Resonant</h1>
                 </div>
                 <nav className={styles.nav}>

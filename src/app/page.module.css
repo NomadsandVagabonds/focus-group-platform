@@ -23,14 +23,8 @@
 .logoMark {
   width: 48px;
   height: 48px;
-  background-color: #9A3324;
-  color: #F5F0E8;
-  font-size: 1.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 8px;
+  object-fit: contain;
 }
 
 .logoText {
@@ -188,7 +182,6 @@
   .logoMark {
     width: 40px;
     height: 40px;
-    font-size: 1.5rem;
   }
 
   .logoText {

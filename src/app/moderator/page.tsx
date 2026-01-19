@@ -433,7 +433,7 @@ function ModeratorContent() {
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
                     <div className={styles.logo}>
-                        <span className={styles.logoMark}>R</span>
+                        <img src="/logo.png" alt="R" className={styles.logoMark} />
                         <span className={styles.logoText}>Resonant</span>
                     </div>
                     <div className={styles.sessionBadge}>

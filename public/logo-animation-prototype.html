@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resonant Logo Animation Prototype</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+            background: #FAF6F1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #2D2A26;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: 2px solid #9A3324;
+            background: white;
+            color: #9A3324;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #9A3324;
+            color: white;
+        }
+
+        button.active {
+            background: #9A3324;
+            color: white;
+        }
+
+        .animation-container {
+            width: 450px;
+            height: 450px;
+            background: #FAF6F1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        #logo-canvas {
+            display: block;
+        }
+
+        .variants {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .variant {
+            text-align: center;
+        }
+
+        .variant-label {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6B6560;
+        }
+
+        .variant-box {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .on-cream {
+            background: #FAF6F1;
+            border: 1px solid #E5DFD8;
+        }
+
+        .on-red {
+            background: #9A3324;
+        }
+
+        .on-dark {
+            background: #1A1A2E;
+        }
+
+        h2 {
+            color: #2D2A26;
+            font-weight: 400;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .timer {
+            font-size: 14px;
+            color: #6B6560;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Resonant Logo Animation v3</h1>
+
+    <div class="timer" id="timer">Ready</div>
+
+    <div class="controls">
+        <button onclick="playAnimation()" class="active">▶ Play Full Animation (~4s)</button>
+        <button onclick="showScattered()">Scattered</button>
+        <button onclick="showFormed()">Formed</button>
+    </div>
+
+    <div class="animation-container">
+        <svg id="logo-canvas" width="400" height="400"></svg>
+    </div>
+
+    <div class="section">
+        <h2>Static Logo Variants</h2>
+        <div class="variants">
+            <div class="variant">
+                <div class="variant-box on-red">
+                    <svg id="variant-red" width="80" height="80"></svg>
+                </div>
+                <div class="variant-label">White on Red</div>
+            </div>
+            <div class="variant">
+                <div class="variant-box on-cream">
+                    <svg id="variant-cream" width="80" height="80"></svg>
+                </div>
+                <div class="variant-label">Black on Cream</div>
+            </div>
+            <div class="variant">
+                <div class="variant-box on-cream">
+                    <svg id="variant-red-dots" width="80" height="80"></svg>
+                </div>
+                <div class="variant-label">Red on Cream</div>
+            </div>
+            <div class="variant">
+                <div class="variant-box on-dark">
+                    <svg id="variant-dark" width="80" height="80"></svg>
+                </div>
+                <div class="variant-label">Cream on Dark</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // R pattern - EXACTLY matched to reference image
+        // Counting dots row by row from reference
+        const rPattern = [
+            // Row 0 - top edge (8 dots, first one smaller)
+            { x: 0, y: 0, r: 0.6 }, { x: 1, y: 0, r: 0.8 }, { x: 2, y: 0, r: 1 }, { x: 3, y: 0, r: 1 }, { x: 4, y: 0, r: 1 }, { x: 5, y: 0, r: 1 }, { x: 6, y: 0, r: 1 }, { x: 7, y: 0, r: 0.8 },
+            // Row 1 - full row (9 dots)
+            { x: 0, y: 1, r: 1 }, { x: 1, y: 1, r: 1 }, { x: 2, y: 1, r: 1 }, { x: 3, y: 1, r: 1 }, { x: 4, y: 1, r: 1 }, { x: 5, y: 1, r: 1 }, { x: 6, y: 1, r: 1 }, { x: 7, y: 1, r: 1 }, { x: 8, y: 1, r: 0.7 },
+            // Row 2 - stem (3) + GAP + right bowl edge (2) 
+            { x: 0, y: 2, r: 0.8 }, { x: 1, y: 2, r: 1 }, { x: 2, y: 2, r: 1 }, { x: 7, y: 2, r: 1 }, { x: 8, y: 2, r: 1 },
+            // Row 3 - stem (3) + GAP + right bowl edge (2)
+            { x: 0, y: 3, r: 1 }, { x: 1, y: 3, r: 1 }, { x: 2, y: 3, r: 1 }, { x: 7, y: 3, r: 1 }, { x: 8, y: 3, r: 0.85 },
+            // Row 4 - stem (3) + GAP + right bowl edge (1 smaller)
+            { x: 0, y: 4, r: 1 }, { x: 1, y: 4, r: 1 }, { x: 2, y: 4, r: 1 }, { x: 7, y: 4, r: 0.8 },
+            // Row 5 - bowl bottom closes (8 dots)
+            { x: 0, y: 5, r: 1 }, { x: 1, y: 5, r: 1 }, { x: 2, y: 5, r: 1 }, { x: 3, y: 5, r: 1 }, { x: 4, y: 5, r: 1 }, { x: 5, y: 5, r: 1 }, { x: 6, y: 5, r: 1 }, { x: 7, y: 5, r: 0.85 },
+            // Row 6 - junction (7 dots)
+            { x: 0, y: 6, r: 1 }, { x: 1, y: 6, r: 1 }, { x: 2, y: 6, r: 1 }, { x: 3, y: 6, r: 1 }, { x: 4, y: 6, r: 1 }, { x: 5, y: 6, r: 1 }, { x: 6, y: 6, r: 1 },
+            // Row 7 - stem + leg start
+            { x: 0, y: 7, r: 1 }, { x: 1, y: 7, r: 1 }, { x: 2, y: 7, r: 1 }, { x: 5, y: 7, r: 0.75 }, { x: 6, y: 7, r: 1 },
+            // Row 8
+            { x: 0, y: 8, r: 1 }, { x: 1, y: 8, r: 1 }, { x: 2, y: 8, r: 1 }, { x: 6, y: 8, r: 0.8 }, { x: 7, y: 8, r: 1 },
+            // Row 9
+            { x: 0, y: 9, r: 1 }, { x: 1, y: 9, r: 1 }, { x: 2, y: 9, r: 1 }, { x: 7, y: 9, r: 0.7 }, { x: 8, y: 9, r: 1 },
+            // Row 10
+            { x: 0, y: 10, r: 0.7 }, { x: 1, y: 10, r: 1 }, { x: 2, y: 10, r: 1 }, { x: 8, y: 10, r: 0.65 }, { x: 9, y: 10, r: 0.9 },
+            // Row 11 - bottom of diagonal (2 dots)
+            { x: 9, y: 11, r: 0.6 }, { x: 10, y: 11, r: 0.85 },
+        ];
+
+        const svg = d3.select("#logo-canvas");
+        const width = 400;
+        const height = 400;
+        const padding = 50;
+        const baseDotRadius = 11;
+
+        // Calculate grid bounds
+        const maxX = d3.max(rPattern, d => d.x);
+        const maxY = d3.max(rPattern, d => d.y);
+
+        // Scale pattern to SVG
+        const xScale = d3.scaleLinear().domain([0, maxX]).range([padding, width - padding]);
+        const yScale = d3.scaleLinear().domain([0, maxY]).range([padding, height - padding]);
+
+        // Create dots data
+        let dots = rPattern.map((target, i) => ({
+            id: i,
+            targetX: xScale(target.x),
+            targetY: yScale(target.y),
+            targetR: baseDotRadius * target.r,
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: 0,
+            vy: 0
+        }));
+
+        // Initialize dots
+        const circles = svg.selectAll("circle")
+            .data(dots)
+            .enter()
+            .append("circle")
+            .attr("r", d => d.targetR)
+            .attr("fill", "#2D2A26")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+
+        let simulation = null;
+        let animationStartTime = null;
+        let attractionStrength = 0;
+
+        function updateTimer(phase) {
+            document.getElementById('timer').textContent = phase;
+        }
+
+        function playAnimation() {
+            if (simulation) simulation.stop();
+            updateTimer('Chaos phase...');
+            animationStartTime = Date.now();
+            attractionStrength = 0;
+
+            // Scatter dots randomly
+            dots.forEach(d => {
+                d.x = Math.random() * width;
+                d.y = Math.random() * height;
+                d.vx = (Math.random() - 0.5) * 10;
+                d.vy = (Math.random() - 0.5) * 10;
+            });
+
+            circles.attr("cx", d => d.x).attr("cy", d => d.y);
+
+            // Create force simulation
+            simulation = d3.forceSimulation(dots)
+                .velocityDecay(0.3)
+                .force("random", () => {
+                    dots.forEach(d => {
+                        // Random chaos force (decreases over time)
+                        const chaosAmount = Math.max(0, 1 - attractionStrength);
+                        d.vx += (Math.random() - 0.5) * 3 * chaosAmount;
+                        d.vy += (Math.random() - 0.5) * 3 * chaosAmount;
+                    });
+                })
+                .force("attract", () => {
+                    dots.forEach(d => {
+                        // Attraction to target (increases over time)
+                        const dx = d.targetX - d.x;
+                        const dy = d.targetY - d.y;
+                        d.vx += dx * attractionStrength * 0.03;
+                        d.vy += dy * attractionStrength * 0.03;
+                    });
+                })
+                .force("bounds", () => {
+                    dots.forEach(d => {
+                        // Soft bounds
+                        if (d.x < 15) d.vx += 0.5;
+                        if (d.x > width - 15) d.vx -= 0.5;
+                        if (d.y < 15) d.vy += 0.5;
+                        if (d.y > height - 15) d.vy -= 0.5;
+                    });
+                })
+                .on("tick", () => {
+                    circles.attr("cx", d => d.x).attr("cy", d => d.y);
+                });
+
+            // Gradually increase attraction over 4 seconds
+            const startTime = Date.now();
+            const totalDuration = 4000;
+            const chaosPhase = 1800; // Pure chaos for first 1.8s
+
+            const attractionRamp = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+
+                if (elapsed < chaosPhase) {
+                    // Pure chaos phase
+                    attractionStrength = 0;
+                    updateTimer(`Chaos... ${((chaosPhase - elapsed) / 1000).toFixed(1)}s`);
+                } else if (elapsed < totalDuration) {
+                    // Coalescing phase - gradually increase attraction
+                    attractionStrength = Math.pow((elapsed - chaosPhase) / (totalDuration - chaosPhase), 1.5);
+                    updateTimer(`Coalescing... ${Math.round(attractionStrength * 100)}%`);
+                } else {
+                    // Done - snap to final positions
+                    clearInterval(attractionRamp);
+                    simulation.stop();
+
+                    // Smooth final snap
+                    circles.transition()
+                        .duration(300)
+                        .ease(d3.easeQuadOut)
+                        .attr("cx", d => d.targetX)
+                        .attr("cy", d => d.targetY)
+                        .on("end", function (event, d) {
+                            if (d.id === 0) {
+                                const elapsed = ((Date.now() - animationStartTime) / 1000).toFixed(1);
+                                updateTimer(`Complete! (${elapsed}s)`);
+
+                                // Subtle pulse
+                                circles.transition()
+                                    .duration(120)
+                                    .attr("r", d => d.targetR * 1.08)
+                                    .transition()
+                                    .duration(120)
+                                    .attr("r", d => d.targetR);
+                            }
+                        });
+                }
+            }, 50);
+        }
+
+        function showScattered() {
+            if (simulation) simulation.stop();
+            updateTimer('Scattered');
+            dots.forEach(d => {
+                d.x = Math.random() * width;
+                d.y = Math.random() * height;
+            });
+            circles.transition().duration(500)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+        }
+
+        function showFormed() {
+            if (simulation) simulation.stop();
+            updateTimer('Formed');
+            circles.transition().duration(800)
+                .ease(d3.easeQuadOut)
+                .attr("cx", d => d.targetX)
+                .attr("cy", d => d.targetY);
+        }
+
+        // Create static variants
+        function createStaticLogo(svgId, fillColor) {
+            const staticSvg = d3.select(svgId);
+            const size = 80;
+            const staticPadding = 6;
+
+            const staticXScale = d3.scaleLinear().domain([0, maxX]).range([staticPadding, size - staticPadding]);
+            const staticYScale = d3.scaleLinear().domain([0, maxY]).range([staticPadding, size - staticPadding]);
+
+            staticSvg.selectAll("circle")
+                .data(rPattern)
+                .enter()
+                .append("circle")
+                .attr("r", d => 2.8 * d.r)
+                .attr("fill", fillColor)
+                .attr("cx", d => staticXScale(d.x))
+                .attr("cy", d => staticYScale(d.y));
+        }
+
+        createStaticLogo("#variant-red", "#FFFFFF");
+        createStaticLogo("#variant-cream", "#2D2A26");
+        createStaticLogo("#variant-red-dots", "#9A3324");
+        createStaticLogo("#variant-dark", "#FAF6F1");
+
+        // Auto-play on load
+        setTimeout(playAnimation, 500);
+    </script>
+</body>
+
+</html>

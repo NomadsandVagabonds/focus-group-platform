@@ -228,7 +228,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
             {/* Sidebar */}
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
-                    <div className={styles.logoMark}>R</div>
+                    <img src="/logo.png" alt="R" className={styles.logoMark} />
                     <span className={styles.logoTextSmall}>Resonant</span>
                 </div>
 

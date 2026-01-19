@@ -56,16 +56,8 @@
 .logoMark {
     width: 42px;
     height: 42px;
-    background-color: #9A3324;
-    color: #F5F0E8;
-    font-family: 'Georgia', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 4px;
-    /* Sharper corners for academic feel */
+    object-fit: contain;
     box-shadow: 0 2px 8px rgba(154, 51, 36, 0.2);
 }
 
