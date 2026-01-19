@@ -146,8 +146,42 @@ export default function MarketingPage() {
                 </div>
             </section>
 
+            {/* Public Education & Media Section */}
+            <section style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                    <div>
+                        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#1A1A2E', marginBottom: '1.5rem' }}>
+                            Public education & media
+                        </h2>
+                        <p style={{ fontSize: '1.1rem', lineHeight: 1.75, color: '#2D3748', marginBottom: '1.5rem' }}>
+                            Research is only powerful if it reaches people. We produce video content,
+                            digital campaigns, and educational materials that translate complex findings
+                            into compelling narratives for public audiences.
+                        </p>
+                        <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: '#4A5568' }}>
+                            From explanatory shorts to targeted online campaigns, our media work is grounded
+                            in tested messaging and authentic audience insight—ensuring every piece we
+                            create has the best chance of cutting through.
+                        </p>
+                    </div>
+                    {/* Media Image Placeholder */}
+                    <div style={{
+                        aspectRatio: '16/9',
+                        background: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D8 100%)',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '2px dashed #C4B8A8',
+                        color: '#8B7355'
+                    }}>
+                        <span style={{ fontSize: '1rem', fontStyle: 'italic' }}>Media & campaigns — 16:9</span>
+                    </div>
+                </div>
+            </section>
+
             {/* Research Section */}
-            <section id="research" style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
+            <section id="research" style={{ padding: '6rem 5%', background: '#FFFFFF' }}>
                 <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
                     <h2 className={styles.sectionTitle} style={{ marginBottom: '2rem' }}>
                         Current research
@@ -197,8 +231,9 @@ export default function MarketingPage() {
                         <div style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Georgia', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Resonant</div>
                         <p style={{ fontSize: '0.85rem' }}>A 501(c)(3) nonprofit research organization.</p>
                     </div>
-                    <div style={{ fontSize: '0.85rem' }}>
-                        © 2026 Resonant Research
+                    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', fontSize: '0.85rem' }}>
+                        <Link href="/redesign/ethics" style={{ color: '#A0AEC0', textDecoration: 'none' }}>Ethical Funding</Link>
+                        <span>© 2026 Resonant Research</span>
                     </div>
                 </div>
             </footer>
