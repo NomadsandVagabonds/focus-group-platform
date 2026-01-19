@@ -29,6 +29,12 @@ interface Document {
     url: string;
 }
 
+interface Tag {
+    id: string;
+    name: string;
+    color: string;
+}
+
 export default function ParticipantDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [participant, setParticipant] = useState<Participant | null>(null);
@@ -48,9 +54,101 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Tags
+    const [allTags, setAllTags] = useState<Tag[]>([]);
+    const [participantTags, setParticipantTags] = useState<Tag[]>([]);
+    const [newTagName, setNewTagName] = useState('');
+    const [showTagDropdown, setShowTagDropdown] = useState(false);
+
     useEffect(() => {
         fetchParticipantData();
+        fetchAllTags();
     }, [id]);
+
+    const fetchAllTags = async () => {
+        try {
+            const res = await fetch('/api/tags');
+            const data = await res.json();
+            setAllTags(data || []);
+        } catch (error) {
+            console.error('Failed to fetch tags:', error);
+        }
+    };
+
+    const fetchParticipantTags = async (participantId: string) => {
+        try {
+            const res = await fetch(`/api/participants/${participantId}/tags`);
+            const data = await res.json();
+            setParticipantTags(data || []);
+        } catch (error) {
+            console.error('Failed to fetch participant tags:', error);
+        }
+    };
+
+    const addTagToParticipant = async (tagId: string) => {
+        if (!participant) return;
+        const newTags = [...participantTags.map(t => t.id), tagId];
+        try {
+            const res = await fetch(`/api/participants/${participant.id}/tags`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tagIds: newTags })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setParticipantTags(data);
+            }
+        } catch (error) {
+            console.error('Failed to add tag:', error);
+        }
+        setShowTagDropdown(false);
+    };
+
+    const removeTagFromParticipant = async (tagId: string) => {
+        if (!participant) return;
+        const newTags = participantTags.filter(t => t.id !== tagId).map(t => t.id);
+        try {
+            const res = await fetch(`/api/participants/${participant.id}/tags`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tagIds: newTags })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setParticipantTags(data);
+            }
+        } catch (error) {
+            console.error('Failed to remove tag:', error);
+        }
+    };
+
+    const createAndAddTag = async () => {
+        if (!newTagName.trim() || !participant) return;
+        try {
+            // Create new tag
+            const createRes = await fetch('/api/tags', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: newTagName.trim(),
+                    color: `hsl(${Math.random() * 360}, 60%, 50%)` // Random color
+                })
+            });
+            if (createRes.ok) {
+                const newTag = await createRes.json();
+                setAllTags(prev => [...prev, newTag]);
+                await addTagToParticipant(newTag.id);
+            } else if (createRes.status === 409) {
+                // Tag exists, find and add it
+                const existing = allTags.find(t => t.name.toLowerCase() === newTagName.trim().toLowerCase());
+                if (existing) await addTagToParticipant(existing.id);
+            }
+        } catch (error) {
+            console.error('Failed to create tag:', error);
+        }
+        setNewTagName('');
+        setShowTagDropdown(false);
+    };
 
     const fetchParticipantData = async () => {
         try {
@@ -71,8 +169,9 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                     setSummaryNotes(found.notes || '');
                     setFullNotes(found.metadata?.fullNotes as string || '');
 
-                    // Fetch documents
+                    // Fetch documents and tags
                     fetchDocuments(found.id);
+                    fetchParticipantTags(found.id);
                     break;
                 }
             }
@@ -255,6 +354,152 @@ export default function ParticipantDetailPage({ params }: { params: Promise<{ id
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="participant@example.com"
                             />
+                        </div>
+                    </div>
+
+                    {/* Tags Section */}
+                    <div className={styles.card}>
+                        <h2 className={styles.cardTitle}>Tags (for Segmentation)</h2>
+                        <p style={{ fontSize: '13px', color: '#718096', marginBottom: '12px' }}>
+                            Add tags for filtering data by demographics, attitudes, etc.
+                        </p>
+
+                        {/* Current tags */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                            {participantTags.map(tag => (
+                                <span
+                                    key={tag.id}
+                                    style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        padding: '4px 10px',
+                                        borderRadius: '16px',
+                                        background: tag.color || '#6B7280',
+                                        color: 'white',
+                                        fontSize: '12px',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    {tag.name}
+                                    <button
+                                        onClick={() => removeTagFromParticipant(tag.id)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: 'white',
+                                            cursor: 'pointer',
+                                            padding: 0,
+                                            fontSize: '14px',
+                                            opacity: 0.8
+                                        }}
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                            {participantTags.length === 0 && (
+                                <span style={{ color: '#A0AEC0', fontSize: '13px' }}>No tags yet</span>
+                            )}
+                        </div>
+
+                        {/* Add tag dropdown */}
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                className={styles.secondaryBtn}
+                                onClick={() => setShowTagDropdown(!showTagDropdown)}
+                                style={{ fontSize: '13px' }}
+                            >
+                                + Add Tag
+                            </button>
+
+                            {showTagDropdown && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    marginTop: '4px',
+                                    background: 'white',
+                                    border: '1px solid #E2E8F0',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                    zIndex: 100,
+                                    minWidth: '200px',
+                                    maxHeight: '250px',
+                                    overflowY: 'auto'
+                                }}>
+                                    {/* Create new tag input */}
+                                    <div style={{ padding: '8px', borderBottom: '1px solid #E2E8F0' }}>
+                                        <div style={{ display: 'flex', gap: '4px' }}>
+                                            <input
+                                                type="text"
+                                                value={newTagName}
+                                                onChange={(e) => setNewTagName(e.target.value)}
+                                                placeholder="Create new tag..."
+                                                onKeyDown={(e) => e.key === 'Enter' && createAndAddTag()}
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '6px 8px',
+                                                    border: '1px solid #E2E8F0',
+                                                    borderRadius: '4px',
+                                                    fontSize: '12px'
+                                                }}
+                                            />
+                                            <button
+                                                onClick={createAndAddTag}
+                                                disabled={!newTagName.trim()}
+                                                style={{
+                                                    padding: '6px 10px',
+                                                    background: '#9A3324',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '12px'
+                                                }}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Existing tags */}
+                                    {allTags
+                                        .filter(t => !participantTags.some(pt => pt.id === t.id))
+                                        .map(tag => (
+                                            <div
+                                                key={tag.id}
+                                                onClick={() => addTagToParticipant(tag.id)}
+                                                style={{
+                                                    padding: '8px 12px',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    borderBottom: '1px solid #F7FAFC'
+                                                }}
+                                                onMouseEnter={(e) => (e.currentTarget.style.background = '#F7FAFC')}
+                                                onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
+                                            >
+                                                <span
+                                                    style={{
+                                                        width: '12px',
+                                                        height: '12px',
+                                                        borderRadius: '50%',
+                                                        background: tag.color || '#6B7280'
+                                                    }}
+                                                />
+                                                <span style={{ fontSize: '13px' }}>{tag.name}</span>
+                                            </div>
+                                        ))}
+
+                                    {allTags.filter(t => !participantTags.some(pt => pt.id === t.id)).length === 0 && (
+                                        <div style={{ padding: '12px', color: '#A0AEC0', fontSize: '12px', textAlign: 'center' }}>
+                                            Type above to create a new tag
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
 
