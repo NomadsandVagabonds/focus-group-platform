@@ -11,9 +11,9 @@ function getSupabase() {
 // GET: Get tags for a participant
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ participantId: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const { participantId } = await params;
+    const { id } = await params;
 
     try {
         const supabase = getSupabase();
@@ -23,7 +23,7 @@ export async function GET(
                 id,
                 tag:tags(id, name, color)
             `)
-            .eq('participant_id', participantId);
+            .eq('participant_id', id);
 
         if (error) throw error;
 
@@ -39,9 +39,9 @@ export async function GET(
 // PUT: Set tags for a participant (replaces existing)
 export async function PUT(
     request: NextRequest,
-    { params }: { params: Promise<{ participantId: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const { participantId } = await params;
+    const { id } = await params;
 
     try {
         const supabase = getSupabase();
@@ -55,14 +55,14 @@ export async function PUT(
         await supabase
             .from('participant_tags')
             .delete()
-            .eq('participant_id', participantId);
+            .eq('participant_id', id);
 
         // Insert new tags
         if (tagIds.length > 0) {
             const { error: insertError } = await supabase
                 .from('participant_tags')
                 .insert(tagIds.map((tagId: string) => ({
-                    participant_id: participantId,
+                    participant_id: id,
                     tag_id: tagId
                 })));
 
@@ -73,7 +73,7 @@ export async function PUT(
         const { data } = await supabase
             .from('participant_tags')
             .select(`tag:tags(id, name, color)`)
-            .eq('participant_id', participantId);
+            .eq('participant_id', id);
 
         const tags = data?.map(pt => pt.tag) || [];
         return NextResponse.json(tags);
@@ -82,3 +82,4 @@ export async function PUT(
         return NextResponse.json({ error: 'Failed to update tags' }, { status: 500 });
     }
 }
+
