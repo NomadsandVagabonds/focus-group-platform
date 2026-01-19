@@ -29,32 +29,152 @@ export default function MarketingPage() {
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section className={styles.hero}>
-                <h1 className={styles.heroTitle}>
-                    Data-driven guidance for policymakers and partners<br />
-                    <span style={{ color: '#9A3324' }}>safeguarding the future of AI.</span>
-                </h1>
-                <p className={styles.heroSub}>
-                    Resonant unites rigorous public opinion research with public education
-                    to build bipartisan momentum for responsible AI governance.
-                </p>
-
-                {/* Hero Banner Placeholder */}
+            {/* Hero Section - Split Dramatic */}
+            <section style={{
+                minHeight: '100vh',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                background: 'linear-gradient(135deg, #FAF6F1 0%, #F5EDE4 100%)',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                {/* Left side - Typography */}
                 <div style={{
-                    width: '100%',
-                    maxWidth: '1000px',
-                    aspectRatio: '16/9',
-                    background: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D8 100%)',
-                    borderRadius: '12px',
-                    marginTop: '3rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    padding: '6rem 4rem 6rem 8%',
+                    position: 'relative',
+                    zIndex: 2
+                }}>
+                    <div style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        color: '#9A3324',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.2em',
+                        marginBottom: '2rem'
+                    }}>
+                        AI Safety Research
+                    </div>
+                    <h1 style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
+                        lineHeight: 1.05,
+                        color: '#1A1A2E',
+                        margin: 0,
+                        marginBottom: '1.5rem'
+                    }}>
+                        Data-driven<br />
+                        guidance for<br />
+                        <span style={{
+                            color: '#9A3324',
+                            fontStyle: 'italic'
+                        }}>safeguarding AI.</span>
+                    </h1>
+                    <p style={{
+                        fontSize: '1.15rem',
+                        lineHeight: 1.7,
+                        color: '#4A5568',
+                        maxWidth: '440px',
+                        marginBottom: '2.5rem'
+                    }}>
+                        Resonant unites rigorous public opinion research with public education
+                        to build bipartisan momentum for responsible AI governance.
+                    </p>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <a href="#platform" className={styles.demoBtn} style={{ padding: '1rem 2rem' }}>
+                            Explore Platform
+                        </a>
+                        <a href="#contact" className={styles.loginBtn} style={{ padding: '1rem 2rem' }}>
+                            Get in Touch
+                        </a>
+                    </div>
+                </div>
+
+                {/* Right side - Animated Viz Area */}
+                <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '2px dashed #C4B8A8',
-                    color: '#8B7355'
+                    position: 'relative',
+                    background: 'linear-gradient(180deg, rgba(154,51,36,0.03) 0%, rgba(154,51,36,0.08) 100%)'
                 }}>
-                    <span style={{ fontSize: '1.1rem', fontStyle: 'italic' }}>Hero image placeholder — 16:9</span>
+                    {/* Decorative elements */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '15%',
+                        right: '10%',
+                        width: '300px',
+                        height: '300px',
+                        borderRadius: '50%',
+                        border: '1px solid rgba(154,51,36,0.15)',
+                        opacity: 0.5
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '20%',
+                        left: '5%',
+                        width: '200px',
+                        height: '200px',
+                        borderRadius: '50%',
+                        border: '1px solid rgba(154,51,36,0.1)',
+                        opacity: 0.4
+                    }} />
+
+                    {/* Main viz placeholder */}
+                    <div style={{
+                        width: '85%',
+                        aspectRatio: '1/1',
+                        maxWidth: '500px',
+                        background: 'rgba(255,255,255,0.7)',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '24px',
+                        border: '1px solid rgba(154,51,36,0.1)',
+                        boxShadow: '0 40px 80px -20px rgba(154,51,36,0.15)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '2rem',
+                        position: 'relative'
+                    }}>
+                        <div style={{
+                            fontSize: '0.8rem',
+                            color: '#9A3324',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            marginBottom: '1rem'
+                        }}>
+                            Live Perception Data
+                        </div>
+                        <div style={{
+                            color: '#8B7355',
+                            fontStyle: 'italic',
+                            fontSize: '0.95rem',
+                            textAlign: 'center'
+                        }}>
+                            Interactive visualization<br />or platform screenshot
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scroll indicator */}
+                <div style={{
+                    position: 'absolute',
+                    bottom: '2rem',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    color: '#9A3324',
+                    opacity: 0.6
+                }}>
+                    <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Scroll</span>
+                    <div style={{ width: '1px', height: '30px', background: '#9A3324' }} />
                 </div>
             </section>
 
