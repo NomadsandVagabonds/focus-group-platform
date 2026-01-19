@@ -603,7 +603,7 @@ export default function MarketingPage() {
             <section id="platform" style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
                 <div className={styles.platformGrid}>
                     {/* Focus Group Platform Screenshot */}
-                    <div style={{
+                    <div className={styles.orderSecond} style={{
                         borderRadius: '12px',
                         overflow: 'hidden',
                         boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
@@ -618,7 +618,7 @@ export default function MarketingPage() {
                             }}
                         />
                     </div>
-                    <div>
+                    <div className={styles.orderFirst}>
                         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#1A1A2E', marginBottom: '1.5rem' }}>
                             Real-time perception tracking
                         </h2>
