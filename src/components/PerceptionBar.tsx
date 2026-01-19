@@ -19,10 +19,10 @@ interface PerceptionBarProps {
 }
 
 const EMOJI_PRESETS = [
-    { value: 12, emoji: '😠', label: 'Strongly Disagree', color: '#ef4444' },
-    { value: 37, emoji: '😕', label: 'Disagree', color: '#f97316' },
-    { value: 62, emoji: '🙂', label: 'Agree', color: '#22c55e' },
-    { value: 87, emoji: '😄', label: 'Strongly Agree', color: '#10b981' },
+    { value: 12, emoji: '👎👎', label: 'Strongly Disagree', color: '#ef4444' },
+    { value: 37, emoji: '👎', label: 'Disagree', color: '#f97316' },
+    { value: 62, emoji: '👍', label: 'Agree', color: '#22c55e' },
+    { value: 87, emoji: '👍👍', label: 'Strongly Agree', color: '#10b981' },
 ];
 
 export default function PerceptionBar({
@@ -159,9 +159,8 @@ export default function PerceptionBar({
             {/* Rating prompt */}
             {showPrompt && (
                 <div className={styles.prompt}>
-                    <span className={styles.promptIcon}>⚠️</span>
-                    <span>Please keep rating!</span>
-                    <span className={styles.promptIcon}>⚠️</span>
+                    <span className={styles.promptIcon}>📊</span>
+                    <span>Rate as you listen</span>
                 </div>
             )}
 

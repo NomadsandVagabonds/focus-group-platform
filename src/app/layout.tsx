@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: "FocusGroup - Real-time Perception Tracking",
-  description: "A web streaming platform for focus groups with Frank Luntz-style perception analyzer dial",
+  title: "Resonant - Focus Group Platform",
+  description: "A real-time focus group platform with perception tracking",
   keywords: ["focus group", "perception analyzer", "dial testing", "qualitative research", "video conferencing"],
 };
 
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }
+

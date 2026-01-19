@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     LiveKitRoom,
     VideoTrack,
@@ -14,6 +14,7 @@ import '@livekit/components-styles';
 import { Track, Room, ConnectionState, DataPacket_Kind, RoomEvent } from 'livekit-client';
 import { setRoom } from '@/lib/livekit-data';
 import { useVisibilityPause } from '@/hooks/useVisibilityPause';
+import { useToast } from '@/components/Toast';
 import styles from './ParticipantVideoGrid.module.css';
 
 interface ParticipantVideoGridProps {
@@ -40,18 +41,32 @@ function RoomHandler({
 }) {
     const room = useRoomContext();
     const connectionState = useConnectionState();
+    const { showToast } = useToast();
+    const prevState = useRef<ConnectionState | null>(null);
 
     useEffect(() => {
         if (!room) return;
 
-        if (connectionState === ConnectionState.Connected) {
-            console.log('[ParticipantGrid] Room CONNECTED');
-            setRoom(room);
-            onRoomConnected?.(room);
-        } else if (connectionState === ConnectionState.Disconnected) {
-            onRoomDisconnected?.();
+        // Only show toast on state change
+        if (prevState.current !== connectionState) {
+            if (connectionState === ConnectionState.Connected) {
+                console.log('[ParticipantGrid] Room CONNECTED');
+                setRoom(room);
+                onRoomConnected?.(room);
+                if (prevState.current === ConnectionState.Reconnecting) {
+                    showToast('Reconnected successfully', 'success');
+                }
+            } else if (connectionState === ConnectionState.Reconnecting) {
+                showToast('Connection lost. Reconnecting...', 'warning', 0);
+            } else if (connectionState === ConnectionState.Disconnected) {
+                if (prevState.current === ConnectionState.Connected || prevState.current === ConnectionState.Reconnecting) {
+                    showToast('Disconnected from session', 'error');
+                }
+                onRoomDisconnected?.();
+            }
+            prevState.current = connectionState;
         }
-    }, [room, connectionState, onRoomConnected, onRoomDisconnected]);
+    }, [room, connectionState, onRoomConnected, onRoomDisconnected, showToast]);
 
     return null;
 }
