@@ -436,7 +436,9 @@ export default function MarketingPage() {
                         Translating public sentiment into policy momentum
                     </h2>
                     <p style={{ fontSize: '1.2rem', lineHeight: 1.8, color: '#2D3748', marginBottom: '1.5rem' }}>
-                        Funders need to know what actually moves the needle. And the public deserves to be heard.
+                        The AI policy conversation moves faster than our democratic institutions can respond.
+                        Legislators need evidence. Advocates need data. Funders need to know what actually
+                        moves the needle. And the public deserves to be heard.
                     </p>
                     <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4A5568' }}>
                         Resonant provides the research infrastructure to understand how people actually weigh
