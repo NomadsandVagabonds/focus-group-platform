@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../../admin.module.css';
 import SessionAnalytics from '@/components/SessionAnalytics';
+import SessionTranscript from '@/components/SessionTranscript';
 
 interface Session {
     id: string;
@@ -317,6 +318,12 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
             {/* Session Analytics */}
             <div className={styles.card} style={{ marginTop: '20px' }}>
                 <SessionAnalytics sessionId={session.id} />
+            </div>
+
+            {/* Session Transcript */}
+            <div className={styles.card} style={{ marginTop: '20px' }}>
+                <h2 className={styles.cardTitle}>Session Transcript</h2>
+                <SessionTranscript sessionId={session.id} />
             </div>
 
             {/* Add Participant Modal */}
