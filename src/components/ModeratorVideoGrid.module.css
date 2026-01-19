@@ -685,6 +685,9 @@
 
     .moderatorStrip {
         padding: 8px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+        height: auto;
     }
 
     .perceptionBadge {
@@ -694,5 +697,53 @@
 
     .emptyIcon {
         font-size: 2rem;
+    }
+
+    /* Make media library and audio controls stack on mobile */
+    .mediaLibrary {
+        width: 140px;
+        height: 80px;
+    }
+
+    .audioControls {
+        width: 100px;
+        padding: 0 8px;
+    }
+
+    .notepadContainer {
+        min-width: 100px;
+        height: 70px;
+    }
+
+    .timerDisplay {
+        font-size: 1.25rem;
+    }
+}
+
+/* Very small screens - hide non-essential controls */
+@media (max-width: 480px) {
+    .mediaLibrary {
+        display: none;
+    }
+
+    .notepadContainer {
+        display: none;
+    }
+
+    .audioControls {
+        width: 80px;
+    }
+
+    .selfView {
+        width: 100px;
+        height: 60px;
+    }
+
+    .timerContainer {
+        padding: 0 8px;
+    }
+
+    .timerDisplay {
+        font-size: 1rem;
     }
 }

@@ -125,6 +125,36 @@ export default function PerceptionBar({
         triggerHaptic(presetValue);
     }, [triggerHaptic]);
 
+    // Handle keyboard arrow controls
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        let newValue = valueRef.current;
+        const step = e.shiftKey ? 10 : 5; // Bigger step with Shift held
+
+        switch (e.key) {
+            case 'ArrowLeft':
+            case 'ArrowDown':
+                e.preventDefault();
+                newValue = Math.max(0, valueRef.current - step);
+                break;
+            case 'ArrowRight':
+            case 'ArrowUp':
+                e.preventDefault();
+                newValue = Math.min(100, valueRef.current + step);
+                break;
+            default:
+                return;
+        }
+
+        setValue(newValue);
+        triggerHaptic(newValue);
+    }, [triggerHaptic]);
+
+    // Keyboard listener
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
     // Stable interval-based value reporting using refs
     useEffect(() => {
         if (!isActive) return;

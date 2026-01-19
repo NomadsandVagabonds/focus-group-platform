@@ -436,9 +436,7 @@ export default function MarketingPage() {
                         Translating public sentiment into policy momentum
                     </h2>
                     <p style={{ fontSize: '1.2rem', lineHeight: 1.8, color: '#2D3748', marginBottom: '1.5rem' }}>
-                        The AI policy conversation moves faster than our democratic institutions can respond.
-                        Legislators need evidence. Advocates need data. Funders need insight into what
-                        the public actually believes. And the public deserves to have that voice heard.
+                        Funders need to know what actually moves the needle. And the public deserves to be heard.
                     </p>
                     <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4A5568' }}>
                         Resonant provides the research infrastructure to understand how people actually weigh
@@ -451,11 +449,7 @@ export default function MarketingPage() {
             {/* Three Pillars Section */}
             <section style={{ padding: '5rem 5%', background: '#FFFFFF' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '2.5rem'
-                    }}>
+                    <div className={styles.grid}>
                         {/* Research Integrity */}
                         <div style={{
                             padding: '2rem',
@@ -605,7 +599,23 @@ export default function MarketingPage() {
 
             {/* Focus Group Platform Section */}
             <section id="platform" style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                <div className={styles.platformGrid}>
+                    {/* Focus Group Platform Screenshot */}
+                    <div style={{
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
+                    }}>
+                        <img
+                            src="/platform-screenshot.png"
+                            alt="Resonant focus group platform showing moderator view with live perception tracking"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block'
+                            }}
+                        />
+                    </div>
                     <div>
                         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#1A1A2E', marginBottom: '1.5rem' }}>
                             Real-time perception tracking
@@ -623,28 +633,12 @@ export default function MarketingPage() {
                             their thinking changes.
                         </p>
                     </div>
-                    {/* Focus Group Platform Screenshot */}
-                    <div style={{
-                        borderRadius: '12px',
-                        overflow: 'hidden',
-                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
-                    }}>
-                        <img
-                            src="/platform-screenshot.png"
-                            alt="Resonant focus group platform showing moderator view with live perception tracking"
-                            style={{
-                                width: '100%',
-                                height: 'auto',
-                                display: 'block'
-                            }}
-                        />
-                    </div>
                 </div>
             </section>
 
             {/* Survey Platform Section */}
             <section style={{ padding: '6rem 5%', background: '#FFFFFF' }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                <div className={styles.platformGrid}>
                     {/* Survey Screenshot */}
                     <div style={{
                         borderRadius: '12px',
@@ -681,7 +675,7 @@ export default function MarketingPage() {
 
             {/* Public Education & Media Section */}
             <section style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                <div className={styles.platformGrid}>
                     <div>
                         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#1A1A2E', marginBottom: '1.5rem' }}>
                             Public education & media
@@ -782,8 +776,8 @@ export default function MarketingPage() {
             </section>
 
             {/* Footer */}
-            <footer style={{ background: '#1A1A2E', color: '#718096', padding: '3rem 5%', borderTop: '1px solid #2D3748' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
+            <footer className={styles.footer}>
+                <div className={styles.footerContent}>
                     <div>
                         <div style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Georgia', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Resonant</div>
                         <p style={{ fontSize: '0.85rem' }}>A research organization focused on AI governance.</p>

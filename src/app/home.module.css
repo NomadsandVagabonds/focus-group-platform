@@ -235,13 +235,104 @@
     margin: 0 auto 2.5rem;
 }
 
+/* Two-column platform sections */
+.platformGrid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+/* Footer */
+.footer {
+    background: #1A1A2E;
+    color: #718096;
+    padding: 3rem 5%;
+    border-top: 1px solid #2D3748;
+}
+
+.footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
 @media (max-width: 768px) {
+    .hero {
+        padding: 6rem 5% 3rem;
+    }
+
     .heroTitle {
         font-size: 2.5rem;
+    }
+
+    .heroSub {
+        font-size: 1.1rem;
+    }
+
+    .heroImageWrapper {
+        margin-top: 2rem;
     }
 
     .marketingNav {
         display: none;
         /* simple hidden for mobile MVP */
+    }
+
+    .marketingHeader {
+        padding: 0.75rem 5%;
+    }
+
+    .sectionTitle {
+        font-size: 1.75rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .features {
+        padding: 4rem 5%;
+    }
+
+    .cta {
+        padding: 4rem 1.5rem;
+    }
+
+    .ctaTitle {
+        font-size: 2rem;
+    }
+
+    .platformGrid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footerContent {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+}
+
+/* Very small mobile */
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 2rem;
+    }
+
+    .heroSub {
+        font-size: 1rem;
+    }
+
+    .heroTag {
+        font-size: 0.75rem;
     }
 }

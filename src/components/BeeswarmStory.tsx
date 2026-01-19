@@ -113,6 +113,15 @@ export default function BeeswarmStory() {
     }, [currentStep, respondents]);
 
     // Intersection Observer for scroll-triggered storytelling
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -140,22 +149,25 @@ export default function BeeswarmStory() {
             {/* Scrollytelling Container - Key: display flex, no overflow hidden */}
             <div style={{
                 position: 'relative',
-                display: 'flex',
+                display: isMobile ? 'block' : 'flex',
                 background: '#f5f3ef'
             }}>
                 {/* Sticky Graphic - 55% width, 100vh, position sticky */}
                 <div style={{
                     position: 'sticky',
-                    top: 80,
-                    width: '55%',
-                    height: 'calc(100vh - 80px)',
+                    top: isMobile ? 60 : 80,
+                    width: isMobile ? '100%' : '55%',
+                    height: isMobile ? '60vh' : 'calc(100vh - 80px)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    paddingTop: '2rem',
-                    paddingLeft: '2rem',
-                    paddingRight: '2rem'
+                    paddingTop: isMobile ? '2rem' : '2rem',
+                    paddingLeft: isMobile ? '1rem' : '2rem',
+                    paddingRight: isMobile ? '1rem' : '2rem',
+                    paddingBottom: isMobile ? '3rem' : 0,
+                    marginBottom: isMobile ? '2rem' : 0,
+                    zIndex: 1
                 }}>
                     {/* Section Header - Inside sticky so it stays in frame */}
                     <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -279,8 +291,11 @@ export default function BeeswarmStory() {
 
                 {/* Scrolling Text - 45% width */}
                 <div style={{
-                    width: '45%',
-                    padding: '4rem 3rem'
+                    width: isMobile ? '100%' : '45%',
+                    padding: isMobile ? '2rem 1.5rem' : '4rem 3rem',
+                    position: isMobile ? 'relative' : 'static',
+                    zIndex: isMobile ? 2 : 'auto',
+                    marginTop: isMobile ? '-10vh' : 0
                 }}>
                     {steps.map((step, i) => (
                         <div
@@ -299,11 +314,16 @@ export default function BeeswarmStory() {
                         >
                             <div style={{
                                 padding: '24px',
-                                background: currentStep === i ? 'white' : 'transparent',
+                                background: isMobile
+                                    ? (currentStep === i
+                                        ? 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 100%)'
+                                        : 'rgba(255,255,255,0)')
+                                    : (currentStep === i ? 'white' : 'transparent'),
                                 borderRadius: '12px',
                                 border: currentStep === i ? '1px solid rgba(154,51,36,0.15)' : '1px solid transparent',
                                 boxShadow: currentStep === i ? '0 4px 20px rgba(0,0,0,0.06)' : 'none',
-                                transition: 'all 0.3s'
+                                transition: 'all 0.3s',
+                                backdropFilter: isMobile ? 'blur(2px)' : 'none'
                             }}>
                                 <div style={{
                                     width: 32,
