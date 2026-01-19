@@ -340,14 +340,14 @@ export default function MarketingPage() {
                             Public education & media
                         </h2>
                         <p style={{ fontSize: '1.1rem', lineHeight: 1.75, color: '#2D3748', marginBottom: '1.5rem' }}>
-                            Research is only powerful if it reaches people. We produce pilot video content
-                            and digital campaigns—then test them with our focus groups to find the narratives
-                            that actually resonate before going to market.
+                            Research only matters if it reaches the public. We produce pilot video content
+                            and educational campaigns—then rigorously test them with our focus groups to identify
+                            the messages that genuinely connect with people.
                         </p>
                         <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: '#4A5568' }}>
-                            Create many versions. Test with real audiences. Launch with confidence.
-                            Our integrated platform means every piece of creative is validated by
-                            authentic public response—not assumptions.
+                            Create multiple approaches. Test with real audiences. Refine until effective.
+                            Our integrated platform means every piece of content is validated by
+                            authentic public response—not assumptions or gut instinct.
                         </p>
                     </div>
                     {/* Media Image Placeholder */}
