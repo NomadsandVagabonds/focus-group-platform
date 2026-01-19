@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 interface Toast {
     id: string;
@@ -26,6 +26,23 @@ export function useToast() {
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
     const [toasts, setToasts] = useState<Toast[]>([]);
+
+    // Inject keyframes on mount
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const styleId = 'toast-keyframes';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                @keyframes toastSlideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }, []);
 
     const showToast = useCallback((
         message: string,
@@ -88,7 +105,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '10px',
-                                animation: 'slideIn 0.3s ease',
+                                animation: 'toastSlideIn 0.3s ease',
                                 cursor: 'pointer'
                             }}
                             onClick={() => removeToast(toast.id)}
@@ -103,19 +120,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                     );
                 })}
             </div>
-
-            <style jsx global>{`
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-            `}</style>
         </ToastContext.Provider>
     );
 }
+
