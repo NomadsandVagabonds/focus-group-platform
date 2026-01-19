@@ -1,15 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const ADMIN_SHARE_TOKEN = process.env.ADMIN_SHARE_TOKEN || '';
 
 /**
  * POST /api/admin-auth
- * Verify admin password and set auth cookie
+ * Verify admin password (or share token) and set auth cookie
  */
 export async function POST(request: NextRequest) {
     try {
-        const { password } = await request.json();
+        const { password, token } = await request.json();
 
+        // Check for share token (for shareable links)
+        if (token && ADMIN_SHARE_TOKEN && token === ADMIN_SHARE_TOKEN) {
+            const response = NextResponse.json({ success: true });
+            response.cookies.set('admin_auth', 'authenticated', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7, // 7 days for token access
+                path: '/',
+            });
+            return response;
+        }
+
+        // Regular password auth
         if (!password) {
             return NextResponse.json(
                 { error: 'Password is required' },
@@ -86,3 +101,4 @@ export async function DELETE() {
 
     return response;
 }
+

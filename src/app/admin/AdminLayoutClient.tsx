@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import styles from './admin.module.css';
 
@@ -11,14 +11,36 @@ interface AdminLayoutClientProps {
 
 export default function AdminLayoutClient({ children }: AdminLayoutClientProps) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Check authentication status on mount
+    // Check authentication status on mount (including URL token)
     useEffect(() => {
         async function checkAuth() {
+            // First check if there's a token in the URL
+            const urlToken = searchParams.get('token');
+            if (urlToken) {
+                try {
+                    const res = await fetch('/api/admin-auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: urlToken }),
+                    });
+                    if (res.ok) {
+                        setIsAuthenticated(true);
+                        // Clean up URL (remove token from query string)
+                        window.history.replaceState({}, '', pathname);
+                        return;
+                    }
+                } catch {
+                    // Token failed, continue to normal auth check
+                }
+            }
+
+            // Normal auth check
             try {
                 const res = await fetch('/api/admin-auth');
                 setIsAuthenticated(res.ok);
@@ -27,7 +49,7 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
             }
         }
         checkAuth();
-    }, []);
+    }, [searchParams, pathname]);
 
     // Handle login
     const handleLogin = async (e: React.FormEvent) => {
