@@ -429,9 +429,9 @@ export default function MarketingPage() {
                                 transition: 'opacity 1s',
                                 transitionDelay: '1.1s'
                             }}>
-                                <AnimatedStat value={47} label="Focus Groups" delay={1200} suffix="" />
-                                <AnimatedStat value={12000} label="Respondents" delay={1400} suffix="+" />
-                                <AnimatedStat value={8} label="Publications" delay={1600} suffix="" />
+                                <AnimatedStat value={67} label="Safety Over Speed" delay={1200} suffix="%" />
+                                <AnimatedStat value={80} label="Favor Testing" delay={1400} suffix="%" />
+                                <AnimatedStat value={82} label="Want Oversight" delay={1600} suffix="%" />
                             </div>
                         </div>
                     </div>
