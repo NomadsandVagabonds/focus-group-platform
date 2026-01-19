@@ -23,7 +23,16 @@ export default function MarketingPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Link href="/" className={styles.loginBtn}>
+                    <Link href="/" style={{
+                        background: '#9A3324',
+                        color: 'white',
+                        padding: '0.6rem 1.25rem',
+                        borderRadius: '6px',
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        textDecoration: 'none',
+                        boxShadow: '0 2px 8px rgba(154,51,36,0.2)'
+                    }}>
                         Login
                     </Link>
                 </div>
@@ -59,18 +68,18 @@ export default function MarketingPage() {
                     </div>
                     <h1 style={{
                         fontFamily: 'var(--font-serif)',
-                        fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-                        lineHeight: 1.05,
+                        fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                        lineHeight: 1.1,
                         color: '#1A1A2E',
                         margin: 0,
                         marginBottom: '1.5rem'
                     }}>
-                        Data-driven<br />
-                        guidance for<br />
+                        Guiding those who<br />
                         <span style={{
                             color: '#9A3324',
                             fontStyle: 'italic'
-                        }}>safeguarding AI.</span>
+                        }}>shape the future</span><br />
+                        of AI.
                     </h1>
                     <p style={{
                         fontSize: '1.15rem',
@@ -83,11 +92,11 @@ export default function MarketingPage() {
                         to build bipartisan momentum for responsible AI governance.
                     </p>
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                        <a href="#platform" className={styles.demoBtn} style={{ padding: '1rem 2rem' }}>
-                            Explore Platform
+                        <a href="#mission" className={styles.demoBtn} style={{ padding: '1rem 2rem' }}>
+                            Our Mission
                         </a>
                         <a href="#contact" className={styles.loginBtn} style={{ padding: '1rem 2rem' }}>
-                            Get in Touch
+                            Partner With Us
                         </a>
                     </div>
                 </div>
@@ -198,6 +207,34 @@ export default function MarketingPage() {
                 </div>
             </section>
 
+            {/* Humanity Section */}
+            <section style={{
+                padding: '5rem 5%',
+                background: 'linear-gradient(135deg, #9A3324 0%, #7A2A1E 100%)',
+                color: 'white'
+            }}>
+                <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+                    <p style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+                        lineHeight: 1.5,
+                        fontStyle: 'italic',
+                        margin: 0
+                    }}>
+                        "If AI represents the largest technological transformation since electricity,
+                        then the public deserves a voice in how we proceed."
+                    </p>
+                    <p style={{
+                        fontSize: '1rem',
+                        marginTop: '2rem',
+                        opacity: 0.8
+                    }}>
+                        We connect public opinion to policymakers—and help audiences understand the stakes
+                        so they can clearly voice what they want for the future.
+                    </p>
+                </div>
+            </section>
+
             {/* Focus Group Platform Section */}
             <section id="platform" style={{ padding: '6rem 5%', background: '#F8FAFC' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
@@ -274,14 +311,14 @@ export default function MarketingPage() {
                             Public education & media
                         </h2>
                         <p style={{ fontSize: '1.1rem', lineHeight: 1.75, color: '#2D3748', marginBottom: '1.5rem' }}>
-                            Research is only powerful if it reaches people. We produce video content,
-                            digital campaigns, and educational materials that translate complex findings
-                            into compelling narratives for public audiences.
+                            Research is only powerful if it reaches people. We produce pilot video content
+                            and digital campaigns—then test them with our focus groups to find the narratives
+                            that actually resonate before going to market.
                         </p>
                         <p style={{ fontSize: '1.05rem', lineHeight: 1.75, color: '#4A5568' }}>
-                            From explanatory shorts to targeted online campaigns, our media work is grounded
-                            in tested messaging and authentic audience insight—ensuring every piece we
-                            create has the best chance of cutting through.
+                            Create many versions. Test with real audiences. Launch with confidence.
+                            Our integrated platform means every piece of creative is validated by
+                            authentic public response—not assumptions.
                         </p>
                     </div>
                     {/* Media Image Placeholder */}
