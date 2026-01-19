@@ -50,8 +50,8 @@ function HeroCarousel() {
             }}>
                 {activeSlide === 0 ? (
                     <img
-                        src="/analytics-screenshot.png"
-                        alt="Session analytics showing perception data over time"
+                        src="/focus-group-lifestyle.jpg"
+                        alt="Researchers analyzing focus group session data"
                         style={{
                             width: '100%',
                             height: '100%',
