@@ -35,6 +35,8 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [newParticipantName, setNewParticipantName] = useState('');
+    const [kickConfirm, setKickConfirm] = useState<{ participant: Participant } | null>(null);
+    const [isKicking, setIsKicking] = useState(false);
 
     useEffect(() => {
         fetchSessionData();
@@ -84,6 +86,26 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
         const url = `${window.location.origin}/join/${session?.code}?p=${participant.code}`;
         navigator.clipboard.writeText(url);
         alert('Invite link copied!');
+    };
+
+    const handleKick = async (participant: Participant) => {
+        setIsKicking(true);
+        try {
+            const res = await fetch(`/api/participants/${participant.id}/kick`, {
+                method: 'POST',
+            });
+            if (res.ok) {
+                alert(`${participant.metadata?.name || participant.display_name || 'Participant'} has been removed from the session.`);
+            } else {
+                alert('Failed to remove participant');
+            }
+        } catch (error) {
+            console.error('Failed to kick participant:', error);
+            alert('Failed to remove participant');
+        } finally {
+            setIsKicking(false);
+            setKickConfirm(null);
+        }
     };
 
     const getStatusClass = (status: string) => {
@@ -184,15 +206,29 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                             Code: {p.code}
                                         </div>
                                     </div>
-                                    <button
-                                        className={styles.copyBtn}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            copyInviteUrl(p);
-                                        }}
-                                    >
-                                        Copy Link
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <button
+                                            className={styles.copyBtn}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                copyInviteUrl(p);
+                                            }}
+                                        >
+                                            Copy Link
+                                        </button>
+                                        {session.status === 'live' && (
+                                            <button
+                                                className={styles.copyBtn}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setKickConfirm({ participant: p });
+                                                }}
+                                                style={{ background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' }}
+                                            >
+                                                Kick
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
 
@@ -370,6 +406,51 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                 )
             }
+
+            {/* Kick Confirmation Modal */}
+            {kickConfirm && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
+                        <h2 className={styles.cardTitle} style={{ color: '#991B1B' }}>⚠️ Remove Participant</h2>
+
+                        <p style={{ marginBottom: '16px', color: '#4A5568' }}>
+                            Are you sure you want to remove <strong>{kickConfirm.participant.metadata?.name || kickConfirm.participant.display_name || 'this participant'}</strong> from the session?
+                        </p>
+                        <p style={{ marginBottom: '24px', fontSize: '0.875rem', color: '#718096' }}>
+                            They will be immediately disconnected from the video call.
+                        </p>
+
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button
+                                className={styles.primaryBtn}
+                                onClick={() => handleKick(kickConfirm.participant)}
+                                disabled={isKicking}
+                                style={{ background: '#991B1B' }}
+                            >
+                                {isKicking ? 'Removing...' : 'Yes, Remove'}
+                            </button>
+                            <button
+                                className={styles.secondaryBtn}
+                                onClick={() => setKickConfirm(null)}
+                                disabled={isKicking}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
