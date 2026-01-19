@@ -37,6 +37,8 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
     const [newParticipantName, setNewParticipantName] = useState('');
     const [kickConfirm, setKickConfirm] = useState<{ participant: Participant } | null>(null);
     const [isKicking, setIsKicking] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState<{ participant: Participant } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetchSessionData();
@@ -113,6 +115,26 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
             case 'live': return styles.statusLive;
             case 'completed': return styles.statusCompleted;
             default: return styles.statusScheduled;
+        }
+    };
+
+    const handleDelete = async (participant: Participant) => {
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/participants/${participant.id}`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                setParticipants(prev => prev.filter(p => p.id !== participant.id));
+            } else {
+                alert('Failed to delete participant');
+            }
+        } catch (error) {
+            console.error('Failed to delete participant:', error);
+            alert('Failed to delete participant');
+        } finally {
+            setIsDeleting(false);
+            setDeleteConfirm(null);
         }
     };
 
@@ -225,6 +247,17 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                             style={{ background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' }}
                                         >
                                             Kick
+                                        </button>
+                                        <button
+                                            className={styles.copyBtn}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setDeleteConfirm({ participant: p });
+                                            }}
+                                            style={{ background: '#F3F4F6', color: '#6B7280', borderColor: '#D1D5DB' }}
+                                            title="Delete participant"
+                                        >
+                                            🗑️
                                         </button>
                                     </div>
                                 </div>
@@ -442,6 +475,51 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 className={styles.secondaryBtn}
                                 onClick={() => setKickConfirm(null)}
                                 disabled={isKicking}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirm && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
+                        <h2 className={styles.cardTitle} style={{ color: '#6B7280' }}>🗑️ Delete Participant</h2>
+
+                        <p style={{ marginBottom: '16px', color: '#4A5568' }}>
+                            Are you sure you want to delete <strong>{deleteConfirm.participant.metadata?.name || deleteConfirm.participant.display_name || 'this participant'}</strong>?
+                        </p>
+                        <p style={{ marginBottom: '24px', fontSize: '0.875rem', color: '#718096' }}>
+                            This will permanently remove them from this session. Use this for participants who cancelled.
+                        </p>
+
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button
+                                className={styles.primaryBtn}
+                                onClick={() => handleDelete(deleteConfirm.participant)}
+                                disabled={isDeleting}
+                                style={{ background: '#6B7280' }}
+                            >
+                                {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+                            </button>
+                            <button
+                                className={styles.secondaryBtn}
+                                onClick={() => setDeleteConfirm(null)}
+                                disabled={isDeleting}
                             >
                                 Cancel
                             </button>
