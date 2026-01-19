@@ -133,6 +133,10 @@ function ModeratorLayout({
     const [mutedParticipants, setMutedParticipants] = useState<Set<string>>(new Set());
     const [modMuted, setModMuted] = useState(false);
 
+    // Kick confirmation state
+    const [kickConfirm, setKickConfirm] = useState<{ participantId: string; name: string } | null>(null);
+    const [isKicking, setIsKicking] = useState(false);
+
     // Broadcast mute command to participants
     const broadcastMuteCommand = useCallback((participantId: string | 'all', muted: boolean) => {
         if (!room?.localParticipant) return;
@@ -207,6 +211,32 @@ function ModeratorLayout({
             room.localParticipant.publishData(payload, { reliable: true });
         }
     }, [room]);
+
+    // Kick participant from session
+    const handleKick = useCallback(async (participantId: string) => {
+        if (!sessionId) return;
+        setIsKicking(true);
+        try {
+            // Need to look up participant ID from their code/identity
+            // For now, use the participant identity directly via a search
+            const res = await fetch(`/api/sessions/${sessionId}`);
+            if (res.ok) {
+                const data = await res.json();
+                const participant = data.participants?.find((p: { code: string }) => p.code === participantId);
+                if (participant) {
+                    const kickRes = await fetch(`/api/participants/${participant.id}/kick`, { method: 'POST' });
+                    if (kickRes.ok) {
+                        console.log('[Moderator] Kicked participant:', participantId);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Failed to kick participant:', error);
+        } finally {
+            setIsKicking(false);
+            setKickConfirm(null);
+        }
+    }, [sessionId]);
 
     // Report state changes to parent component
     useEffect(() => {
@@ -358,6 +388,15 @@ function ModeratorLayout({
                                         title={isMuted ? 'Click to unmute' : 'Click to mute'}
                                     >
                                         {isMuted ? '🔇' : '🎤'}
+                                    </button>
+
+                                    {/* Kick button */}
+                                    <button
+                                        className={styles.kickControl}
+                                        onClick={() => setKickConfirm({ participantId, name: participantId })}
+                                        title="Remove from session"
+                                    >
+                                        ✕
                                     </button>
 
                                     {/* Perception badge - bottom right */}
@@ -527,6 +566,48 @@ function ModeratorLayout({
                     </div>
                 </div>
             </div>
+
+            {/* Kick Confirmation Modal */}
+            {kickConfirm && (
+                <div className={styles.kickModal}>
+                    <div className={styles.kickModalContent}>
+                        <h3 style={{ color: '#991B1B', marginBottom: '12px' }}>⚠️ Remove Participant</h3>
+                        <p>Are you sure you want to remove <strong>{kickConfirm.name}</strong>?</p>
+                        <p style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '8px' }}>They will be disconnected immediately.</p>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                            <button
+                                onClick={() => handleKick(kickConfirm.participantId)}
+                                disabled={isKicking}
+                                style={{
+                                    background: '#991B1B',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
+                                    cursor: isKicking ? 'not-allowed' : 'pointer',
+                                    fontWeight: 600
+                                }}
+                            >
+                                {isKicking ? 'Removing...' : 'Yes, Remove'}
+                            </button>
+                            <button
+                                onClick={() => setKickConfirm(null)}
+                                disabled={isKicking}
+                                style={{
+                                    background: '#374151',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
