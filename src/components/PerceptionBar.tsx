@@ -159,8 +159,7 @@ export default function PerceptionBar({
             {/* Rating prompt */}
             {showPrompt && (
                 <div className={styles.prompt}>
-                    <span className={styles.promptIcon}>📊</span>
-                    <span>Rate as you listen</span>
+                    <span>Please Keep Rating Continuously</span>
                 </div>
             )}
 
