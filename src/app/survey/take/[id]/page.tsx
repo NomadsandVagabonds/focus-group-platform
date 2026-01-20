@@ -1,10 +1,8 @@
 // Survey Take Page - Public survey taking interface
 import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
-import SurveyRendererWrapper from '@/components/survey/SurveyRendererWrapper';
+import SurveyRenderer from '@/components/survey/SurveyRenderer';
 import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
-import '@/app/survey.css';
-import '@/app/survey-mobile.css';
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -125,7 +123,7 @@ export default async function SurveyTakePage({
     }
 
     return (
-        <SurveyRendererWrapper
+        <SurveyRenderer
             survey={survey as SurveyWithStructure}
             responseId={responseId}
             completionUrl={completionUrl}
