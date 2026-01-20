@@ -17,6 +17,15 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
     const [showQuestionEditor, setShowQuestionEditor] = useState(false);
     const [showExportMenu, setShowExportMenu] = useState(false);
 
+    // Get all questions for use in dropdowns (array filter, conditions, etc.)
+    const allQuestions = (survey.question_groups || []).flatMap(g =>
+        (g.questions || []).map(q => ({
+            code: q.code,
+            question_text: q.question_text,
+            question_type: q.question_type
+        }))
+    );
+
     const handleAddGroup = async () => {
         const newGroup = {
             survey_id: survey.id,
@@ -333,6 +342,7 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                     question={selectedQuestion}
                     onSave={handleSaveQuestion}
                     onCancel={() => setShowQuestionEditor(false)}
+                    allQuestions={allQuestions}
                 />
             )}
 

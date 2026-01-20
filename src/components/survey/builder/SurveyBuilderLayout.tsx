@@ -22,6 +22,15 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
     const [newGroupTitle, setNewGroupTitle] = useState('');
     const [selectedGroupForNewQuestion, setSelectedGroupForNewQuestion] = useState<string | null>(null);
 
+    // Get all questions for use in dropdowns (array filter, conditions, etc.)
+    const allQuestions = (localSurvey.question_groups || []).flatMap(g =>
+        (g.questions || []).map(q => ({
+            code: q.code,
+            question_text: q.question_text,
+            question_type: q.question_type
+        }))
+    );
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -374,6 +383,7 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                     question={selectedQuestion}
                     onSave={handleSaveQuestion}
                     onCancel={() => setShowQuestionEditor(false)}
+                    allQuestions={allQuestions}
                 />
             )}
 

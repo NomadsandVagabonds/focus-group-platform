@@ -9,11 +9,12 @@ interface QuestionEditorProps {
     question: Question & { subquestions?: Subquestion[]; answer_options?: AnswerOption[] };
     onSave: (question: Question) => void;
     onCancel: () => void;
+    allQuestions?: Array<{ code: string; question_text: string; question_type: string }>; // For array filter dropdown
 }
 
 type TabType = 'general' | 'options' | 'logic' | 'display';
 
-export default function QuestionEditor({ question: initialQuestion, onSave, onCancel }: QuestionEditorProps) {
+export default function QuestionEditor({ question: initialQuestion, onSave, onCancel, allQuestions = [] }: QuestionEditorProps) {
     const [mounted, setMounted] = useState(false);
     const [question, setQuestion] = useState(initialQuestion);
     const [subquestions, setSubquestions] = useState<Subquestion[]>(initialQuestion.subquestions || []);
@@ -381,19 +382,134 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                     {activeTab === 'logic' && (
                         <div className="tab-content">
                             <div className="form-section-compact">
-                                <h3 className="section-title">Conditional Display</h3>
+                                <h3 className="section-title">When should this question be shown?</h3>
+                                <p className="section-description">
+                                    You can make this question appear only when certain conditions are met - for example,
+                                    only show a follow-up question if the respondent answered "Yes" to a previous question.
+                                </p>
 
                                 <div className="form-group">
-                                    <label>Relevance Logic <span className="optional">(Optional)</span></label>
-                                    <input
-                                        type="text"
-                                        value={question.relevance_logic || ''}
-                                        onChange={(e) => setQuestion({ ...question, relevance_logic: e.target.value })}
-                                        placeholder="e.g., Q1 == 'A1' OR Q2 == 'A2'"
-                                        className="input-text code-font"
-                                    />
-                                    <small className="help-text">Show this question only when the condition is met</small>
+                                    <label>Show this question only when:</label>
+                                    <select
+                                        value={question.settings.show_condition_type || 'always'}
+                                        onChange={(e) => {
+                                            const condType = e.target.value;
+                                            if (condType === 'always') {
+                                                setQuestion({
+                                                    ...question,
+                                                    relevance: '1',
+                                                    settings: { ...question.settings, show_condition_type: 'always' }
+                                                });
+                                            } else {
+                                                setQuestion({
+                                                    ...question,
+                                                    settings: { ...question.settings, show_condition_type: condType }
+                                                });
+                                            }
+                                        }}
+                                        className="input-select"
+                                    >
+                                        <option value="always">Always show this question</option>
+                                        <option value="answered">A previous question was answered</option>
+                                        <option value="specific">A specific answer was selected</option>
+                                        <option value="custom">Custom condition (advanced)</option>
+                                    </select>
                                 </div>
+
+                                {question.settings.show_condition_type === 'answered' && (
+                                    <div className="form-group">
+                                        <label>Show when this question is answered:</label>
+                                        <select
+                                            value={question.settings.show_if_answered || ''}
+                                            onChange={(e) => {
+                                                const qCode = e.target.value;
+                                                setQuestion({
+                                                    ...question,
+                                                    relevance: qCode ? `!is_empty(${qCode})` : '1',
+                                                    settings: { ...question.settings, show_if_answered: qCode }
+                                                });
+                                            }}
+                                            className="input-select"
+                                        >
+                                            <option value="">Select a question...</option>
+                                            {allQuestions
+                                                .filter(q => q.code !== question.code)
+                                                .map(q => (
+                                                    <option key={q.code} value={q.code}>
+                                                        {q.code}: {q.question_text?.substring(0, 50) || 'Untitled'}...
+                                                    </option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                )}
+
+                                {question.settings.show_condition_type === 'specific' && (
+                                    <>
+                                        <div className="form-row-2">
+                                            <div className="form-group">
+                                                <label>When this question:</label>
+                                                <select
+                                                    value={question.settings.condition_source || ''}
+                                                    onChange={(e) =>
+                                                        setQuestion({
+                                                            ...question,
+                                                            settings: { ...question.settings, condition_source: e.target.value }
+                                                        })
+                                                    }
+                                                    className="input-select"
+                                                >
+                                                    <option value="">Select a question...</option>
+                                                    {allQuestions
+                                                        .filter(q => q.code !== question.code)
+                                                        .map(q => (
+                                                            <option key={q.code} value={q.code}>
+                                                                {q.code}: {q.question_text?.substring(0, 40) || 'Untitled'}...
+                                                            </option>
+                                                        ))
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Has the value:</label>
+                                                <input
+                                                    type="text"
+                                                    value={question.settings.condition_value || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        const src = question.settings.condition_source;
+                                                        setQuestion({
+                                                            ...question,
+                                                            relevance: src && val ? `${src} == '${val}'` : '1',
+                                                            settings: { ...question.settings, condition_value: val }
+                                                        });
+                                                    }}
+                                                    placeholder="e.g., Y or A1"
+                                                    className="input-text"
+                                                />
+                                            </div>
+                                        </div>
+                                        <small className="help-text">
+                                            Tip: For Yes/No questions use "Y" or "N". For multiple choice, use the answer code (like "A1").
+                                        </small>
+                                    </>
+                                )}
+
+                                {question.settings.show_condition_type === 'custom' && (
+                                    <div className="form-group">
+                                        <label>Custom condition (advanced):</label>
+                                        <input
+                                            type="text"
+                                            value={question.relevance || ''}
+                                            onChange={(e) => setQuestion({ ...question, relevance: e.target.value })}
+                                            placeholder="e.g., Q1 == 'A1' OR Q2 == 'A2'"
+                                            className="input-text code-font"
+                                        />
+                                        <small className="help-text">
+                                            Use question codes and values. Supports: ==, !=, AND, OR, !is_empty(), etc.
+                                        </small>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="form-section-compact">
@@ -507,60 +623,114 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                             </div>
 
                             <div className="form-section-compact">
-                                <h3 className="section-title">Advanced Options</h3>
+                                <h3 className="section-title">Show Only Selected Options From Another Question</h3>
+                                <p className="section-description">
+                                    Use this when you want this question to only show the options that the respondent
+                                    already selected in a previous question. For example: "Of the concerns you selected,
+                                    which THREE worry you most?"
+                                </p>
 
                                 <div className="form-group">
-                                    <label>Array Filter <span className="optional">(Optional)</span></label>
-                                    <input
-                                        type="text"
+                                    <label>Filter options based on answers from:</label>
+                                    <select
                                         value={question.settings.array_filter || ''}
                                         onChange={(e) =>
                                             setQuestion({
                                                 ...question,
-                                                settings: { ...question.settings, array_filter: e.target.value },
+                                                settings: { ...question.settings, array_filter: e.target.value || undefined },
                                             })
                                         }
-                                        placeholder="Filter expression"
-                                        className="input-text code-font"
-                                    />
+                                        className="input-select"
+                                    >
+                                        <option value="">No filter - show all options</option>
+                                        {allQuestions
+                                            .filter(q => q.code !== question.code) // Don't show self
+                                            .filter(q => ['M', 'multiple_choice_multiple', 'button_multi_select'].includes(q.question_type)) // Only multiple choice
+                                            .map(q => (
+                                                <option key={q.code} value={q.code}>
+                                                    {q.code}: {q.question_text?.substring(0, 60) || 'Untitled'}...
+                                                </option>
+                                            ))
+                                        }
+                                        <option disabled>───────────────</option>
+                                        <option disabled>Other questions (all types):</option>
+                                        {allQuestions
+                                            .filter(q => q.code !== question.code)
+                                            .filter(q => !['M', 'multiple_choice_multiple', 'button_multi_select'].includes(q.question_type))
+                                            .map(q => (
+                                                <option key={q.code} value={q.code}>
+                                                    {q.code}: {q.question_text?.substring(0, 60) || 'Untitled'}...
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                    <small className="help-text">
+                                        Only options that the respondent selected in the source question will appear here.
+                                    </small>
                                 </div>
 
-                                <div className="form-row-2">
-                                    <div className="form-group">
-                                        <label>Array Filter Style</label>
-                                        <select
-                                            value={question.settings.array_filter_style || 'hidden'}
-                                            onChange={(e) =>
-                                                setQuestion({
-                                                    ...question,
-                                                    settings: { ...question.settings, array_filter_style: e.target.value as 'hidden' | 'disabled' },
-                                                })
-                                            }
-                                            className="input-select"
-                                        >
-                                            <option value="hidden">Hidden</option>
-                                            <option value="disabled">Disabled</option>
-                                        </select>
+                                {question.settings.array_filter && (
+                                    <div className="info-box">
+                                        <strong>✓ Filter active:</strong> This question will only show options that match
+                                        codes selected in <code>{question.settings.array_filter}</code>. Make sure both
+                                        questions use the same option codes.
                                     </div>
+                                )}
+                            </div>
 
-                                    <div className="form-group">
-                                        <label>Exclusive Option</label>
-                                        <input
-                                            type="text"
-                                            value={question.settings.exclusive_option || ''}
-                                            onChange={(e) =>
-                                                setQuestion({
-                                                    ...question,
-                                                    settings: { ...question.settings, exclusive_option: e.target.value },
-                                                })
-                                            }
-                                            placeholder="Answer code"
-                                            className="input-text"
-                                        />
-                                    </div>
+                            <div className="form-section-compact">
+                                <h3 className="section-title">Exclusive "None of the Above" Option</h3>
+                                <p className="section-description">
+                                    For multiple choice questions, you can mark one option as "exclusive" - selecting it
+                                    will automatically deselect all other options.
+                                </p>
+
+                                <div className="form-group">
+                                    <label>Exclusive option code:</label>
+                                    <select
+                                        value={question.settings.exclusive_option || ''}
+                                        onChange={(e) =>
+                                            setQuestion({
+                                                ...question,
+                                                settings: { ...question.settings, exclusive_option: e.target.value || undefined },
+                                            })
+                                        }
+                                        className="input-select"
+                                    >
+                                        <option value="">None - no exclusive option</option>
+                                        {(subquestions.length > 0 ? subquestions : answerOptions).map(opt => (
+                                            <option key={opt.code} value={opt.code}>
+                                                {opt.code}: {opt.label || 'Untitled'}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <small className="help-text">
+                                        When selected, this option deselects all others. Common for "None of the above" or "I don't know".
+                                    </small>
                                 </div>
+                            </div>
+
+                            <div className="form-section-compact">
+                                <h3 className="section-title">Other Settings</h3>
 
                                 <div className="toggle-group">
+                                    <label className="toggle-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={question.settings.randomize_answers || false}
+                                            onChange={(e) =>
+                                                setQuestion({
+                                                    ...question,
+                                                    settings: { ...question.settings, randomize_answers: e.target.checked },
+                                                })
+                                            }
+                                        />
+                                        <span className="toggle-text">
+                                            <strong>Randomize answer order</strong>
+                                            <small>Show options in random order for each respondent (reduces order bias)</small>
+                                        </span>
+                                    </label>
+
                                     <label className="toggle-label">
                                         <input
                                             type="checkbox"
@@ -573,8 +743,8 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                                             }
                                         />
                                         <span className="toggle-text">
-                                            <strong>Numbers Only for 'Other'</strong>
-                                            <small>Restrict 'Other' field to numeric input only</small>
+                                            <strong>Numbers only for "Other" field</strong>
+                                            <small>If "Other" option is enabled, only allow numbers (useful for age, quantity, etc.)</small>
                                         </span>
                                     </label>
                                 </div>
@@ -765,6 +935,34 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
             color: var(--color-text-primary);
             margin: 0;
             font-weight: 600;
+          }
+
+          .section-description {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+            line-height: 1.5;
+            padding: 0.75rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--color-crimson);
+          }
+
+          .info-box {
+            background: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #166534;
+          }
+
+          .info-box code {
+            background: rgba(0,0,0,0.1);
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
           }
 
           .section-header-inline {
