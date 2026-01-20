@@ -109,17 +109,23 @@ export default function QuestionLoader({
     }
 
     const questionText = question.question_text || question.text || '';
+    const settings = question.settings || {};
+
+    // Hide equation questions or questions with hidden setting
+    if (questionType === 'equation' || questionType === '*' || settings.hidden) {
+        return null;
+    }
 
     return (
         <div className="question-container">
             {/* Question label */}
             <div className="question-label">
-                {questionNumber && <span className="question-number">Q{questionNumber}. </span>}
+                {question.mandatory && <span className="required-marker">* </span>}
+                {questionNumber && <span className="question-number">{questionNumber} </span>}
                 <span
                     className="question-text"
                     dangerouslySetInnerHTML={{ __html: questionText }}
                 />
-                {question.mandatory && <span className="required-marker"> *</span>}
                 {showQuestionCode && <span className="question-code"> [{question.code}]</span>}
             </div>
 
@@ -138,6 +144,7 @@ export default function QuestionLoader({
                 question={question}
                 value={responseData.get(question.code)}
                 onChange={(value: any) => onAnswer(question.code, value)}
+                onAnswer={(code: string, value: any, subCode?: string) => onAnswer(code, value, subCode)}
                 subquestions={question.subquestions || []}
                 answerOptions={question.answer_options || []}
                 responseData={responseData}
@@ -165,6 +172,7 @@ export default function QuestionLoader({
                 }
                 .required-marker {
                     color: #c94a4a;
+                    font-weight: bold;
                 }
                 .question-code {
                     font-size: 0.75rem;

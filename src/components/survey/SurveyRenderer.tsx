@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { ExpressionEngine } from '@/lib/survey/expression-engine';
-import { ValidationEngine } from '@/lib/survey/validation-engine';
 import QuestionLoader from './QuestionLoader';
-import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
+import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
 
 interface SurveyRendererProps {
     survey: SurveyWithStructure;
@@ -68,6 +67,15 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
             return newData;
         });
 
+        // Clear validation error when user answers
+        if (validationErrors.has(questionCode)) {
+            setValidationErrors(prev => {
+                const newErrors = new Map(prev);
+                newErrors.delete(questionCode);
+                return newErrors;
+            });
+        }
+
         // Save to server (skip in preview)
         if (!isPreview) {
             fetch('/api/survey/response', {
@@ -81,22 +89,45 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                 }),
             }).catch(err => console.error('Error saving response:', err));
         }
-    }, [responseId, isPreview]);
+    }, [responseId, isPreview, validationErrors]);
 
     const handleNext = useCallback(() => {
         // Validate current group
         const errors = new Map<string, string>();
         for (const question of visibleQuestions) {
-            if (question.mandatory) {
-                const value = responseData.get(question.code);
-                if (value === undefined || value === null || value === '') {
-                    errors.set(question.code, 'This question is required');
+            // Skip hidden/equation questions
+            const qType = question.question_type || (question as any).type;
+            if (qType === 'equation' || qType === '*' || question.settings?.hidden) {
+                continue;
+            }
+
+            if (question.mandatory || question.settings?.mandatory) {
+                // For array questions, check if all subquestions are answered
+                if (question.subquestions && question.subquestions.length > 0) {
+                    const unanswered = question.subquestions.some(subq => {
+                        const key = `${question.code}_${subq.code}`;
+                        const value = responseData.get(key);
+                        return value === undefined || value === null || value === '';
+                    });
+                    if (unanswered) {
+                        errors.set(question.code, 'Please answer all rows in this question');
+                    }
+                } else {
+                    // Simple question - check direct value
+                    const value = responseData.get(question.code);
+                    if (value === undefined || value === null || value === '') {
+                        errors.set(question.code, 'This question is required');
+                    }
                 }
             }
         }
 
         if (errors.size > 0) {
             setValidationErrors(errors);
+            // Scroll to first error
+            const firstErrorKey = errors.keys().next().value;
+            const errorElement = document.querySelector(`[data-question="${firstErrorKey}"]`);
+            errorElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
 
@@ -130,19 +161,23 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
         }
     }, [currentGroupIndex]);
 
+    const progressPercent = visibleGroups.length > 0
+        ? Math.round(((currentGroupIndex) / visibleGroups.length) * 100)
+        : 0;
+
     // Welcome Phase
     if (phase === 'welcome') {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
-                {isPreview && <div style={{ background: 'orange', color: 'white', padding: '0.5rem', marginBottom: '1rem' }}>Preview Mode</div>}
-                <h1>{settings.welcome_title || survey.title}</h1>
-                <p>{settings.welcome_message || survey.description || 'Welcome to this survey.'}</p>
-                <button
-                    onClick={() => setPhase('questions')}
-                    style={{ padding: '1rem 2rem', fontSize: '1.1rem', cursor: 'pointer', marginTop: '1rem' }}
-                >
-                    {settings.welcome_button_text || 'Start Survey'}
-                </button>
+            <div className="survey-page">
+                {isPreview && <div className="preview-banner">Preview Mode</div>}
+                <div className="survey-card welcome-card">
+                    <h1>{settings.welcome_title || survey.title}</h1>
+                    <p>{settings.welcome_message || survey.description || 'Welcome to this survey.'}</p>
+                    <button className="btn-primary" onClick={() => setPhase('questions')}>
+                        {settings.welcome_button_text || 'Start Survey'}
+                    </button>
+                </div>
+                <style jsx>{surveyStyles}</style>
             </div>
         );
     }
@@ -150,78 +185,252 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
     // Complete Phase
     if (phase === 'complete') {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
-                <h1>{settings.end_title || 'Thank You!'}</h1>
-                <p>{settings.end_message || 'Your response has been recorded.'}</p>
-                {isPreview ? (
-                    <p style={{ color: 'orange' }}>Preview Mode - No data saved</p>
-                ) : (
-                    <a href={completionUrl} style={{ display: 'inline-block', marginTop: '1rem', padding: '1rem 2rem' }}>
-                        Continue
-                    </a>
-                )}
+            <div className="survey-page">
+                <div className="survey-card welcome-card">
+                    <h1>{settings.end_title || 'Thank You!'}</h1>
+                    <p>{settings.end_message || 'Your response has been recorded.'}</p>
+                    {isPreview ? (
+                        <p className="preview-note">Preview Mode - No data saved</p>
+                    ) : (
+                        <a href={completionUrl} className="btn-primary">
+                            Continue
+                        </a>
+                    )}
+                </div>
+                <style jsx>{surveyStyles}</style>
             </div>
         );
     }
 
     // Questions Phase
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
-            {isPreview && <div style={{ background: 'orange', color: 'white', padding: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>Preview Mode</div>}
+        <div className="survey-page">
+            {isPreview && <div className="preview-banner">Preview Mode</div>}
 
-            <h1>{survey.title}</h1>
-
+            {/* Progress bar */}
             {settings.show_progress_bar !== false && (
-                <div style={{ background: '#eee', height: '8px', borderRadius: '4px', marginBottom: '1rem' }}>
-                    <div
-                        style={{
-                            background: '#4CAF50',
-                            height: '100%',
-                            borderRadius: '4px',
-                            width: `${((currentGroupIndex + 1) / visibleGroups.length) * 100}%`,
-                            transition: 'width 0.3s',
-                        }}
-                    />
+                <div className="progress-container">
+                    <div className="progress-text">{progressPercent}%</div>
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
+                    </div>
                 </div>
             )}
 
-            {currentGroup && (
-                <div style={{ marginBottom: '2rem' }}>
-                    {currentGroup.title && <h2>{currentGroup.title}</h2>}
-                    {currentGroup.description && <p style={{ color: '#666' }}>{currentGroup.description}</p>}
-                </div>
-            )}
+            {/* Question card */}
+            <div className="survey-card">
+                {visibleQuestions.map((question, index) => {
+                    // Skip hidden/equation questions entirely
+                    const qType = question.question_type || (question as any).type;
+                    if (qType === 'equation' || qType === '*' || question.settings?.hidden) {
+                        return null;
+                    }
 
-            {visibleQuestions.map((question, index) => (
-                <div key={question.id} style={{ marginBottom: '2rem', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
-                    <QuestionLoader
-                        question={question}
-                        responseData={responseData}
-                        onAnswer={handleAnswer}
-                        randomizationSeed={responseId}
-                        validationError={validationErrors.get(question.code)}
-                        responseId={responseId}
-                        questionNumber={settings.show_question_number ? index + 1 : undefined}
-                        showQuestionCode={settings.show_question_code}
-                    />
-                </div>
-            ))}
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-                {settings.allow_backward_navigation !== false && currentGroupIndex > 0 ? (
-                    <button onClick={handleBack} style={{ padding: '0.75rem 1.5rem', cursor: 'pointer' }}>
-                        ← Back
-                    </button>
-                ) : (
-                    <div />
-                )}
-                <button
-                    onClick={handleNext}
-                    style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', background: '#4CAF50', color: 'white', border: 'none' }}
-                >
-                    {currentGroupIndex < visibleGroups.length - 1 ? 'Next →' : 'Submit'}
-                </button>
+                    return (
+                        <div
+                            key={question.id}
+                            className={`question-wrapper ${validationErrors.has(question.code) ? 'has-error' : ''}`}
+                            data-question={question.code}
+                        >
+                            <QuestionLoader
+                                question={question}
+                                responseData={responseData}
+                                onAnswer={handleAnswer}
+                                randomizationSeed={responseId}
+                                validationError={validationErrors.get(question.code)}
+                                responseId={responseId}
+                                questionNumber={settings.show_question_number !== false ? index + 1 : undefined}
+                                showQuestionCode={settings.show_question_code}
+                            />
+                        </div>
+                    );
+                })}
             </div>
+
+            {/* Navigation */}
+            <div className="nav-container">
+                <div className="nav-left">
+                    {settings.allow_backward_navigation !== false && currentGroupIndex > 0 && (
+                        <button className="btn-secondary" onClick={handleBack}>
+                            ← Previous
+                        </button>
+                    )}
+                </div>
+                <div className="nav-right">
+                    <button className="btn-primary" onClick={handleNext}>
+                        {currentGroupIndex < visibleGroups.length - 1 ? 'Next' : 'Submit'}
+                    </button>
+                </div>
+            </div>
+
+            <style jsx>{surveyStyles}</style>
         </div>
     );
 }
+
+const surveyStyles = `
+    .survey-page {
+        min-height: 100vh;
+        background: #d4c5b0;
+        padding: 2rem 1rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #1a1d24;
+    }
+
+    .preview-banner {
+        background: #f5a623;
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .progress-container {
+        max-width: 900px;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .progress-text {
+        color: #c94a4a;
+        font-weight: 700;
+        font-size: 0.875rem;
+        min-width: 40px;
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 6px;
+        background: #e0ddd8;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #c94a4a;
+        transition: width 0.3s ease;
+    }
+
+    .survey-card {
+        background: white;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .welcome-card {
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+
+    .welcome-card h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        color: #1a1d24;
+    }
+
+    .welcome-card p {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .preview-note {
+        color: #f5a623;
+        font-style: italic;
+    }
+
+    .question-wrapper {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e8e5e0;
+    }
+
+    .question-wrapper:last-child {
+        border-bottom: none;
+    }
+
+    .question-wrapper.has-error {
+        background: #fff8f8;
+        margin: 0 -2rem;
+        padding: 1.5rem 2rem;
+        border-left: 3px solid #c94a4a;
+    }
+
+    .nav-container {
+        max-width: 900px;
+        margin: 1.5rem auto 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-left, .nav-right {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: #c94a4a;
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary:hover {
+        background: #b03a3a;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #666;
+        border: 1px solid #ccc;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+        background: #f5f3ef;
+        border-color: #999;
+    }
+
+    @media (max-width: 768px) {
+        .survey-page {
+            padding: 1rem 0.5rem;
+        }
+
+        .survey-card {
+            padding: 1.5rem 1rem;
+            border-radius: 0;
+        }
+
+        .question-wrapper.has-error {
+            margin: 0 -1rem;
+            padding: 1.5rem 1rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.75rem 1.25rem;
+        }
+    }
+`;
