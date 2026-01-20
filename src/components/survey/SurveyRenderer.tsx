@@ -3,7 +3,63 @@
 import { useState, useMemo, useCallback } from 'react';
 import { ExpressionEngine } from '@/lib/survey/expression-engine';
 import QuestionLoader from './QuestionLoader';
-import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
+import type { SurveyWithStructure, Question, Subquestion, AnswerOption } from '@/lib/supabase/survey-types';
+
+// Type for question with nested data
+type QuestionWithNested = Question & {
+    subquestions: Subquestion[];
+    answer_options: AnswerOption[];
+};
+
+/**
+ * Apply array filter (cascading options) to a question
+ * If the question has settings.array_filter set to another question code,
+ * only show options that match selected values from the source question
+ */
+function applyArrayFilter(
+    question: QuestionWithNested,
+    responseData: Map<string, any>,
+    allQuestions: QuestionWithNested[]
+): QuestionWithNested {
+    const filterSource = question.settings?.array_filter || question.settings?.filter_source;
+    if (!filterSource) return question;
+
+    // Find the source question
+    const sourceQuestion = allQuestions.find(q => q.code === filterSource);
+    if (!sourceQuestion) return question;
+
+    // Get selected codes from source question (multiple choice stores as Q_code = 'Y')
+    const selectedCodes = new Set<string>();
+
+    // Check source question's subquestions and answer_options for selections
+    const sourceOptions = [
+        ...(sourceQuestion.subquestions || []),
+        ...(sourceQuestion.answer_options || [])
+    ];
+
+    sourceOptions.forEach(opt => {
+        const key = `${filterSource}_${opt.code}`;
+        if (responseData.get(key) === 'Y' || responseData.get(key) === true) {
+            selectedCodes.add(opt.code);
+        }
+    });
+
+    // If nothing selected in source, show nothing (or could show all - depends on preference)
+    if (selectedCodes.size === 0) {
+        return {
+            ...question,
+            subquestions: [],
+            answer_options: []
+        };
+    }
+
+    // Filter current question's options to only include those selected in source
+    return {
+        ...question,
+        subquestions: (question.subquestions || []).filter(sq => selectedCodes.has(sq.code)),
+        answer_options: (question.answer_options || []).filter(ao => selectedCodes.has(ao.code))
+    };
+}
 
 interface SurveyRendererProps {
     survey: SurveyWithStructure;
@@ -27,6 +83,11 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
     const sortedGroups = useMemo(() => {
         return [...(survey.question_groups || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
     }, [survey.question_groups]);
+
+    // Get all questions across all groups (for array filter lookups)
+    const allQuestions = useMemo(() => {
+        return sortedGroups.flatMap(g => g.questions || []) as QuestionWithNested[];
+    }, [sortedGroups]);
 
     // Filter visible groups
     const visibleGroups = useMemo(() => {
@@ -101,10 +162,26 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                 continue;
             }
 
+            // Apply array filter to get actual visible options
+            const filteredQuestion = applyArrayFilter(
+                question as QuestionWithNested,
+                responseData,
+                allQuestions
+            );
+
+            // Skip validation if array filter resulted in no options
+            const hasArrayFilter = question.settings?.array_filter || question.settings?.filter_source;
+            if (hasArrayFilter) {
+                const hasOptions = (filteredQuestion.subquestions?.length || 0) + (filteredQuestion.answer_options?.length || 0) > 0;
+                if (!hasOptions) {
+                    continue; // Skip validation - question is hidden
+                }
+            }
+
             if (question.mandatory || question.settings?.mandatory) {
-                // For array questions, check if all subquestions are answered
-                if (question.subquestions && question.subquestions.length > 0) {
-                    const unanswered = question.subquestions.some(subq => {
+                // For array questions, check if all VISIBLE subquestions are answered
+                if (filteredQuestion.subquestions && filteredQuestion.subquestions.length > 0) {
+                    const unanswered = filteredQuestion.subquestions.some(subq => {
                         const key = `${question.code}_${subq.code}`;
                         const value = responseData.get(key);
                         return value === undefined || value === null || value === '';
@@ -226,6 +303,22 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                         return null;
                     }
 
+                    // Apply array filter (cascading options from source question)
+                    const filteredQuestion = applyArrayFilter(
+                        question as QuestionWithNested,
+                        responseData,
+                        allQuestions
+                    );
+
+                    // Skip if array filter resulted in no options
+                    const hasArrayFilter = question.settings?.array_filter || question.settings?.filter_source;
+                    if (hasArrayFilter) {
+                        const hasOptions = (filteredQuestion.subquestions?.length || 0) + (filteredQuestion.answer_options?.length || 0) > 0;
+                        if (!hasOptions) {
+                            return null; // Hide question if no options after filtering
+                        }
+                    }
+
                     return (
                         <div
                             key={question.id}
@@ -233,7 +326,7 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                             data-question={question.code}
                         >
                             <QuestionLoader
-                                question={question}
+                                question={filteredQuestion}
                                 responseData={responseData}
                                 onAnswer={handleAnswer}
                                 randomizationSeed={responseId}
