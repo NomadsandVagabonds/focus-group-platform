@@ -1,0 +1,308 @@
+{
+    "title": "AI Safety Messaging Survey (735545)",
+    "description": "Testing public perceptions of AI safety messages - Resonant conversion",
+    "status": "draft",
+    "settings": {
+        "format": "group_by_group",
+        "theme": "editorial_academic",
+        "show_progress_bar": true,
+        "allow_backward_navigation": false,
+        "prolific_integration": {
+            "enabled": true,
+            "completion_code": "C1ABCDEF",
+            "screenout_code": "SOUT1234"
+        }
+    },
+    "question_groups": [
+        {
+            "title": "Screening",
+            "order_index": 0,
+            "questions": [
+                {
+                    "code": "Q1",
+                    "question_text": "Please select all AI-related topics you have heard about:",
+                    "question_type": "array",
+                    "order_index": 0,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "subquestions": [
+                        {
+                            "code": "SQ001",
+                            "label": "Deepfakes (AI-generated fake videos/images)",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "SQ002",
+                            "label": "ChatGPT or other AI chatbots",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "SQ003",
+                            "label": "AI in hiring or employment decisions",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "SQ004",
+                            "label": "Self-driving cars",
+                            "order_index": 3
+                        },
+                        {
+                            "code": "SQ005",
+                            "label": "AI in healthcare or medical diagnosis",
+                            "order_index": 4
+                        },
+                        {
+                            "code": "SQ006",
+                            "label": "AI safety or AI risks",
+                            "order_index": 5
+                        }
+                    ],
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "I've heard of this",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "I haven't heard of this",
+                            "order_index": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Demographics",
+            "order_index": 1,
+            "questions": [
+                {
+                    "code": "Q2",
+                    "question_text": "What is your age?",
+                    "question_type": "text",
+                    "order_index": 0,
+                    "settings": {
+                        "mandatory": true,
+                        "validation_regex": "^[0-9]{1,3}$",
+                        "validation_message": "Please enter a valid age"
+                    }
+                },
+                {
+                    "code": "Q3a",
+                    "question_text": "What is your gender?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 1,
+                    "settings": {
+                        "mandatory": true,
+                        "other_option": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "Male",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "Female",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Non-binary",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "A4",
+                            "label": "Prefer not to say",
+                            "order_index": 3
+                        }
+                    ]
+                },
+                {
+                    "code": "Q3b",
+                    "question_text": "What is your highest level of education?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 2,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "Less than high school",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "High school graduate",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Some college",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "A4",
+                            "label": "Bachelor's degree",
+                            "order_index": 3
+                        },
+                        {
+                            "code": "A5",
+                            "label": "Graduate degree",
+                            "order_index": 4
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Message A - Mainstream Regulation",
+            "order_index": 2,
+            "questions": [
+                {
+                    "code": "Q10a_A",
+                    "question_text": "AI technology is advancing rapidly and affecting more areas of our lives—from hiring decisions to medical diagnoses to what we see online. Like other powerful technologies, AI needs clear rules and oversight to make sure it's developed safely and benefits everyone, not just tech companies. We need commonsense regulations that protect people while allowing innovation to continue.",
+                    "question_type": "text_display",
+                    "order_index": 0
+                },
+                {
+                    "code": "Q10b_A",
+                    "question_text": "After reading this message, how do you feel about AI?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 1,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "More worried about AI",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "No change",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Less worried about AI",
+                            "order_index": 2
+                        }
+                    ]
+                },
+                {
+                    "code": "Q10c_A",
+                    "question_text": "How credible or believable do you find this message?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 2,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "Very credible",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "Somewhat credible",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Not very credible",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "A4",
+                            "label": "Not at all credible",
+                            "order_index": 3
+                        }
+                    ]
+                },
+                {
+                    "code": "Q10d_A",
+                    "question_text": "How likely would you be to support policies based on this message?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 3,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "Very likely",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "Somewhat likely",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Not very likely",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "A4",
+                            "label": "Not at all likely",
+                            "order_index": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Final Questions",
+            "order_index": 3,
+            "questions": [
+                {
+                    "code": "Q11",
+                    "question_text": "Overall, how concerned are you about the development of artificial intelligence?",
+                    "question_type": "multiple_choice_single",
+                    "order_index": 0,
+                    "settings": {
+                        "mandatory": true
+                    },
+                    "answer_options": [
+                        {
+                            "code": "A1",
+                            "label": "Very concerned",
+                            "order_index": 0
+                        },
+                        {
+                            "code": "A2",
+                            "label": "Somewhat concerned",
+                            "order_index": 1
+                        },
+                        {
+                            "code": "A3",
+                            "label": "Not very concerned",
+                            "order_index": 2
+                        },
+                        {
+                            "code": "A4",
+                            "label": "Not at all concerned",
+                            "order_index": 3
+                        }
+                    ]
+                },
+                {
+                    "code": "Q12",
+                    "question_text": "Do you have any additional thoughts or feedback about AI safety?",
+                    "question_type": "long_text",
+                    "order_index": 1,
+                    "settings": {
+                        "mandatory": false
+                    }
+                }
+            ]
+        }
+    ]
+}

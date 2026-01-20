@@ -54,7 +54,7 @@ export default function PerceptionBar({
                     setValue(parsed);
                     // Also notify parent immediately so data stream is consistent
                     if (onValueChange) {
-                        onValueChange(parsed, Date.now());
+                        onValueChange(parsed, Date.now(), lastInteractionTimeRef.current);
                     }
                 }
             }

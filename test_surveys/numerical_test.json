@@ -1,0 +1,146 @@
+{
+  "title": "Numerical Question Types Test",
+  "status": "draft",
+  "settings": {
+    "format": "all_in_one",
+    "show_progress_bar": false,
+    "theme": "editorial_academic"
+  },
+  "question_groups": [
+    {
+      "title": "Single Numerical Questions",
+      "description": "Testing single number input questions",
+      "order_index": 0,
+      "questions": [
+        {
+          "code": "Q1",
+          "question_text": "What is your age?",
+          "question_type": "numerical",
+          "order_index": 0,
+          "settings": {
+            "mandatory": true,
+            "min_value": 18,
+            "max_value": 120,
+            "suffix": "years"
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q2",
+          "question_text": "What is your annual income?",
+          "question_type": "numerical",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "min_value": 0,
+            "prefix": "$",
+            "placeholder": "Enter amount"
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q3",
+          "question_text": "Enter a percentage (0-100):",
+          "question_type": "numerical",
+          "order_index": 2,
+          "settings": {
+            "mandatory": false,
+            "min_value": 0,
+            "max_value": 100,
+            "decimal_places": 1,
+            "suffix": "%"
+          },
+          "subquestions": [],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "Multiple Numerical Questions",
+      "description": "Testing multiple number input questions",
+      "order_index": 1,
+      "questions": [
+        {
+          "code": "Q4",
+          "question_text": "Please provide your body measurements:",
+          "question_type": "multiple_numerical",
+          "order_index": 0,
+          "settings": {
+            "mandatory": false,
+            "min_value": 0
+          },
+          "subquestions": [
+            { "code": "height", "label": "Height (cm)", "order_index": 0 },
+            { "code": "weight", "label": "Weight (kg)", "order_index": 1 },
+            { "code": "age", "label": "Age (years)", "order_index": 2 }
+          ],
+          "answer_options": []
+        },
+        {
+          "code": "Q5",
+          "question_text": "How many hours per week do you spend on the following activities?",
+          "question_type": "multiple_numerical",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "min_value": 0,
+            "max_value": 168,
+            "suffix": "hours"
+          },
+          "subquestions": [
+            { "code": "work", "label": "Working", "order_index": 0 },
+            { "code": "sleep", "label": "Sleeping", "order_index": 1 },
+            { "code": "exercise", "label": "Exercising", "order_index": 2 },
+            { "code": "leisure", "label": "Leisure activities", "order_index": 3 }
+          ],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "Array Questions",
+      "description": "Testing array/matrix question types",
+      "order_index": 2,
+      "questions": [
+        {
+          "code": "Q6",
+          "question_text": "Rate each feature on a scale of 1-10:",
+          "question_type": "array_numbers",
+          "order_index": 0,
+          "settings": {
+            "mandatory": true,
+            "min_value": 1,
+            "max_value": 10,
+            "suffix": "Score"
+          },
+          "subquestions": [
+            { "code": "ease", "label": "Ease of use", "order_index": 0 },
+            { "code": "design", "label": "Visual design", "order_index": 1 },
+            { "code": "speed", "label": "Performance speed", "order_index": 2 },
+            { "code": "value", "label": "Value for money", "order_index": 3 }
+          ],
+          "answer_options": []
+        },
+        {
+          "code": "Q7",
+          "question_text": "Please provide feedback for each area:",
+          "question_type": "array_texts",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "placeholder": "Enter your feedback...",
+            "max_answers": 200
+          },
+          "subquestions": [
+            { "code": "like", "label": "What did you like?", "order_index": 0 },
+            { "code": "improve", "label": "What could be improved?", "order_index": 1 },
+            { "code": "suggest", "label": "Any suggestions?", "order_index": 2 }
+          ],
+          "answer_options": []
+        }
+      ]
+    }
+  ]
+}

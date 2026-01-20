@@ -1,0 +1,3396 @@
+{
+  "title": "AI Safety Messaging Survey (735545) - Complete from XML",
+  "description": "Full survey with all conditional logic and randomization preserved",
+  "status": "draft",
+  "settings": {
+    "format": "question_by_question",
+    "theme": "editorial_academic",
+    "show_progress_bar": true,
+    "allow_backward_navigation": false,
+    "prolific_integration": {
+      "enabled": true,
+      "completion_code": "CLLV7C0K",
+      "screenout_code": "SCREENOUT"
+    }
+  },
+  "question_groups": [
+    {
+      "title": "Screener",
+      "order_index": 1,
+      "settings": {
+        "relevance": "1",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q1",
+          "question_text": "How concerned are you about each of the following issues facing the country today?",
+          "question_type": "array",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "F",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": "1",
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "The economy and jobs",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "Healthcare",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "Immigration",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "Crime and public safety",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "Climate change",
+              "order_index": 4
+            },
+            {
+              "code": "SQ006",
+              "label": "Artificial intelligence",
+              "order_index": 5
+            },
+            {
+              "code": "SQ007",
+              "label": "Terrorism and war",
+              "order_index": 6
+            },
+            {
+              "code": "SQ008",
+              "label": "Housing costs",
+              "order_index": 7
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Extremely concerned",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Very concerned",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Somewhat concerned",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not too concerned",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Not at all concerned",
+              "order_index": 4
+            },
+            {
+              "code": "A6",
+              "label": "Not sure",
+              "order_index": 5
+            }
+          ]
+        },
+        {
+          "code": "ChinaQPlacement",
+          "question_text": "{rand(1,2)}",
+          "question_type": "equation",
+          "order_index": 2,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "{rand(1,2)}",
+            "limesurvey_type": "*",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "1",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "Screener_Q2",
+      "order_index": 2,
+      "settings": {
+        "relevance": "1",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q2",
+          "question_text": "Now please rank these same issues from most important (top) to least important (bottom) to you personally.",
+          "question_type": "ranking",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "<strong>Drag</strong> or <strong>Double click</strong> each item from the left to 'Your ranking' on the right.",
+            "limesurvey_type": "R",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "The economy and jobs",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Healthcare",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Immigration",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Crime and public safety",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Climate change",
+              "order_index": 4
+            },
+            {
+              "code": "A6",
+              "label": "Artificial intelligence",
+              "order_index": 5
+            },
+            {
+              "code": "A7",
+              "label": "Terrorism and War",
+              "order_index": 6
+            },
+            {
+              "code": "A8",
+              "label": "Housing costs",
+              "order_index": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BaselineA_Types_Concern",
+      "order_index": 3,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q3a",
+          "question_text": "Which of the following aspects of AI concern you? (Select ALL that apply)",
+          "question_type": "multiple_choice_multiple",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": true,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "M",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": "2",
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": "0",
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "Job losses and economic disruption",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "Privacy and surveillance",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "Spread of misinformation and deepfakes",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "Bias and discrimination in AI decisions",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "Impact on children and psychological development",
+              "order_index": 4
+            },
+            {
+              "code": "SQ006",
+              "label": "AI being used for scams and fraud",
+              "order_index": 5
+            },
+            {
+              "code": "SQ007",
+              "label": "Companies having too much power over AI",
+              "order_index": 6
+            },
+            {
+              "code": "SQ008",
+              "label": "Governments using AI to control people",
+              "order_index": 7
+            },
+            {
+              "code": "SQ009",
+              "label": "AI systems making mistakes in important decisions",
+              "order_index": 8
+            },
+            {
+              "code": "SQ010",
+              "label": "AI being used in weapons and warfare",
+              "order_index": 9
+            },
+            {
+              "code": "SQ011",
+              "label": "People using AI to cause large-scale harm (cyberattacks, bioweapons, etc.)",
+              "order_index": 10
+            },
+            {
+              "code": "SQ012",
+              "label": "AI developing goals that conflict with human interests",
+              "order_index": 11
+            },
+            {
+              "code": "SQ014",
+              "label": "Environmental impacts of data centers",
+              "order_index": 12
+            },
+            {
+              "code": "other",
+              "label": "Other",
+              "order_index": 999
+            }
+          ],
+          "answer_options": []
+        },
+        {
+          "code": "Q3b",
+          "question_text": "Of the concerns you just selected, which THREE worry you the MOST?",
+          "question_type": "multiple_choice_multiple",
+          "order_index": 2,
+          "settings": {
+            "mandatory": false,
+            "other": true,
+            "relevance": "1",
+            "help_text": "Please select at most 3 answers",
+            "limesurvey_type": "M",
+            "array_filter": "Q3a",
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": "3",
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": "0",
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "Job losses and economic disruption",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "Privacy and surveillance",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "Spread of misinformation and deepfakes",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "Bias and discrimination in AI decisions",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "Impact on children and psychological development",
+              "order_index": 4
+            },
+            {
+              "code": "SQ006",
+              "label": "AI being used for scams and fraud",
+              "order_index": 5
+            },
+            {
+              "code": "SQ007",
+              "label": "Companies having too much power over AI",
+              "order_index": 6
+            },
+            {
+              "code": "SQ008",
+              "label": "Governments using AI to control people",
+              "order_index": 7
+            },
+            {
+              "code": "SQ009",
+              "label": "AI systems making mistakes in important decisions",
+              "order_index": 8
+            },
+            {
+              "code": "SQ010",
+              "label": "AI being used in weapons and warfare",
+              "order_index": 9
+            },
+            {
+              "code": "SQ011",
+              "label": "People using AI to cause large-scale harm (cyberattacks, bioweapons, etc.)",
+              "order_index": 10
+            },
+            {
+              "code": "SQ012",
+              "label": "AI developing goals that conflict with human interests",
+              "order_index": 11
+            },
+            {
+              "code": "SQ014",
+              "label": "Environmental impacts of data centers",
+              "order_index": 12
+            },
+            {
+              "code": "other",
+              "label": "Other",
+              "order_index": 999
+            }
+          ],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "BaselineA_Concern",
+      "order_index": 4,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q4",
+          "question_text": "Overall, how concerned are you about the potential negative effects of AI on society?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Extremely concerned",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Very concerned",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Somewhat concerned",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not too concerned",
+              "order_index": 4
+            },
+            {
+              "code": "A5",
+              "label": "Not at all concerned",
+              "order_index": 5
+            },
+            {
+              "code": "A6",
+              "label": "Not sure",
+              "order_index": 6
+            }
+          ]
+        },
+        {
+          "code": "Q9",
+          "question_text": "Which of these statements comes closest to your view?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "AI development should be paused or slowed down significantly until we better understand the risks",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "AI development should continue but with much stronger government oversight and regulation",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Current levels of oversight are about right",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "There is too much regulation of AI already; development should be less restricted",
+              "order_index": 4
+            },
+            {
+              "code": "A5",
+              "label": "I don't know enough to have an opinion",
+              "order_index": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BaselineA_Impact",
+      "order_index": 5,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q5",
+          "question_text": "Overall, would you say the increased use of artificial intelligence in daily life makes you feel...",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More excited than concerned",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "More concerned than excited",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Equally concerned and excited",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not sure",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q6",
+          "question_text": "How much, if at all, do you think AI will negatively affect <strong>you personally</strong> in the coming years?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "A great deal",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "A moderate amount",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Some",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not too much",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Not at all",
+              "order_index": 4
+            },
+            {
+              "code": "A6",
+              "label": "Not sure",
+              "order_index": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BaselineA_Salience",
+      "order_index": 6,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q7",
+          "question_text": "How much, if at all, do you think AI will negatively affect <strong>future generations</strong>?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "A great deal",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "A moderate amount",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Some",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not too much",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Not at all",
+              "order_index": 4
+            },
+            {
+              "code": "A6",
+              "label": "Not sure",
+              "order_index": 5
+            }
+          ]
+        },
+        {
+          "code": "Q8",
+          "question_text": "How much would a political candidate's position on AI regulation affect your vote?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "It would be one of the most important factors",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "It would be a significant factor among several",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "It would be a minor factor",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "It would not affect my vote at all",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Not sure",
+              "order_index": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BaselineA_Trust",
+      "order_index": 7,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "TrustTech",
+          "question_text": "How much do you trust AI companies (like OpenAI, Google, Meta, and others) to develop AI responsibly and in the public interest?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "A great deal",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very much",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all",
+              "order_index": 3
+            },
+            {
+              "code": "A99",
+              "label": "Not sure",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "TrustGov",
+          "question_text": "How much do you trust the US government to effectively regulate AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": true,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "other",
+              "label": "Other",
+              "order_index": 999
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "A great deal",
+              "order_index": 0
+            },
+            {
+              "code": "AO02",
+              "label": "Somewhat",
+              "order_index": 1
+            },
+            {
+              "code": "AO03",
+              "label": "Not very much",
+              "order_index": 2
+            },
+            {
+              "code": "AO04",
+              "label": "Not at all",
+              "order_index": 3
+            },
+            {
+              "code": "A99",
+              "label": "Not sure",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "SpeedVsSafety",
+          "question_text": "When it comes to the U.S. government's approach to AI, which of the following statements comes closer to your personal view?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "ChinaQPlacement == 1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "The government should prioritize developing AI as fast as possible to compete with countries like China, even if that means fewer safety rules for now.",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "The government should prioritize creating safety rules for AI, even if that means the U.S. develops AI more slowly than countries like China.",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not sure",
+              "order_index": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "OpinionStability",
+      "order_index": 8,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q9b",
+          "question_text": "How much do you agree or disagree with the following statement?<br><br><em>\"I could easily change my mind about the risks of artificial intelligence.\"</em>",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Strongly agree",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat agree",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Neither agree nor disagree",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Somewhat disagree",
+              "order_index": 4
+            },
+            {
+              "code": "A5",
+              "label": "Strongly disagree",
+              "order_index": 5
+            }
+          ]
+        },
+        {
+          "code": "Q9c",
+          "question_text": "How much do you agree or disagree with the following statement?<br><br><em>\"I have all the information I need to form a firm opinion about the risks of artificial intelligence.\"</em>",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Strongly agree",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat agree",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Neither agree nor disagree",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Somewhat disagree",
+              "order_index": 4
+            },
+            {
+              "code": "A5",
+              "label": "Strongly disagree",
+              "order_index": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageInstructions",
+      "order_index": 9,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "MsgInstr",
+          "question_text": "<p>On the following pages, you will read several short statements about AI policy. \n        These represent different perspectives people have shared about how society should approach AI development.</p>\n        <p>After each statement, we'll ask for your reactions. There are no right or wrong answers\u2014we're interested in your honest opinions.</p>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "MessageA",
+      "order_index": 10,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgA",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">AI is already deciding who gets hired, influencing medical care, and shaping what information we see. We regulate cars and banks. AI should be no different. We need commonsense rules that protect people while allowing innovation to continue.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aA",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bA",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cA",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO02",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO03",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO04",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO05",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageB",
+      "order_index": 11,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgB",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">AI chatbots have encouraged suicide and triggered psychotic episodes in vulnerable users. People are replacing human relationships with AI companions. These aren't hypothetical risks. They're happening right now. AI products face no independent safety testing before release. That needs to change.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aB",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bB",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More Worried",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No Change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less Worried",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cB",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": true,
+            "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "other",
+              "label": "Other",
+              "order_index": 999
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO02",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO03",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO04",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageC",
+      "order_index": 12,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgC",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">Millions of American jobs are in jeopardy from AI. Already, the benefits are flowing to shareholders while workers and communities risk being left behind. We need policies that ensure AI helps workers, not just replaces them.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aC",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bC",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cC",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO02",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO03",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO04",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO05",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageD",
+      "order_index": 13,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgD",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">Leading AI researchers, including many who built these systems, are warning that current AI development practices are inadequate. These systems are becoming more powerful but we don't fully understand how they work or how to ensure they behave as intended. Before deploying AI in critical areas, we need better testing methods and safety standards\u2014the same way we'd want safety testing before a new aircraft carries passengers.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aD",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bD",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More Worried",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No Change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less Worried",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cD",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO02",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO03",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO04",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageE",
+      "order_index": 14,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgE",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">Decisions about AI's role in society shouldn't be made by a handful of tech executives in Silicon Valley. AI affects all of us, so the public should have a voice in how it's developed and deployed. We need democratic oversight, not just industry self-regulation, to ensure AI serves the common good and doesn't concentrate power in the hands of a few corporations.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aE",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bE",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cE",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO02",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO03",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO04",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageF",
+      "order_index": 15,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgF",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">Advanced AI could pose catastrophic risks to humanity. Like nuclear technology, it's too powerful for any one country to manage alone. Without international safety agreements, we face a global race to the bottom. We need binding frameworks now, before it's too late.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aF",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bF",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cF",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "",
+              "order_index": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageG",
+      "order_index": 16,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgG",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">Children are uniquely vulnerable to AI. They're being shaped by algorithms, engaging with chatbots, and deepfakes are being used to exploit them. They can't protect themselves. We need strong safeguards for young people from AI-related harms.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aG",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bG",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cG",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO01",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO02",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO03",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO04",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "MessageH",
+      "order_index": 17,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": "messages"
+      },
+      "questions": [
+        {
+          "code": "MsgH",
+          "question_text": "<p>Please read the following statement carefully:</p>\n\n<blockquote style=\"border-left: 4px solid #666; padding: 1em; margin: 1em 0; background: #f9f9f9; font-style: normal;\">AI could cause human extinction. We are creating a new form of intelligence that may see humans as irrelevant or as obstacles to its goals. If we lose control of advanced AI systems, it could be the end of humanity. Many leading AI researchers believe this is a realistic possibility. We need a global pause now on the most dangerous AI development.</blockquote>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "Q10aH",
+          "question_text": "How convincing did you find this statement?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very convincing",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat convincing",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "Not very convincing",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "Not at all convincing",
+              "order_index": 4
+            }
+          ]
+        },
+        {
+          "code": "Q10bH",
+          "question_text": "How did this message make you feel?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10cH",
+          "question_text": "Did you find this statement...",
+          "question_type": "multiple_choice_single",
+          "order_index": 4,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "AO02",
+              "label": "Realistic",
+              "order_index": 0
+            },
+            {
+              "code": "AO03",
+              "label": "Plausible",
+              "order_index": 1
+            },
+            {
+              "code": "AO04",
+              "label": "Exaggerated",
+              "order_index": 2
+            },
+            {
+              "code": "AO05",
+              "label": "Alarmist",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BehavioralIntentions",
+      "order_index": 18,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "SpeedVsSafetyB",
+          "question_text": "When it comes to the U.S. government's approach to AI, which of the following statements comes closer to your personal view?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": true,
+            "relevance": "ChinaQPlacement == 2",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "other",
+              "label": "Other",
+              "order_index": 999
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "The government should prioritize developing AI as fast as possible to compete with countries like China, even if that means fewer safety rules for now.",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "The government should prioritize creating safety rules for AI, even if that means the U.S. develops AI more slowly than countries like China.",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not sure",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q11",
+          "question_text": "Have you ever done any of the following because of concerns about AI?",
+          "question_type": "multiple_choice_multiple",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "Select all that apply",
+            "limesurvey_type": "M",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "Signed a petition related to AI policy",
+              "order_index": 1
+            },
+            {
+              "code": "SQ002",
+              "label": "Contacted an elected representative about AI",
+              "order_index": 2
+            },
+            {
+              "code": "SQ003",
+              "label": "Donated to an organization working on AI issues",
+              "order_index": 3
+            },
+            {
+              "code": "SQ004",
+              "label": "Shared information about AI risks on social media",
+              "order_index": 4
+            },
+            {
+              "code": "SQ005",
+              "label": "Attended a meeting, protest, or rally about AI or technology",
+              "order_index": 5
+            },
+            {
+              "code": "SQ006",
+              "label": "Talked to friends or family to persuade them to care about AI",
+              "order_index": 6
+            },
+            {
+              "code": "SQ007",
+              "label": "Changed how you personally use AI tools based on safety concerns",
+              "order_index": 7
+            },
+            {
+              "code": "SQ008",
+              "label": "None of these",
+              "order_index": 8
+            }
+          ],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "BehavioralIntentions_Future",
+      "order_index": 19,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q12",
+          "question_text": "How likely would you be to take each of the following actions related to AI policy in the next year?",
+          "question_type": "array",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "F",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": "1",
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "Sign a petition about AI regulation",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "Share information about AI risks on social media",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "Contact an elected representative about AI",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "Donate to an organization working on AI safety",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "Vote for a candidate partly based on their AI position",
+              "order_index": 4
+            },
+            {
+              "code": "SQ006",
+              "label": "Discuss AI risks with friends or family",
+              "order_index": 5
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "BehavioralIntentions_Barriers",
+      "order_index": 20,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q13",
+          "question_text": "What, if anything, holds you back from being more active on AI issues?",
+          "question_type": "multiple_choice_multiple",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "Select all that apply",
+            "limesurvey_type": "M",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": "0",
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "I don't feel I know enough about AI to speak up",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "I don't think my actions would make a difference",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "I have other more pressing priorities",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "I worry that US regulations alone won't work if other countries don't follow",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "AI development is moving so fast that meaningful regulation seems impossible",
+              "order_index": 4
+            }
+          ],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "Demographics",
+      "order_index": 21,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q14",
+          "question_text": "Which of the following best describes how large language models (like ChatGPT or Claude) generate their responses?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "They follow pre-programmed rules and decision trees written by engineers",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "They search a database to find and retrieve the most relevant answer",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "They predict the most likely next words based on statistical patterns learned from training data",
+              "order_index": 3
+            },
+            {
+              "code": "A4",
+              "label": "They understand language and reason through problems similarly to how humans think",
+              "order_index": 4
+            },
+            {
+              "code": "A5",
+              "label": "I'm not sure",
+              "order_index": 5
+            }
+          ]
+        },
+        {
+          "code": "Q16",
+          "question_text": "We are conducting follow-up focus groups to discuss these topics in more depth. Participants will be compensated $35 for approximately 60 minutes.<br><br>Would you be interested in being contacted for a focus group?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": null,
+            "time_limit": null,
+            "time_limit_action": null,
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Yes, I'm interested (we'll contact you via Prolific)",
+              "order_index": 1
+            },
+            {
+              "code": "A2",
+              "label": "Maybe, tell me more when the time comes",
+              "order_index": 2
+            },
+            {
+              "code": "A3",
+              "label": "No, thank you",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Demographics_OpenEnd",
+      "order_index": 22,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "Q15",
+          "question_text": "Is there anything else you'd like to share about your views on AI or reactions to this survey?",
+          "question_type": "long_text",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "T",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "EndScreen",
+      "order_index": 23,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A1\" || Q1_SQ006.NAOK == \"A2\" || Q1_SQ006.NAOK == \"A3\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "EndMsg",
+          "question_text": "<div style=\"text-align: center; padding: 20px;\">\n<h2 style=\"color: #2e7d32; margin-bottom: 20px;\">\ud83c\udf89 Thank You for Completing This Survey!</h2>\n\n<p style=\"font-size: 16px; margin-bottom: 15px;\">Your responses have been recorded and will help advance important research on public attitudes toward current issues.</p>\n\n<p style=\"font-size: 16px; margin-bottom: 20px;\">Please use the code below to confirm your completion on Prolific:</p>\n\n<div style=\"background: #e8f5e9; border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin: 20px auto; max-width: 400px;\">\n<p style=\"font-size: 14px; color: #666; margin-bottom: 10px;\">Your Completion Code:</p>\n\n<p style=\"font-size: 24px; font-weight: bold; color: #2e7d32; letter-spacing: 2px; margin: 0;\">CLLV7COK</p>\n</div>\n\n<p style=\"color: #666; font-size: 14px; margin-top: 20px;\">Please copy this code, then click <strong>Submit</strong> below. You will be automatically redirected to Prolific.</p>\n</div>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        }
+      ]
+    },
+    {
+      "title": "ScreenOut",
+      "order_index": 24,
+      "settings": {
+        "relevance": "(Q1_SQ006.NAOK == \"A4\" || Q1_SQ006.NAOK == \"A5\")",
+        "randomization_group": ""
+      },
+      "questions": [
+        {
+          "code": "ScreenOutMsg",
+          "question_text": "<div style=\"text-align: center; padding: 20px;\">\n<h2 style=\"color: #1565C0; margin-bottom: 20px;\">Thank You for Your Interest</h2>\n\n<p style=\"font-size: 16px; margin-bottom: 15px;\">Based on your responses, you do not qualify for this particular study. This is not a reflection of you \u2013 we are simply looking for participants with specific characteristics for this research.</p>\n\n<p style=\"font-size: 16px; margin-bottom: 20px;\">Your responses have been recorded. Please use the code below to return to Prolific:</p>\n\n<div style=\"background: #e3f2fd; border: 2px solid #1976D2; border-radius: 8px; padding: 20px; margin: 20px auto; max-width: 400px;\">\n<p style=\"font-size: 14px; color: #666; margin-bottom: 10px;\">Your Prolific Code:</p>\n\n<p style=\"font-size: 24px; font-weight: bold; color: #1565C0; letter-spacing: 2px; margin: 0;\">C1HUOC0D</p>\n</div>\n\n<p style=\"color: #666; font-size: 14px; margin-top: 20px;\">Please copy this code, then click \"I Understand\" below and Submit to be redirected to Prolific.</p>\n</div>",
+          "question_type": "text_display",
+          "order_index": 1,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "",
+            "limesurvey_type": "X",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": null,
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": []
+        },
+        {
+          "code": "ScreenOutConfirm",
+          "question_text": "Click \"I Understand\" below and then Submit to return to Prolific.",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": false,
+            "other": false,
+            "relevance": "1",
+            "help_text": "Click \"I Understand\" below and then Submit to return to Prolific.",
+            "limesurvey_type": "L",
+            "array_filter": null,
+            "array_filter_exclude": null,
+            "array_filter_style": "0",
+            "display_columns": null,
+            "max_answers": null,
+            "min_answers": null,
+            "random_order": null,
+            "other_replace_text": null,
+            "em_validation_q": null,
+            "em_validation_q_tip": null,
+            "cssclass": null,
+            "exclude_all_others": null,
+            "exclude_all_others_auto": null,
+            "hidden": "0",
+            "time_limit": null,
+            "time_limit_action": "1",
+            "time_limit_message": null,
+            "time_limit_countdown_message": null
+          },
+          "subquestions": [],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "I Understand",
+              "order_index": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

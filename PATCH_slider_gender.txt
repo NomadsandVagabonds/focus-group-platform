@@ -1,0 +1,41 @@
+// PATCH: Add Slider and Gender Question Types to SurveyRenderer
+// File: /src/components/survey/SurveyRenderer.tsx
+// Location: After case 'file_upload': (around line 1162)
+
+// ADD THESE CASES BEFORE THE default: CASE:
+
+        case 'slider':
+            return (
+                <SliderQuestion
+                    question={question}
+                    value={currentValue}
+                    onChange={(value) => onAnswer(question.code, value)}
+                />
+            );
+
+        case 'gender':
+            return (
+                <GenderQuestion
+                    question={question}
+                    value={currentValue}
+                    onChange={(value) => onAnswer(question.code, value)}
+                />
+            );
+
+// INSTRUCTIONS:
+// 1. Open /src/components/survey/SurveyRenderer.tsx
+// 2. Find line ~1162: case 'file_upload':
+// 3. Scroll down to the closing of that case (after the </FileUploadQuestion> and );)
+// 4. Before the "default:" case, add the two cases above
+// 5. Save the file
+
+// The imports are already added at the top:
+// import SliderQuestion from './questions/SliderQuestion';
+// import GenderQuestion from './questions/GenderQuestion';
+
+// VERIFICATION:
+// After adding, the structure should be:
+// case 'file_upload': ... );
+// case 'slider': ... );
+// case 'gender': ... );
+// default: ...

@@ -1,0 +1,156 @@
+/* Survey Theme Override - Cream & Crimson */
+body:has(.survey-container) {
+    background: #f5f3ef !important;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #333;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    background: white;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+    background: #c94a4a;
+    border-color: #c94a4a;
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input[type="checkbox"]:hover {
+    border-color: #c94a4a;
+}
+
+/* Radio Button Styling */
+input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+input[type="radio"]:hover {
+    border-color: #c94a4a;
+}
+
+input[type="radio"]:checked {
+    border-color: #c94a4a;
+    background: white;
+}
+
+input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #c94a4a;
+    animation: radioCheck 0.2s ease;
+}
+
+@keyframes radioCheck {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Text Inputs */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: white;
+    color: #333;
+    transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #c94a4a;
+}
+
+/* Checkbox label styling */
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #e0ddd8;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.checkbox-option:hover {
+    background: #f5f3ef;
+    border-color: #c94a4a;
+}
+
+.checkbox-option span {
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* Ranking item text visibility */
+.ranking-item {
+    color: #333 !important;
+}
+
+.ranking-item .item-label {
+    color: #333 !important;
+}
+
+.ranking-item.available {
+    color: #333 !important;
+}
+
+/* Remove debug text */
+.question[data-code]::after {
+    content: none !important;
+}

@@ -1,0 +1,807 @@
+{
+  "title": "AI Safety Messaging Survey (735545) - Real",
+  "description": "Current Issues and Policy Attitudes - Imported from LimeSurvey",
+  "status": "draft",
+  "settings": {
+    "format": "question_by_question",
+    "theme": "editorial_academic",
+    "show_progress_bar": true,
+    "allow_backward_navigation": false,
+    "prolific_integration": {
+      "enabled": true,
+      "completion_code": "CLLV7C0K",
+      "screenout_code": "SCREENOUT"
+    }
+  },
+  "question_groups": [
+    {
+      "title": "Screener",
+      "order_index": 0,
+      "questions": [
+        {
+          "code": "Q1",
+          "question_text": "How concerned are you about each of the following issues facing the country today?",
+          "question_type": "array",
+          "order_index": 0,
+          "settings": {
+            "mandatory": true
+          },
+          "subquestions": [
+            {
+              "code": "SQ001",
+              "label": "The economy and jobs",
+              "order_index": 0
+            },
+            {
+              "code": "SQ002",
+              "label": "Healthcare",
+              "order_index": 1
+            },
+            {
+              "code": "SQ003",
+              "label": "Immigration",
+              "order_index": 2
+            },
+            {
+              "code": "SQ004",
+              "label": "Crime and public safety",
+              "order_index": 3
+            },
+            {
+              "code": "SQ005",
+              "label": "Climate change",
+              "order_index": 4
+            },
+            {
+              "code": "SQ006",
+              "label": "Artificial intelligence",
+              "order_index": 5
+            },
+            {
+              "code": "SQ007",
+              "label": "Terrorism and war",
+              "order_index": 6
+            },
+            {
+              "code": "SQ008",
+              "label": "Housing costs",
+              "order_index": 7
+            }
+          ],
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Extremely concerned",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Very concerned",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Somewhat concerned",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not too concerned",
+              "order_index": 3
+            },
+            {
+              "code": "A5",
+              "label": "Not at all concerned",
+              "order_index": 4
+            },
+            {
+              "code": "A6",
+              "label": "Not sure",
+              "order_index": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message A - Mainstream Regulation",
+      "order_index": 1,
+      "questions": [
+        {
+          "code": "Q10a_A",
+          "question_text": "AI technology is advancing rapidly and affecting more areas of our lives\u2014from hiring decisions to medical diagnoses to what we see online. Like other powerful technologies, AI needs clear rules and oversight to make sure it's developed safely and benefits everyone, not just tech companies. We need commonsense regulations that protect people while allowing innovation to continue.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_A",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_A",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_A",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message B - Consumer Protection",
+      "order_index": 2,
+      "questions": [
+        {
+          "code": "Q10a_B",
+          "question_text": "AI companies are rushing products to market without adequate testing. AI systems are already making mistakes that affect real people\u2014wrongly denying loans, making errors in medical settings, and spreading false information. Just as we require safety testing for cars and drugs, we need independent testing and safety standards for AI before these systems are used in high-stakes decisions about people's lives.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_B",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_B",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_B",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message C - Jobs & Economic",
+      "order_index": 3,
+      "questions": [
+        {
+          "code": "Q10a_C",
+          "question_text": "AI is projected to affect millions of jobs in the coming years. Without proper planning, this could devastate communities across America. We need policies that ensure AI benefits workers, not just shareholders\u2014including job transition programs, education investments, and rules that prevent AI from being used to exploit workers or drive down wages.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_C",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_C",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_C",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message D - Technical Safety",
+      "order_index": 4,
+      "questions": [
+        {
+          "code": "Q10a_D",
+          "question_text": "Leading AI researchers, including many who built these systems, are warning that current AI development practices are inadequate. These systems are becoming more powerful but we don't fully understand how they work or how to ensure they behave as intended. Before deploying AI in critical areas, we need better testing methods and safety standards\u2014the same way we'd want safety testing before a new aircraft carries passengers.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_D",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_D",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_D",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message E - Democratic Control",
+      "order_index": 5,
+      "questions": [
+        {
+          "code": "Q10a_E",
+          "question_text": "Decisions about AI's role in society shouldn't be made by a handful of tech executives in Silicon Valley. AI affects all of us, so the public should have a voice in how it's developed and deployed. We need democratic oversight\u2014not just industry self-regulation\u2014to ensure AI serves the common good and doesn't concentrate power in the hands of a few corporations.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_E",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_E",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_E",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message F - Existential Risk",
+      "order_index": 6,
+      "questions": [
+        {
+          "code": "Q10a_F",
+          "question_text": "Many leading AI scientists believe advanced AI could pose catastrophic risks to humanity if developed without adequate safeguards. Some compare it to nuclear weapons\u2014a technology so powerful that getting it wrong could be irreversible. We may only have a few years to establish effective global safety measures before AI systems become too powerful to control. The stakes couldn't be higher.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_F",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_F",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_F",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Message G - Children & Family",
+      "order_index": 7,
+      "questions": [
+        {
+          "code": "Q10a_G",
+          "question_text": "AI is already affecting our children\u2014through social media algorithms, AI tutors, chatbots they interact with, and decisions that affect their futures. Kids are particularly vulnerable to manipulation and harms from these systems. Parents deserve the right to know how AI is being used with their children, and we need strong protections to keep young people safe from AI-related harms.",
+          "question_type": "text_display",
+          "order_index": 0
+        },
+        {
+          "code": "Q10b_G",
+          "question_text": "After reading this message, how do you feel about AI?",
+          "question_type": "multiple_choice_single",
+          "order_index": 1,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "More worried about AI",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "No change",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Less worried about AI",
+              "order_index": 2
+            }
+          ]
+        },
+        {
+          "code": "Q10c_G",
+          "question_text": "How credible or believable do you find this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 2,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very credible",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat credible",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very credible",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all credible",
+              "order_index": 3
+            }
+          ]
+        },
+        {
+          "code": "Q10d_G",
+          "question_text": "How likely would you be to support policies based on this message?",
+          "question_type": "multiple_choice_single",
+          "order_index": 3,
+          "settings": {
+            "mandatory": true
+          },
+          "answer_options": [
+            {
+              "code": "A1",
+              "label": "Very likely",
+              "order_index": 0
+            },
+            {
+              "code": "A2",
+              "label": "Somewhat likely",
+              "order_index": 1
+            },
+            {
+              "code": "A3",
+              "label": "Not very likely",
+              "order_index": 2
+            },
+            {
+              "code": "A4",
+              "label": "Not at all likely",
+              "order_index": 3
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
