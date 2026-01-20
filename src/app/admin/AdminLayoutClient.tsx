@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, ReactNode } from 'react';
-import { List, StatsUpSquare, Settings, LogOut, ArrowLeft } from 'iconoir-react';
+import { List, ClipboardCheck, StatsUpSquare, Settings, LogOut, ArrowLeft } from 'iconoir-react';
 import styles from './admin.module.css';
 
 interface AdminLayoutClientProps {
@@ -86,15 +86,20 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
 
     const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
         { href: '/admin', label: 'Sessions', icon: <List width={18} height={18} /> },
+        { href: '/admin/surveys', label: 'Surveys', icon: <ClipboardCheck width={18} height={18} /> },
         { href: '/admin/data', label: 'Data', icon: <StatsUpSquare width={18} height={18} /> },
         { href: '/admin/settings', label: 'Settings', icon: <Settings width={18} height={18} /> },
     ];
 
     const isActive = (href: string) => {
         if (href === '/admin') {
-            return pathname === '/admin' || pathname?.startsWith('/admin/sessions');
+            // Sessions is active for /admin and /admin/sessions/* but NOT /admin/surveys
+            return pathname === '/admin' || (pathname?.startsWith('/admin/sessions') ?? false);
         }
-        return pathname?.startsWith(href);
+        if (href === '/admin/surveys') {
+            return pathname?.startsWith('/admin/surveys') ?? false;
+        }
+        return pathname?.startsWith(href) ?? false;
     };
 
     // Loading state
@@ -229,10 +234,10 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
         <div className={styles.dashboardLayout}>
             {/* Sidebar */}
             <aside className={styles.sidebar}>
-                <div className={styles.sidebarHeader}>
+                <Link href="/admin" className={styles.sidebarHeader} style={{ textDecoration: 'none' }}>
                     <img src="/logo.png" alt="R" className={styles.logoMark} />
                     <span className={styles.logoTextSmall}>Resonant</span>
-                </div>
+                </Link>
 
                 <nav className={styles.sidebarNav}>
                     {navItems.map((item) => (
