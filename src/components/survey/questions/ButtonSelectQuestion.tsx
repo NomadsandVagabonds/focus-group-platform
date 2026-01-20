@@ -47,9 +47,29 @@ export default function ButtonSelectQuestion({
     const currentValue = responseData.get(question.code);
     const settings = question.settings || {};
 
-    // Get options from answer_options
+    // Get options from answer_options OR subquestions (LimeSurvey L type uses subquestions)
     const options = useMemo(() => {
-        let opts = [...(question.answer_options || [])].sort((a, b) => a.order_index - b.order_index);
+        // Try answer_options first, then fall back to subquestions (LimeSurvey format)
+        let opts: Array<{ id: string; code: string; label: string; order_index: number }> = [];
+
+        if (question.answer_options && question.answer_options.length > 0) {
+            opts = question.answer_options.map(opt => ({
+                id: opt.id,
+                code: opt.code,
+                label: opt.label,
+                order_index: opt.order_index
+            }));
+        } else if (question.subquestions && question.subquestions.length > 0) {
+            // LimeSurvey L type stores options as subquestions
+            opts = question.subquestions.map(sq => ({
+                id: sq.id,
+                code: sq.code,
+                label: sq.label,
+                order_index: sq.order_index
+            }));
+        }
+
+        opts.sort((a, b) => a.order_index - b.order_index);
 
         if (settings.randomize_answers && randomizationSeed) {
             opts = seededShuffle(opts, `${randomizationSeed}_${question.code}`);
