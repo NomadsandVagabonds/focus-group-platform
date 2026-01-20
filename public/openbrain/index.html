@@ -20,6 +20,41 @@
       -webkit-text-fill-color: transparent;
     }
     html { scroll-behavior: smooth; }
+    .tooltip-container { position: relative; }
+    .tooltip-content {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      z-index: 100;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 12px;
+      background: #1f2937;
+      color: white;
+      font-size: 12px;
+      border-radius: 6px;
+      white-space: normal;
+      width: 200px;
+      text-align: left;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.15s, visibility 0.15s;
+    }
+    .tooltip-content::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #1f2937 transparent transparent transparent;
+    }
+    .tooltip-container:hover .tooltip-content {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -134,6 +169,15 @@
       </svg>
     );
 
+    // Brain Electricity icon from Iconoir
+    const BrainElectricity = ({ className }) => (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 14C5.34315 14 4 12.6569 4 11C4 9.69378 4.83481 8.58254 6 8.17071C6 8.11386 6 8.05687 6 7.99974C6 5.79086 7.79086 4 10 4C11.4852 4 12.7956 4.80467 13.4998 6.00014C13.663 5.99102 13.8276 5.98639 13.9934 5.98639C17.3096 5.98639 20 8.67681 20 11.993C20 13.8049 19.1772 15.4193 17.8848 16.5003" />
+        <path d="M12.9998 21L14.9998 17H11.9998L13.9998 13" />
+        <path d="M8 18C8 19.1046 7.10457 20 6 20C4.89543 20 4 19.1046 4 18C4 16.8954 4.89543 16 6 16C7.10457 16 8 16.8954 8 18Z" />
+      </svg>
+    );
+
     // Clickable section component
     const RevealSection = ({ title, content, gap, icon: IconComponent }) => {
       const [isRevealed, setIsRevealed] = useState(false);
@@ -194,10 +238,9 @@
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">OB</span>
+                  <BrainElectricity className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-semibold text-gray-900">OpenBrain</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium ml-2">SATIRICAL</span>
               </div>
               <div className="flex items-center gap-1">
                 {sections.map((section) => (
@@ -626,72 +669,299 @@
             <h2 className="text-3xl font-bold text-gray-900">Real Lab Safety Frameworks</h2>
             <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
               Major AI labs have published voluntary safety frameworks. Here's what they commit to—and the gaps that remain.
-              Click each lab to see the details.
             </p>
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={() => setShowScorecard(!showScorecard)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  showScorecard
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {showScorecard ? 'Hide Scorecard' : 'View Scorecard Comparison'}
-              </button>
-            </div>
           </div>
 
-          {/* Scorecard Comparison View */}
-          {showScorecard && (
-            <div className="mb-12 p-6 bg-white rounded-xl border border-gray-200 animate-slide-in">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Framework Safety Scorecard</h3>
-              <p className="text-sm text-gray-500 text-center mb-6">
-                Scored on transparency, clear thresholds, governance structure, enforcement mechanisms, and risk coverage (20 points each)
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                {[...labs].sort((a, b) => (b.score || 0) - (a.score || 0)).map((lab) => (
-                  <div key={lab.id} className="text-center">
-                    <div className={`w-16 h-16 mx-auto rounded-xl bg-gradient-to-br ${lab.color} flex items-center justify-center mb-3`}>
-                      <span className="text-white font-bold text-xl">{lab.name[0]}</span>
-                    </div>
-                    <GradeBadge score={lab.score || 0} size="normal" />
-                    <p className="mt-2 text-sm font-medium text-gray-900">{lab.name}</p>
-                    <p className="text-xs text-gray-500">{lab.framework.split(' ')[0]}</p>
-                  </div>
-                ))}
+          {/* Standards Compliance Matrix */}
+          <div className="mb-12 p-6 bg-white rounded-xl border border-gray-200">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">Safety Standards Compliance Matrix</h3>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              Desired safety standards vs. current lab commitments
+            </p>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b-2 border-gray-200">
+                    <th className="text-left py-3 px-2 font-semibold text-gray-700 min-w-[200px]">Safety Standard</th>
+                    {labs.map((lab) => (
+                      <th key={lab.id} className="text-center py-3 px-2 min-w-[80px]">
+                        <div className={`w-8 h-8 mx-auto rounded-lg bg-gradient-to-br ${lab.color} flex items-center justify-center mb-1`}>
+                          <span className="text-white font-bold text-xs">{lab.name[0]}</span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-600">{lab.name}</span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    {
+                      category: 'Transparency & Documentation',
+                      standards: [
+                        { name: 'Published safety framework', compliance: {
+                          openai: { status: 'yes', note: 'Preparedness Framework v2 (April 2025)' },
+                          anthropic: { status: 'yes', note: 'RSP v2.2 (May 2025)' },
+                          deepmind: { status: 'yes', note: 'Frontier Safety Framework v3.0' },
+                          meta: { status: 'yes', note: 'Frontier AI Framework (Feb 2025)' },
+                          xai: { status: 'partial', note: 'Published after multiple deadline misses; draft sat for 6 months' },
+                          microsoft: { status: 'yes', note: 'Frontier Governance Framework (June 2025)' }
+                        }},
+                        { name: 'Pre-deployment safety reports', compliance: {
+                          openai: { status: 'partial', note: 'System cards published but after deployment begins' },
+                          anthropic: { status: 'yes', note: 'Model cards published before major releases' },
+                          deepmind: { status: 'yes', note: 'Safety case reviews before deployment' },
+                          meta: { status: 'partial', note: 'Some model cards; Llama releases lack detail' },
+                          xai: { status: 'no', note: 'Grok 4 released with no safety report' },
+                          microsoft: { status: 'yes', note: 'Transparency Report with detailed assessments' }
+                        }},
+                        { name: 'Public capability evaluations', compliance: {
+                          openai: { status: 'partial', note: 'Some evals shared; methodology not fully public' },
+                          anthropic: { status: 'partial', note: 'ASL evaluations described but not all results public' },
+                          deepmind: { status: 'partial', note: 'CCL assessments described; limited public data' },
+                          meta: { status: 'partial', note: 'Benchmarks shared but risk evals limited' },
+                          xai: { status: 'no', note: 'No public capability evaluations released' },
+                          microsoft: { status: 'partial', note: 'Red team results shared; full evals internal' }
+                        }},
+                        { name: 'Incident disclosure policy', compliance: {
+                          openai: { status: 'partial', note: 'Internal process exists; public disclosure unclear' },
+                          anthropic: { status: 'yes', note: 'RSP includes incident reporting procedures' },
+                          deepmind: { status: 'partial', note: 'Google-wide policies apply; AI-specific unclear' },
+                          meta: { status: 'no', note: 'No public incident disclosure policy' },
+                          xai: { status: 'no', note: 'No incident disclosure policy published' },
+                          microsoft: { status: 'partial', note: 'Enterprise policies exist; AI-specific limited' }
+                        }},
+                      ]
+                    },
+                    {
+                      category: 'Risk Thresholds & Evaluation',
+                      standards: [
+                        { name: 'Defined capability thresholds', compliance: {
+                          openai: { status: 'yes', note: 'High/Critical levels for bio, cyber, autonomy' },
+                          anthropic: { status: 'yes', note: 'ASL-1 through ASL-4+ with specific triggers' },
+                          deepmind: { status: 'yes', note: 'CCLs across 6 risk domains' },
+                          meta: { status: 'partial', note: 'High/Critical defined but vague criteria' },
+                          xai: { status: 'no', note: 'Thresholds removed from final framework' },
+                          microsoft: { status: 'yes', note: 'CBRN risk levels (Low/Med/High/Critical)' }
+                        }},
+                        { name: 'Quantitative risk benchmarks', compliance: {
+                          openai: { status: 'partial', note: 'Some quantitative; "Medium" allows 1000+ deaths' },
+                          anthropic: { status: 'partial', note: 'CBRN benchmarks defined; others qualitative' },
+                          deepmind: { status: 'partial', note: 'Some quantitative CCL criteria' },
+                          meta: { status: 'no', note: '"Significant uplift" undefined quantitatively' },
+                          xai: { status: 'partial', note: 'MASK benchmark used but poorly suited' },
+                          microsoft: { status: 'partial', note: 'Benchmarks require <70% saturation' }
+                        }},
+                        { name: 'Red team testing', compliance: {
+                          openai: { status: 'yes', note: 'Internal red team + external contractors' },
+                          anthropic: { status: 'yes', note: 'Trust & Safety team conducts red teaming' },
+                          deepmind: { status: 'yes', note: 'Red team testing before deployment' },
+                          meta: { status: 'yes', note: 'Red teaming conducted on Llama models' },
+                          xai: { status: 'partial', note: 'UK AISI did testing; internal unclear' },
+                          microsoft: { status: 'yes', note: 'AI Red Team: 67 operations in 2024' }
+                        }},
+                        { name: 'Third-party evaluations', compliance: {
+                          openai: { status: 'partial', note: 'Some external review; not mandatory' },
+                          anthropic: { status: 'partial', note: 'External researchers consulted; no audit' },
+                          deepmind: { status: 'partial', note: 'Academic partnerships but no required audit' },
+                          meta: { status: 'no', note: 'No third-party safety evaluations' },
+                          xai: { status: 'partial', note: 'UK AISI evaluated; not consistently done' },
+                          microsoft: { status: 'partial', note: 'Partners consulted; no mandatory audit' }
+                        }},
+                      ]
+                    },
+                    {
+                      category: 'Governance & Oversight',
+                      standards: [
+                        { name: 'Independent safety team', compliance: {
+                          openai: { status: 'partial', note: 'SAG exists but CEO can override' },
+                          anthropic: { status: 'yes', note: 'RSP Officer (Jared Kaplan) with clear authority' },
+                          deepmind: { status: 'partial', note: 'Safety team exists within Google structure' },
+                          meta: { status: 'partial', note: 'AI safety team but limited independence' },
+                          xai: { status: 'no', note: 'No evidence of independent safety team' },
+                          microsoft: { status: 'partial', note: 'CRAO oversees but commercial pressure' }
+                        }},
+                        { name: 'Board-level safety oversight', compliance: {
+                          openai: { status: 'partial', note: 'Board restructured after 2023 crisis' },
+                          anthropic: { status: 'partial', note: 'Long-Term Benefit Trust has oversight role' },
+                          deepmind: { status: 'partial', note: 'Reports to Google/Alphabet board' },
+                          meta: { status: 'no', note: 'No specific board safety committee' },
+                          xai: { status: 'no', note: 'No board safety oversight documented' },
+                          microsoft: { status: 'yes', note: 'Board AI committee with regular reviews' }
+                        }},
+                        { name: 'Safety team can block deployment', compliance: {
+                          openai: { status: 'no', note: 'CEO retains final deployment authority' },
+                          anthropic: { status: 'partial', note: 'RSP can pause but leadership decides' },
+                          deepmind: { status: 'partial', note: 'Can recommend but Google leadership decides' },
+                          meta: { status: 'no', note: 'No blocking authority for safety team' },
+                          xai: { status: 'no', note: 'No safety veto power' },
+                          microsoft: { status: 'no', note: 'CRAO advises but cannot block' }
+                        }},
+                        { name: 'External advisory board', compliance: {
+                          openai: { status: 'no', note: 'No external safety advisory board' },
+                          anthropic: { status: 'partial', note: 'Consults external experts; not formal board' },
+                          deepmind: { status: 'no', note: 'No external AI safety board' },
+                          meta: { status: 'no', note: 'No external safety advisory' },
+                          xai: { status: 'no', note: 'No external advisory structure' },
+                          microsoft: { status: 'partial', note: 'External advisors consulted informally' }
+                        }},
+                      ]
+                    },
+                    {
+                      category: 'Risk Domain Coverage',
+                      standards: [
+                        { name: 'CBRN/WMD risks', compliance: {
+                          openai: { status: 'yes', note: 'Biological and chemical risks tracked' },
+                          anthropic: { status: 'yes', note: 'Core ASL-3 trigger for CBRN uplift' },
+                          deepmind: { status: 'yes', note: 'Biosecurity CCL defined' },
+                          meta: { status: 'yes', note: 'Primary focus of framework' },
+                          xai: { status: 'partial', note: 'Mentioned but poorly defined' },
+                          microsoft: { status: 'yes', note: 'Detailed CBRN risk levels' }
+                        }},
+                        { name: 'Cybersecurity risks', compliance: {
+                          openai: { status: 'yes', note: 'Cyber capabilities tracked in framework' },
+                          anthropic: { status: 'yes', note: 'Included in capability evaluations' },
+                          deepmind: { status: 'yes', note: 'Cybersecurity CCL defined' },
+                          meta: { status: 'yes', note: 'Cyber threats covered' },
+                          xai: { status: 'partial', note: 'Addressed but limited detail' },
+                          microsoft: { status: 'yes', note: 'Cyber risk assessment included' }
+                        }},
+                        { name: 'Autonomy/agentic risks', compliance: {
+                          openai: { status: 'partial', note: 'Model autonomy tracked but limited' },
+                          anthropic: { status: 'yes', note: 'AI R&D autonomy in ASL criteria' },
+                          deepmind: { status: 'yes', note: 'Autonomy and ML R&D CCLs' },
+                          meta: { status: 'no', note: 'Framework ignores agentic risks' },
+                          xai: { status: 'partial', note: 'Loss of control mentioned vaguely' },
+                          microsoft: { status: 'partial', note: 'Some autonomy considerations' }
+                        }},
+                        { name: 'Manipulation/persuasion risks', compliance: {
+                          openai: { status: 'no', note: 'Removed persuasion tracking in v2' },
+                          anthropic: { status: 'partial', note: 'Some coverage in misuse assessment' },
+                          deepmind: { status: 'yes', note: 'Manipulation CCL added in v3.0' },
+                          meta: { status: 'no', note: 'Not addressed in framework' },
+                          xai: { status: 'no', note: 'No manipulation risk coverage' },
+                          microsoft: { status: 'partial', note: 'Limited manipulation assessment' }
+                        }},
+                        { name: 'Misalignment/deception risks', compliance: {
+                          openai: { status: 'partial', note: 'Self-improvement tracked; deception limited' },
+                          anthropic: { status: 'yes', note: 'Alignment research core to mission' },
+                          deepmind: { status: 'yes', note: 'Misalignment CCL added in v3.0' },
+                          meta: { status: 'no', note: 'Framework focuses only on misuse' },
+                          xai: { status: 'partial', note: 'MASK benchmark inadequate for this' },
+                          microsoft: { status: 'partial', note: 'Some deception testing' }
+                        }},
+                      ]
+                    },
+                    {
+                      category: 'Enforcement & Accountability',
+                      standards: [
+                        { name: 'Binding safety commitments', compliance: {
+                          openai: { status: 'no', note: 'Voluntary; "competitive dynamics" escape clause' },
+                          anthropic: { status: 'partial', note: 'RSP is policy but not legally binding' },
+                          deepmind: { status: 'no', note: 'Voluntary framework only' },
+                          meta: { status: 'no', note: 'No binding commitments' },
+                          xai: { status: 'no', note: 'No binding safety commitments' },
+                          microsoft: { status: 'no', note: 'Internal policy; not binding' }
+                        }},
+                        { name: 'External audit requirement', compliance: {
+                          openai: { status: 'no', note: 'No mandatory external audits' },
+                          anthropic: { status: 'no', note: 'No required third-party audits' },
+                          deepmind: { status: 'no', note: 'No external audit requirement' },
+                          meta: { status: 'no', note: 'No audit requirements' },
+                          xai: { status: 'no', note: 'No external audits' },
+                          microsoft: { status: 'no', note: 'No mandatory external audits' }
+                        }},
+                        { name: 'Deployment pause capability', compliance: {
+                          openai: { status: 'partial', note: 'Can pause but competitive pressure cited' },
+                          anthropic: { status: 'yes', note: 'RSP commits to not train without safeguards' },
+                          deepmind: { status: 'partial', note: 'Can pause; Google pressure a factor' },
+                          meta: { status: 'no', note: 'Open release model limits pause ability' },
+                          xai: { status: 'no', note: 'No pause capability demonstrated' },
+                          microsoft: { status: 'partial', note: 'Can pause Azure deployments' }
+                        }},
+                        { name: 'Liability for safety failures', compliance: {
+                          openai: { status: 'no', note: 'No liability accepted for harms' },
+                          anthropic: { status: 'no', note: 'No legal liability for failures' },
+                          deepmind: { status: 'no', note: 'No liability provisions' },
+                          meta: { status: 'no', note: 'Open source limits liability' },
+                          xai: { status: 'no', note: 'No liability accepted' },
+                          microsoft: { status: 'no', note: 'Standard enterprise disclaimers' }
+                        }},
+                      ]
+                    },
+                  ].map((section, sIdx) => (
+                    <React.Fragment key={sIdx}>
+                      <tr className="bg-gray-50">
+                        <td colSpan={7} className="py-2 px-2 font-semibold text-gray-800 text-xs uppercase tracking-wide">
+                          {section.category}
+                        </td>
+                      </tr>
+                      {section.standards.map((standard, idx) => (
+                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="py-2 px-2 text-gray-700">{standard.name}</td>
+                          {labs.map((lab) => {
+                            const item = standard.compliance[lab.id];
+                            const status = item.status;
+                            const note = item.note;
+                            return (
+                              <td key={lab.id} className="text-center py-2 px-2">
+                                <div className="tooltip-container inline-block">
+                                  {status === 'yes' && (
+                                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 cursor-help">
+                                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                                    </span>
+                                  )}
+                                  {status === 'partial' && (
+                                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 cursor-help">
+                                      <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                                    </span>
+                                  )}
+                                  {status === 'no' && (
+                                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 cursor-help">
+                                      <XCircle className="w-4 h-4 text-red-500" />
+                                    </span>
+                                  )}
+                                  <div className="tooltip-content">{note}</div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Legend */}
+            <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-center gap-6 text-xs text-gray-600">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100">
+                  <CheckCircle className="w-3 h-3 text-emerald-600" />
+                </span>
+                <span>Committed</span>
               </div>
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <div className="grid md:grid-cols-5 gap-4 text-center text-xs text-gray-600">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-800">Transparency</p>
-                    <p>Public documentation, reporting clarity</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-800">Clear Thresholds</p>
-                    <p>Defined risk levels, capability benchmarks</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-800">Governance</p>
-                    <p>Independence from commercial pressure</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-800">Enforcement</p>
-                    <p>Binding commitments, accountability</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-semibold text-gray-800">Risk Coverage</p>
-                    <p>Breadth of domains addressed</p>
-                  </div>
-                </div>
-                <p className="mt-4 text-xs text-gray-500 text-center italic">
-                  Note: All labs received low Enforcement scores because none have external enforcement mechanisms.
-                  The highest grade is a C—even well-intentioned voluntary frameworks cannot substitute for regulation.
-                </p>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100">
+                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+                </span>
+                <span>Partial / Ambiguous</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100">
+                  <XCircle className="w-3 h-3 text-red-500" />
+                </span>
+                <span>Not addressed</span>
               </div>
             </div>
-          )}
 
+            <p className="mt-4 text-xs text-gray-500 text-center italic">
+              Note: "Committed" means the lab has publicly stated this in their framework. It does not mean the commitment is externally verified or legally binding.
+            </p>
+          </div>
+
+          {/* Individual Lab Details */}
           <div className="space-y-6">
             {labs.map((lab) => (
               <div key={lab.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
