@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Fetch tokens to email
-        let query = supabase
+        let query = getSupabaseServer()
             .from('survey_tokens')
             .select('*')
             .eq('survey_id', surveyId)

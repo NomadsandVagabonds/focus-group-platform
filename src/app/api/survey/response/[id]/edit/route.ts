@@ -37,7 +37,7 @@ export async function PUT(
         // Process each update
         for (const update of updates) {
             // First, try to find existing response_data entry
-            const query = supabase
+            const query = getSupabaseServer()
                 .from('response_data')
                 .select('id')
                 .eq('response_id', responseId)

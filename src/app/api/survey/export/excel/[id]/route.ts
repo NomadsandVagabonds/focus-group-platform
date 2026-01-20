@@ -41,7 +41,7 @@ export async function GET(
         }
 
         // Fetch responses with data
-        let responsesQuery = supabase
+        let responsesQuery = getSupabaseServer()
             .from('survey_responses')
             .select(`*, response_data (*)`)
             .eq('survey_id', id);

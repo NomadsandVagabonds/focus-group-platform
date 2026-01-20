@@ -125,7 +125,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
         const { survey_id, permission_id } = body;
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('user_permissions')
             .delete()
             .eq('user_id', userId);

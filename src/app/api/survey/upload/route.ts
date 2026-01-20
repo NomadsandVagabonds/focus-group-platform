@@ -225,7 +225,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Missing response_id' }, { status: 400 });
         }
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('uploaded_files')
             .select('*')
             .eq('response_id', responseId);

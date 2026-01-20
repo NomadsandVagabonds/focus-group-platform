@@ -21,7 +21,7 @@ export async function GET(
         const search = searchParams.get('search'); // Search in response_id, participant_id
 
         // Build query
-        let query = supabase
+        let query = getSupabaseServer()
             .from('survey_responses')
             .select(`
                 *,

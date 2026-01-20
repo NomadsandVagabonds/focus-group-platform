@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         const role = request.nextUrl.searchParams.get('role');
         const search = request.nextUrl.searchParams.get('search');
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('users')
             .select('*', { count: 'exact' })
             .order('created_at', { ascending: false })

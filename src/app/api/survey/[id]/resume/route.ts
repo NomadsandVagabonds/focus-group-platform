@@ -201,7 +201,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
         const { response_id, token } = body;
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('resume_tokens')
             .delete()
             .eq('survey_id', surveyId);

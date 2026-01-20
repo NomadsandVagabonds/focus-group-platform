@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'surveyId is required' }, { status: 400 });
         }
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('survey_tokens')
             .select('*', { count: 'exact' })
             .eq('survey_id', surveyId)
@@ -155,7 +155,7 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        let query = supabase
+        let query = getSupabaseServer()
             .from('survey_tokens')
             .delete()
             .eq('survey_id', surveyId);
