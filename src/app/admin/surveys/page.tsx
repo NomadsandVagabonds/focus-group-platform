@@ -323,16 +323,21 @@ export default function AdminSurveysPage() {
         }
 
         .btn-secondary {
+          display: inline-block;
           background: #e0ddd8;
           color: #1a1d24;
           padding: 0.5rem 1rem;
+          border: 1px solid #d0cdc8;
           border-radius: 4px;
           text-decoration: none;
-          transition: background 0.2s;
+          transition: all 0.2s;
+          font-size: 0.875rem;
+          cursor: pointer;
         }
 
         .btn-secondary:hover {
           background: #d0cdc8;
+          border-color: #c0bdb8;
         }
 
         .empty-state {
