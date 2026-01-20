@@ -1,11 +1,7 @@
 // API Route: File Upload for Survey Responses
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // Maximum file size in bytes (default 10 MB)
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -68,7 +64,7 @@ export async function POST(request: NextRequest) {
         const buffer = Buffer.from(bytes);
 
         // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await getSupabaseServer().storage
             .from('survey-uploads')
             .upload(filePath, buffer, {
                 contentType: file.type,
@@ -82,7 +78,7 @@ export async function POST(request: NextRequest) {
             // If bucket doesn't exist, try to create it
             if (uploadError.message?.includes('Bucket not found')) {
                 // Create the bucket
-                const { error: createBucketError } = await supabase.storage.createBucket('survey-uploads', {
+                const { error: createBucketError } = await getSupabaseServer().storage.createBucket('survey-uploads', {
                     public: false,
                     allowedMimeTypes: [
                         'application/pdf',
@@ -110,7 +106,7 @@ export async function POST(request: NextRequest) {
                 }
 
                 // Retry upload
-                const { data: retryData, error: retryError } = await supabase.storage
+                const { data: retryData, error: retryError } = await getSupabaseServer().storage
                     .from('survey-uploads')
                     .upload(filePath, buffer, {
                         contentType: file.type,
@@ -127,7 +123,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Get public URL (or signed URL for private files)
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = getSupabaseServer().storage
             .from('survey-uploads')
             .getPublicUrl(filePath);
 
@@ -191,7 +187,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Delete from storage
-        const { error: storageError } = await supabase.storage
+        const { error: storageError } = await getSupabaseServer().storage
             .from('survey-uploads')
             .remove([filePath]);
 

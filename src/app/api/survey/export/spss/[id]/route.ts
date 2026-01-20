@@ -1,14 +1,10 @@
 // API Route: Export Survey to SPSS format
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { generateSPSSSyntax, generateSPSSData } from '@/lib/export';
 import type { SurveyWithStructure, ResponseWithData } from '@/lib/supabase/survey-types';
 import JSZip from 'jszip';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export async function GET(
     request: NextRequest,

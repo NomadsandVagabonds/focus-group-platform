@@ -1,11 +1,7 @@
 // API Route: Copy/Clone Survey
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface CopyRequestBody {
     title?: string;
@@ -98,7 +94,7 @@ export async function POST(
 
             if (groupError) {
                 // Cleanup: delete the new survey if group creation fails
-                await supabase.from('surveys').delete().eq('id', newSurvey.id);
+                await getSupabaseServer().from('surveys').delete().eq('id', newSurvey.id);
                 return NextResponse.json({ error: groupError.message }, { status: 500 });
             }
 
@@ -131,7 +127,7 @@ export async function POST(
 
                 if (questionError) {
                     // Cleanup: delete the new survey (cascade will handle groups/questions)
-                    await supabase.from('surveys').delete().eq('id', newSurvey.id);
+                    await getSupabaseServer().from('surveys').delete().eq('id', newSurvey.id);
                     return NextResponse.json({ error: questionError.message }, { status: 500 });
                 }
 
@@ -160,7 +156,7 @@ export async function POST(
                         .select();
 
                     if (subqError) {
-                        await supabase.from('surveys').delete().eq('id', newSurvey.id);
+                        await getSupabaseServer().from('surveys').delete().eq('id', newSurvey.id);
                         return NextResponse.json({ error: subqError.message }, { status: 500 });
                     }
 
@@ -189,7 +185,7 @@ export async function POST(
                         .select();
 
                     if (optError) {
-                        await supabase.from('surveys').delete().eq('id', newSurvey.id);
+                        await getSupabaseServer().from('surveys').delete().eq('id', newSurvey.id);
                         return NextResponse.json({ error: optError.message }, { status: 500 });
                     }
 

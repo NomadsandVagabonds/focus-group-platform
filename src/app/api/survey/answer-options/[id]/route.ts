@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { getSupabaseServer } from '@/lib/supabase/server';
 
 // Update an answer option
 export async function PUT(
@@ -17,7 +12,7 @@ export async function PUT(
 
         const { code, answer_text } = body;
 
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('answer_options')
             .update({
                 code,
@@ -48,7 +43,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('answer_options')
             .delete()
             .eq('id', id);

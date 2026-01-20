@@ -1,12 +1,8 @@
 // API Route: Survey Emails - Send survey invitations and reminders
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { createEmailService, emailTemplates, EmailOptions } from '@/lib/email/email-service';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface EmailRequest {
     surveyId: string;
@@ -156,7 +152,7 @@ export async function POST(request: NextRequest) {
 
         // Log email batch (ignore errors if table doesn't exist)
         try {
-            await supabase.from('email_logs').insert({
+            await getSupabaseServer().from('email_logs').insert({
                 survey_id: surveyId,
                 type,
                 total_recipients: tokens.length,

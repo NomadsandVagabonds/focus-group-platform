@@ -1,11 +1,7 @@
 // API Route: Questions CRUD
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export async function POST(request: NextRequest) {
     try {
@@ -31,7 +27,7 @@ export async function POST(request: NextRequest) {
                 id: undefined, // Remove temp ID
             }));
 
-            await supabase.from('subquestions').insert(subquestionsToInsert);
+            await getSupabaseServer().from('subquestions').insert(subquestionsToInsert);
         }
 
         // Insert answer options if provided
@@ -42,7 +38,7 @@ export async function POST(request: NextRequest) {
                 id: undefined, // Remove temp ID
             }));
 
-            await supabase.from('answer_options').insert(optionsToInsert);
+            await getSupabaseServer().from('answer_options').insert(optionsToInsert);
         }
 
         return NextResponse.json({ success: true, data: question });

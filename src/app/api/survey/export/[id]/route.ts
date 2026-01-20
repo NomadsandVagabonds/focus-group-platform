@@ -1,12 +1,8 @@
 // API Route: Export Survey to JSON
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import type { SurveyJSON, QuestionGroupJSON, QuestionJSON } from '@/lib/survey/survey-json-schema';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export async function GET(
     request: NextRequest,

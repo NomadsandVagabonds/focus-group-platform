@@ -1,11 +1,7 @@
 // API Route: Single Quota Operations
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // GET /api/survey/quotas/[id] - Get single quota
 export async function GET(
@@ -103,7 +99,7 @@ export async function PATCH(
         const { action } = body; // 'increment' or 'reset'
 
         if (action === 'increment') {
-            const { data, error } = await supabase.rpc('increment_quota_count', {
+            const { data, error } = await getSupabaseServer().rpc('increment_quota_count', {
                 quota_id: id
             });
 

@@ -1,13 +1,9 @@
 // API Route: Export Survey to Excel format (.xlsx)
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { generateExcelBuffer } from '@/lib/export';
 import type { SurveyWithStructure, ResponseWithData } from '@/lib/supabase/survey-types';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export async function GET(
     request: NextRequest,

@@ -1,12 +1,8 @@
 // API Route: Send Test Email
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { createEmailService, EmailOptions } from '@/lib/email/email-service';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface TestEmailRequest {
     surveyId: string;
