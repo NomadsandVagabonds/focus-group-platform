@@ -49,8 +49,12 @@ export default function ButtonMultiSelectQuestion({
     // Get current selections as a Set
     const selectedCodes = useMemo(() => {
         const selected = new Set<string>();
-        // Check for individual answer keys (standard multiple choice format)
-        (question.answer_options || []).forEach(opt => {
+        // Check both answer_options and subquestions (LimeSurvey M type uses subquestions)
+        const optionSources = [
+            ...(question.answer_options || []),
+            ...(question.subquestions || [])
+        ];
+        optionSources.forEach(opt => {
             if (responseData.get(`${question.code}_${opt.code}`)) {
                 selected.add(opt.code);
             }
