@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Download, StatsUpSquare, Settings, Eye, ArrowLeft } from 'iconoir-react';
+import { Download, StatsUpSquare, Settings, Eye, ArrowLeft, Link as LinkIcon } from 'iconoir-react';
 import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
 import QuestionGroupList from './QuestionGroupList';
 import QuestionEditor from './QuestionEditor';
@@ -120,24 +120,72 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                     </div>
 
                     <div className="header-actions">
+                        {/* Live indicator */}
+                        {survey.status === 'active' && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '6px 12px',
+                                background: '#dcfce7',
+                                border: '1px solid #22c55e',
+                                borderRadius: '20px',
+                                color: '#15803d',
+                                fontWeight: 600,
+                                fontSize: '13px'
+                            }}>
+                                <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%' }}></span>
+                                LIVE
+                            </div>
+                        )}
+
                         <div className="status-badge-container">
                             <select
                                 value={survey.status}
                                 onChange={async (e) => {
+                                    const newStatus = e.target.value;
+                                    const oldStatus = survey.status;
+
+                                    // Warn when deactivating
+                                    if (oldStatus === 'active' && newStatus !== 'active') {
+                                        const confirmed = window.confirm(
+                                            `⚠️ Warning: Changing from Active to ${newStatus === 'draft' ? 'Draft' : 'Closed'}\n\n` +
+                                            `This will stop recording new responses.\n\n` +
+                                            `Are you sure?`
+                                        );
+                                        if (!confirmed) {
+                                            e.target.value = oldStatus;
+                                            return;
+                                        }
+                                    }
+
+                                    // Warn when activating
+                                    if (newStatus === 'active' && oldStatus !== 'active') {
+                                        const confirmed = window.confirm(
+                                            `🚀 Activate Survey?\n\n` +
+                                            `This will make the survey live and start recording responses.\n\n` +
+                                            `Are you ready to go live?`
+                                        );
+                                        if (!confirmed) {
+                                            e.target.value = oldStatus;
+                                            return;
+                                        }
+                                    }
+
                                     const response = await fetch(`/api/survey/surveys/${survey.id}`, {
                                         method: 'PUT',
                                         headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ ...survey, status: e.target.value }),
+                                        body: JSON.stringify({ ...survey, status: newStatus }),
                                     });
                                     if (response.ok) {
-                                        setSurvey({ ...survey, status: e.target.value as any });
+                                        setSurvey({ ...survey, status: newStatus as any });
                                     }
                                 }}
                                 className={`status-select status-${survey.status}`}
                             >
-                                <option value="draft">Draft Mode</option>
-                                <option value="active">Active</option>
-                                <option value="closed">Closed</option>
+                                <option value="draft">📝 Draft</option>
+                                <option value="active">🟢 Active (Live)</option>
+                                <option value="closed">🔒 Closed</option>
                             </select>
                         </div>
 
@@ -182,10 +230,24 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                             <span>Settings</span>
                         </a>
 
-                        <a href={`/survey/take/${survey.id}`} target="_blank" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <a href={`/survey/take/${survey.id}?preview=true`} target="_blank" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                             <Eye width={14} height={14} />
                             <span>Preview Survey</span>
                         </a>
+
+                        {survey.status === 'active' && (
+                            <button
+                                className="btn-secondary"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(`${window.location.origin}/survey/take/${survey.id}`);
+                                    alert('Survey link copied to clipboard!');
+                                }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                            >
+                                <LinkIcon width={14} height={14} />
+                                <span>Copy Link</span>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, Play, Settings, Xmark, FloppyDisk, Plus } from 'iconoir-react';
+import { Eye, Settings, Xmark, FloppyDisk, Plus, WarningTriangle, Play, Link as LinkIcon } from 'iconoir-react';
 import QuestionEditor from './QuestionEditor';
 import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
 
@@ -213,10 +213,60 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                     {localSurvey.title} / {selectedQuestion?.code || 'Survey Structure'}
                 </div>
                 <div className="header-actions">
+                    {/* Status indicator with live badge */}
+                    {localSurvey.status === 'active' && (
+                        <div className="live-indicator" style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '6px 12px',
+                            background: '#dcfce7',
+                            border: '1px solid #22c55e',
+                            borderRadius: '20px',
+                            color: '#15803d',
+                            fontWeight: 600,
+                            fontSize: '13px'
+                        }}>
+                            <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%', animation: 'pulse 2s infinite' }}></span>
+                            LIVE - Recording Responses
+                        </div>
+                    )}
                     <select
                         value={localSurvey.status}
                         onChange={async (e) => {
                             const newStatus = e.target.value;
+                            const oldStatus = localSurvey.status;
+
+                            // Warn when deactivating a live survey
+                            if (oldStatus === 'active' && newStatus !== 'active') {
+                                const confirmed = window.confirm(
+                                    `⚠️ Warning: Changing from Active to ${newStatus === 'draft' ? 'Draft' : 'Closed'}\n\n` +
+                                    `This will stop recording new responses.\n` +
+                                    (newStatus === 'draft'
+                                        ? `Draft mode allows structural edits but survey link won't work for respondents.`
+                                        : `Closed surveys show a "Survey Closed" message to respondents.`) +
+                                    `\n\nAre you sure?`
+                                );
+                                if (!confirmed) {
+                                    e.target.value = oldStatus; // Reset select
+                                    return;
+                                }
+                            }
+
+                            // Warn when activating
+                            if (newStatus === 'active' && oldStatus !== 'active') {
+                                const confirmed = window.confirm(
+                                    `🚀 Activate Survey?\n\n` +
+                                    `This will make the survey live and start recording responses.\n` +
+                                    `Once activated, structural changes are not recommended.\n\n` +
+                                    `Are you ready to go live?`
+                                );
+                                if (!confirmed) {
+                                    e.target.value = oldStatus;
+                                    return;
+                                }
+                            }
+
                             try {
                                 const response = await fetch(`/api/survey/surveys/${localSurvey.id}`, {
                                     method: 'PUT',
@@ -232,16 +282,25 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                         }}
                         className={`status-select status-${localSurvey.status}`}
                     >
-                        <option value="draft">Draft</option>
-                        <option value="active">Active</option>
-                        <option value="closed">Closed</option>
+                        <option value="draft">📝 Draft</option>
+                        <option value="active">🟢 Active (Live)</option>
+                        <option value="closed">🔒 Closed</option>
                     </select>
                     <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}?preview=true`, '_blank')} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <Eye width={14} height={14} /> Preview
                     </button>
-                    <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}`, '_blank')} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <Play width={14} height={14} /> Run survey
-                    </button>
+                    {localSurvey.status === 'active' && (
+                        <button
+                            className="btn-secondary"
+                            onClick={() => {
+                                navigator.clipboard.writeText(`${window.location.origin}/survey/take/${localSurvey.id}`);
+                                alert('Survey link copied to clipboard!');
+                            }}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        >
+                            <LinkIcon width={14} height={14} /> Copy Link
+                        </button>
+                    )}
                     <button className="btn-secondary" onClick={() => window.location.href = `/admin/surveys/${localSurvey.id}/settings`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <Settings width={14} height={14} /> Settings
                     </button>
