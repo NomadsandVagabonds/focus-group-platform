@@ -1,24 +1,10 @@
 // Survey Take Page - Public survey taking interface
 import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import SurveyRendererWrapper from '@/components/survey/SurveyRendererWrapper';
 import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
 import '@/app/survey.css';
 import '@/app/survey-mobile.css';
-
-// Dynamic import to avoid build-time hang
-const SurveyRenderer = dynamic(
-    () => import('@/components/survey/SurveyRenderer'),
-    {
-        ssr: false,
-        loading: () => (
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <h1>Loading Survey...</h1>
-                <p>Please wait while we prepare your survey.</p>
-            </div>
-        )
-    }
-);
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -139,7 +125,7 @@ export default async function SurveyTakePage({
     }
 
     return (
-        <SurveyRenderer
+        <SurveyRendererWrapper
             survey={survey as SurveyWithStructure}
             responseId={responseId}
             completionUrl={completionUrl}
