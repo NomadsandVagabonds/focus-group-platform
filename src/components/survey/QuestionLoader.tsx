@@ -101,20 +101,84 @@ export default function QuestionLoader({
         );
     }
 
+    const questionText = question.question_text || question.text || '';
+
     return (
-        <QuestionComponent
-            question={question}
-            value={responseData.get(question.code)}
-            onChange={(value: any) => onAnswer(question.code, value)}
-            subquestions={question.subquestions || []}
-            answerOptions={question.answer_options || []}
-            responseData={responseData}
-            onSubquestionAnswer={(subCode: string, value: any) => onAnswer(question.code, value, subCode)}
-            randomizationSeed={randomizationSeed}
-            validationError={validationError}
-            responseId={responseId}
-            questionNumber={questionNumber}
-            showQuestionCode={showQuestionCode}
-        />
+        <div className="question-container">
+            {/* Question label */}
+            <div className="question-label">
+                {questionNumber && <span className="question-number">Q{questionNumber}. </span>}
+                <span
+                    className="question-text"
+                    dangerouslySetInnerHTML={{ __html: questionText }}
+                />
+                {question.mandatory && <span className="required-marker"> *</span>}
+                {showQuestionCode && <span className="question-code"> [{question.code}]</span>}
+            </div>
+
+            {/* Help text */}
+            {question.help_text && (
+                <p className="help-text">{question.help_text}</p>
+            )}
+
+            {/* Validation error */}
+            {validationError && (
+                <div className="validation-error">{validationError}</div>
+            )}
+
+            {/* Question input */}
+            <QuestionComponent
+                question={question}
+                value={responseData.get(question.code)}
+                onChange={(value: any) => onAnswer(question.code, value)}
+                subquestions={question.subquestions || []}
+                answerOptions={question.answer_options || []}
+                responseData={responseData}
+                onSubquestionAnswer={(subCode: string, value: any) => onAnswer(question.code, value, subCode)}
+                randomizationSeed={randomizationSeed}
+                validationError={validationError}
+                responseId={responseId}
+                questionNumber={questionNumber}
+                showQuestionCode={showQuestionCode}
+            />
+
+            <style jsx>{`
+                .question-container {
+                    margin-bottom: 1rem;
+                }
+                .question-label {
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    margin-bottom: 0.75rem;
+                    color: #1a1d24;
+                    line-height: 1.5;
+                }
+                .question-number {
+                    color: #666;
+                }
+                .required-marker {
+                    color: #c94a4a;
+                }
+                .question-code {
+                    font-size: 0.75rem;
+                    color: #999;
+                    font-family: monospace;
+                }
+                .help-text {
+                    font-size: 0.9rem;
+                    color: #666;
+                    margin-bottom: 0.75rem;
+                    font-style: italic;
+                }
+                .validation-error {
+                    color: #c94a4a;
+                    font-size: 0.9rem;
+                    margin-bottom: 0.5rem;
+                    padding: 0.5rem;
+                    background: #fff5f5;
+                    border-radius: 4px;
+                }
+            `}</style>
+        </div>
     );
 }

@@ -133,7 +133,7 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
     // Welcome Phase
     if (phase === 'welcome') {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
                 {isPreview && <div style={{ background: 'orange', color: 'white', padding: '0.5rem', marginBottom: '1rem' }}>Preview Mode</div>}
                 <h1>{settings.welcome_title || survey.title}</h1>
                 <p>{settings.welcome_message || survey.description || 'Welcome to this survey.'}</p>
@@ -150,7 +150,7 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
     // Complete Phase
     if (phase === 'complete') {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', textAlign: 'center', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
                 <h1>{settings.end_title || 'Thank You!'}</h1>
                 <p>{settings.end_message || 'Your response has been recorded.'}</p>
                 {isPreview ? (
@@ -166,7 +166,7 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
 
     // Questions Phase
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', background: '#f5f3ef', minHeight: '100vh', color: '#1a1d24' }}>
             {isPreview && <div style={{ background: 'orange', color: 'white', padding: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>Preview Mode</div>}
 
             <h1>{survey.title}</h1>
