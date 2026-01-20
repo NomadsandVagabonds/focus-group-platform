@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Force webpack instead of Turbopack
+  bundlePagesRouterDependencies: true,
+  experimental: {
+    // Empty to avoid Turbopack
+  },
 };
 
 export default nextConfig;
