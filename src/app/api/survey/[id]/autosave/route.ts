@@ -36,7 +36,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         }
 
         // Verify response exists and is incomplete
-        const { data: response, error: responseError } = await supabase
+        const { data: response, error: responseError } = await getSupabaseServer()
             .from('survey_responses')
             .select('id, status, metadata')
             .eq('id', response_id)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             timing_data: timing_data || response.metadata?.timing_data,
         };
 
-        await supabase
+        await getSupabaseServer()
             .from('survey_responses')
             .update({
                 metadata: updatedMetadata,
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         // We need to resolve these to actual UUIDs for the database
         if (answers && Object.keys(answers).length > 0) {
             // First, get all question group IDs for this survey
-            const { data: groups, error: groupsError } = await supabase
+            const { data: groups, error: groupsError } = await getSupabaseServer()
                 .from('question_groups')
                 .select('id')
                 .eq('survey_id', surveyId);
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             const groupIds = groups.map(g => g.id);
 
             // Now get all questions for these groups
-            const { data: questions, error: questionsError } = await supabase
+            const { data: questions, error: questionsError } = await getSupabaseServer()
                 .from('questions')
                 .select(`
                     id,
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
             if (upsertData.length > 0) {
                 // Use upsert to handle both new and existing answers
-                const { error: upsertError } = await supabase
+                const { error: upsertError } = await getSupabaseServer()
                     .from('response_data')
                     .upsert(upsertData, {
                         onConflict: 'response_id,question_id,subquestion_id',
@@ -217,7 +217,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         // Get response with metadata
-        const { data: response, error: responseError } = await supabase
+        const { data: response, error: responseError } = await getSupabaseServer()
             .from('survey_responses')
             .select('id, status, metadata')
             .eq('id', responseId)
@@ -232,7 +232,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         // Get all saved answers
-        const { data: savedData, error: dataError } = await supabase
+        const { data: savedData, error: dataError } = await getSupabaseServer()
             .from('response_data')
             .select('question_id, subquestion_id, value')
             .eq('response_id', responseId);

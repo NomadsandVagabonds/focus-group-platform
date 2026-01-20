@@ -11,7 +11,7 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const { data: template, error } = await supabase
+        const { data: template, error } = await getSupabaseServer()
             .from('survey_templates')
             .select('*')
             .eq('id', id)
@@ -36,7 +36,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('survey_templates')
             .delete()
             .eq('id', id);
@@ -62,7 +62,7 @@ export async function PUT(
         const body = await request.json();
         const { name, description, category } = body;
 
-        const { data: template, error } = await supabase
+        const { data: template, error } = await getSupabaseServer()
             .from('survey_templates')
             .update({
                 name,

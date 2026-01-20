@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Create survey
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .insert({
                 title: surveyJSON.title,
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
         // Create question groups
         for (const groupJSON of surveyJSON.question_groups) {
-            const { data: group, error: groupError } = await supabase
+            const { data: group, error: groupError } = await getSupabaseServer()
                 .from('question_groups')
                 .insert({
                     survey_id: survey.id,
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 
             // Create questions
             for (const questionJSON of groupJSON.questions) {
-                const { data: question, error: questionError } = await supabase
+                const { data: question, error: questionError } = await getSupabaseServer()
                     .from('questions')
                     .insert({
                         group_id: group.id,
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
                         relevance_logic: sq.relevance_logic,
                     }));
 
-                    const { error: subqError } = await supabase
+                    const { error: subqError } = await getSupabaseServer()
                         .from('subquestions')
                         .insert(subquestions);
 
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
                         scale_id: opt.scale_id || 0,
                     }));
 
-                    const { error: optError } = await supabase
+                    const { error: optError } = await getSupabaseServer()
                         .from('answer_options')
                         .insert(answerOptions);
 

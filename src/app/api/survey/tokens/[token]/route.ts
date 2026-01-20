@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { token } = await params;
 
-        const { data: tokenData, error } = await supabase
+        const { data: tokenData, error } = await getSupabaseServer()
             .from('survey_tokens')
             .select('*, surveys(id, title, status)')
             .eq('token', token.toUpperCase())
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         const { response_id } = body;
 
         // First validate the token
-        const { data: tokenData, error: fetchError } = await supabase
+        const { data: tokenData, error: fetchError } = await getSupabaseServer()
             .from('survey_tokens')
             .select('*')
             .eq('token', token.toUpperCase())
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         const newUsesRemaining = tokenData.uses_remaining - 1;
         const newStatus = newUsesRemaining <= 0 ? 'used' : tokenData.status;
 
-        const { data: updatedToken, error: updateError } = await supabase
+        const { data: updatedToken, error: updateError } = await getSupabaseServer()
             .from('survey_tokens')
             .update({
                 uses_remaining: newUsesRemaining,
@@ -147,7 +147,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
         const { extends_days, add_uses, metadata } = body;
 
-        const { data: tokenData, error: fetchError } = await supabase
+        const { data: tokenData, error: fetchError } = await getSupabaseServer()
             .from('survey_tokens')
             .select('*')
             .eq('token', token.toUpperCase())
@@ -188,7 +188,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const { data: updatedToken, error: updateError } = await supabase
+        const { data: updatedToken, error: updateError } = await getSupabaseServer()
             .from('survey_tokens')
             .update(updates)
             .eq('id', tokenData.id)

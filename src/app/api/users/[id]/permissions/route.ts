@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
 
-        const { data: permissions, error } = await supabase
+        const { data: permissions, error } = await getSupabaseServer()
             .from('user_permissions')
             .select('*, surveys(id, title, status)')
             .eq('user_id', id)
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         }
 
         // Check if permission already exists
-        const { data: existingPermission } = await supabase
+        const { data: existingPermission } = await getSupabaseServer()
             .from('user_permissions')
             .select('id')
             .eq('user_id', userId)
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
         if (existingPermission) {
             // Update existing permission
-            const { data: permission, error } = await supabase
+            const { data: permission, error } = await getSupabaseServer()
                 .from('user_permissions')
                 .update({
                     permission_level,
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         }
 
         // Create new permission
-        const { data: permission, error } = await supabase
+        const { data: permission, error } = await getSupabaseServer()
             .from('user_permissions')
             .insert({
                 user_id: userId,

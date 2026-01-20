@@ -12,7 +12,7 @@ function getSupabase() {
 export async function GET() {
     try {
         const supabase = getSupabase();
-        const { data: tags, error } = await supabase
+        const { data: tags, error } = await getSupabaseServer()
             .from('tags')
             .select('*')
             .order('name');
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Tag name is required' }, { status: 400 });
         }
 
-        const { data: tag, error } = await supabase
+        const { data: tag, error } = await getSupabaseServer()
             .from('tags')
             .insert({
                 name: name.trim(),

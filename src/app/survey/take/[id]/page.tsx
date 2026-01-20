@@ -4,10 +4,12 @@ import { redirect } from 'next/navigation';
 import SurveyRenderer from '@/components/survey/SurveyRenderer';
 import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+function getSupabase() {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+}
 
 export default async function SurveyTakePage({
     params,
@@ -24,7 +26,7 @@ export default async function SurveyTakePage({
     const SESSION_ID = resolvedSearchParams.SESSION_ID as string;
     const STUDY_ID = resolvedSearchParams.STUDY_ID as string;
 
-    const { data: survey, error } = await supabase
+    const { data: survey, error } = await getSupabase()
         .from('surveys')
         .select(`
             *,
@@ -72,7 +74,7 @@ export default async function SurveyTakePage({
     if (isPreview) {
         responseId = `preview-${surveyId}-${Date.now()}`;
     } else if (PROLIFIC_PID) {
-        const { data: response, error: upsertError } = await supabase
+        const { data: response, error: upsertError } = await getSupabase()
             .from('survey_responses')
             .upsert({
                 survey_id: surveyId,
@@ -104,7 +106,7 @@ export default async function SurveyTakePage({
 
         responseId = response.id;
     } else {
-        const { data: newResponse } = await supabase
+        const { data: newResponse } = await getSupabase()
             .from('survey_responses')
             .insert({
                 survey_id: surveyId,

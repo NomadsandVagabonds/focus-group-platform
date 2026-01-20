@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Get from database
-        const { data: media, error } = await supabase
+        const { data: media, error } = await getSupabaseServer()
             .from('session_media')
             .select('*')
             .eq('session_id', sessionId)
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
         }));
 
         // Get current max order
-        const { data: existing } = await supabase
+        const { data: existing } = await getSupabaseServer()
             .from('session_media')
             .select('display_order')
             .eq('session_id', sessionId)
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
         const nextOrder = (existing?.[0]?.display_order || 0) + 1;
 
         // Insert into database
-        const { data: newMedia, error } = await supabase
+        const { data: newMedia, error } = await getSupabaseServer()
             .from('session_media')
             .insert({
                 session_id: sessionId,
@@ -150,7 +150,7 @@ export async function PUT(request: NextRequest) {
         if (displayOrder !== undefined) updates.display_order = displayOrder;
         if (filename !== undefined) updates.filename = filename;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('session_media')
             .update(updates)
             .eq('id', mediaId);
@@ -178,7 +178,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Get the item first
-        const { data: item } = await supabase
+        const { data: item } = await getSupabaseServer()
             .from('session_media')
             .select('s3_key')
             .eq('id', mediaId)
@@ -194,7 +194,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Delete from database
-        await supabase
+        await getSupabaseServer()
             .from('session_media')
             .delete()
             .eq('id', mediaId);

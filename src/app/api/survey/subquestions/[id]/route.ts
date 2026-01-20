@@ -13,7 +13,7 @@ export async function PUT(
 
         const { code, label } = body;
 
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('subquestions')
             .update({
                 code,
@@ -44,7 +44,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('subquestions')
             .delete()
             .eq('id', id);

@@ -20,7 +20,7 @@ export async function GET(
         const statusFilter = searchParams.get('status') || 'complete'; // 'complete', 'all', 'incomplete'
 
         // Fetch survey with full structure
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select(`
                 *,

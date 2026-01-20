@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Fetch survey details
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select('id, title, description, settings')
             .eq('id', surveyId)
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
                     results.sent++;
 
                     // Update token metadata to track email sent
-                    await supabase
+                    await getSupabaseServer()
                         .from('survey_tokens')
                         .update({
                             metadata: {
@@ -187,7 +187,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { data: logs, error } = await supabase
+        const { data: logs, error } = await getSupabaseServer()
             .from('email_logs')
             .select('*')
             .eq('survey_id', surveyId)

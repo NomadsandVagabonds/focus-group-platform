@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Fetch all active quotas for this survey
-        const { data: quotas, error } = await supabase
+        const { data: quotas, error } = await getSupabaseServer()
             .from('survey_quotas')
             .select('*')
             .eq('survey_id', surveyId)

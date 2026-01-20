@@ -6,7 +6,7 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 // GET /api/survey/templates - List all templates
 export async function GET() {
     try {
-        const { data: templates, error } = await supabase
+        const { data: templates, error } = await getSupabaseServer()
             .from('survey_templates')
             .select('*')
             .order('created_at', { ascending: false });
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Fetch the source survey with full structure
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select(`
                 *,
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         ) || 0;
 
         // Create the template
-        const { data: template, error: templateError } = await supabase
+        const { data: template, error: templateError } = await getSupabaseServer()
             .from('survey_templates')
             .insert({
                 name,

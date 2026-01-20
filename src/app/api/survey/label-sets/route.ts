@@ -6,7 +6,7 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 // GET /api/survey/label-sets - List all label sets
 export async function GET() {
     try {
-        const { data: labelSets, error } = await supabase
+        const { data: labelSets, error } = await getSupabaseServer()
             .from('label_sets')
             .select('*')
             .order('created_at', { ascending: false });
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { data: labelSet, error } = await supabase
+        const { data: labelSet, error } = await getSupabaseServer()
             .from('label_sets')
             .insert({
                 name,

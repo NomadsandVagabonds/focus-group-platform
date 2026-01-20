@@ -18,7 +18,7 @@ interface GlobalSettings {
 // GET /api/survey/settings/global - Get global settings
 export async function GET() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('global_settings')
             .select('*')
             .eq('key', 'survey_settings')
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         };
 
         // Upsert the settings
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('global_settings')
             .upsert({
                 key: 'survey_settings',

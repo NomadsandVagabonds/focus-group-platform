@@ -37,7 +37,7 @@ export async function GET(
         const { id } = await params;
         const isAdmin = request.headers.get('x-admin-request') === 'true';
 
-        const { data: survey, error } = await supabase
+        const { data: survey, error } = await getSupabaseServer()
             .from('surveys')
             .select(`
         *,
@@ -99,7 +99,7 @@ export async function PUT(
         const body = await request.json();
         const { title, description, status, settings } = body;
 
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('surveys')
             .update({ title, description, status, settings })
             .eq('id', id)
@@ -138,7 +138,7 @@ export async function DELETE(
         const { id } = await params;
 
         // Verify survey exists
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select('id, title')
             .eq('id', id)
@@ -152,7 +152,7 @@ export async function DELETE(
         }
 
         // Get all question groups for this survey
-        const { data: groups } = await supabase
+        const { data: groups } = await getSupabaseServer()
             .from('question_groups')
             .select('id')
             .eq('survey_id', id);
@@ -160,7 +160,7 @@ export async function DELETE(
         const groupIds = groups?.map(g => g.id) || [];
 
         // Get all questions for these groups
-        const { data: questions } = await supabase
+        const { data: questions } = await getSupabaseServer()
             .from('questions')
             .select('id')
             .in('group_id', groupIds.length > 0 ? groupIds : ['00000000-0000-0000-0000-000000000000']);
@@ -168,7 +168,7 @@ export async function DELETE(
         const questionIds = questions?.map(q => q.id) || [];
 
         // Get all responses for this survey
-        const { data: responses } = await supabase
+        const { data: responses } = await getSupabaseServer()
             .from('survey_responses')
             .select('id')
             .eq('survey_id', id);
@@ -179,7 +179,7 @@ export async function DELETE(
 
         // 1. Delete response_data (references both responses and questions)
         if (responseIds.length > 0) {
-            const { error: responseDataError } = await supabase
+            const { error: responseDataError } = await getSupabaseServer()
                 .from('response_data')
                 .delete()
                 .in('response_id', responseIds);
@@ -190,7 +190,7 @@ export async function DELETE(
         }
 
         // 2. Delete survey_responses
-        const { error: responsesError } = await supabase
+        const { error: responsesError } = await getSupabaseServer()
             .from('survey_responses')
             .delete()
             .eq('survey_id', id);
@@ -201,7 +201,7 @@ export async function DELETE(
 
         // 3. Delete subquestions (references questions)
         if (questionIds.length > 0) {
-            const { error: subquestionsError } = await supabase
+            const { error: subquestionsError } = await getSupabaseServer()
                 .from('subquestions')
                 .delete()
                 .in('question_id', questionIds);
@@ -213,7 +213,7 @@ export async function DELETE(
 
         // 4. Delete answer_options (references questions)
         if (questionIds.length > 0) {
-            const { error: answerOptionsError } = await supabase
+            const { error: answerOptionsError } = await getSupabaseServer()
                 .from('answer_options')
                 .delete()
                 .in('question_id', questionIds);
@@ -225,7 +225,7 @@ export async function DELETE(
 
         // 5. Delete questions (references question_groups)
         if (groupIds.length > 0) {
-            const { error: questionsError } = await supabase
+            const { error: questionsError } = await getSupabaseServer()
                 .from('questions')
                 .delete()
                 .in('group_id', groupIds);
@@ -236,7 +236,7 @@ export async function DELETE(
         }
 
         // 6. Delete question_groups (references surveys)
-        const { error: groupsError } = await supabase
+        const { error: groupsError } = await getSupabaseServer()
             .from('question_groups')
             .delete()
             .eq('survey_id', id);
@@ -246,7 +246,7 @@ export async function DELETE(
         }
 
         // 7. Delete quotas (references surveys)
-        const { error: quotasError } = await supabase
+        const { error: quotasError } = await getSupabaseServer()
             .from('quotas')
             .delete()
             .eq('survey_id', id);
@@ -256,7 +256,7 @@ export async function DELETE(
         }
 
         // 8. Finally, delete the survey itself
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await getSupabaseServer()
             .from('surveys')
             .delete()
             .eq('id', id);

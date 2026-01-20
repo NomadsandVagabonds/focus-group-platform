@@ -24,7 +24,7 @@ export async function PUT(
         }
 
         // Verify response exists
-        const { data: response, error: checkError } = await supabase
+        const { data: response, error: checkError } = await getSupabaseServer()
             .from('survey_responses')
             .select('id')
             .eq('id', responseId)
@@ -54,20 +54,20 @@ export async function PUT(
             if (existing) {
                 // Update existing record
                 if (update.value) {
-                    await supabase
+                    await getSupabaseServer()
                         .from('response_data')
                         .update({ value: update.value })
                         .eq('id', existing.id);
                 } else {
                     // Delete if value is empty
-                    await supabase
+                    await getSupabaseServer()
                         .from('response_data')
                         .delete()
                         .eq('id', existing.id);
                 }
             } else if (update.value) {
                 // Insert new record if value is not empty
-                await supabase
+                await getSupabaseServer()
                     .from('response_data')
                     .insert({
                         response_id: responseId,

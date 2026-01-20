@@ -11,7 +11,7 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const { data: labelSet, error } = await supabase
+        const { data: labelSet, error } = await getSupabaseServer()
             .from('label_sets')
             .select('*')
             .eq('id', id)
@@ -36,7 +36,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('label_sets')
             .delete()
             .eq('id', id);
@@ -62,7 +62,7 @@ export async function PUT(
         const body = await request.json();
         const { name, language, labels } = body;
 
-        const { data: labelSet, error } = await supabase
+        const { data: labelSet, error } = await getSupabaseServer()
             .from('label_sets')
             .update({
                 name,

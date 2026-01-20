@@ -79,7 +79,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
 
-        const { data: survey, error } = await supabase
+        const { data: survey, error } = await getSupabaseServer()
             .from('surveys')
             .select('id, title, settings')
             .eq('id', id)
@@ -169,7 +169,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
 
         // Get current settings and merge
-        const { data: currentSurvey, error: fetchError } = await supabase
+        const { data: currentSurvey, error: fetchError } = await getSupabaseServer()
             .from('surveys')
             .select('settings')
             .eq('id', id)
@@ -187,7 +187,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         const mergedSettings = { ...currentSurvey.settings, ...settings };
 
-        const { data: survey, error } = await supabase
+        const { data: survey, error } = await getSupabaseServer()
             .from('surveys')
             .update({
                 settings: mergedSettings,

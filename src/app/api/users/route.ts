@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Check if user already exists
-        const { data: existingUser } = await supabase
+        const { data: existingUser } = await getSupabaseServer()
             .from('users')
             .select('id')
             .eq('email', email.toLowerCase())
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { data: user, error } = await supabase
+        const { data: user, error } = await getSupabaseServer()
             .from('users')
             .insert({
                 email: email.toLowerCase(),

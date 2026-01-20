@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('question_groups')
             .insert(body)
             .select()

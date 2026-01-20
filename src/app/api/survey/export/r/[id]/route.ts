@@ -16,7 +16,7 @@ export async function GET(
         const fileType = searchParams.get('type') || 'both'; // 'script', 'data', or 'both'
 
         // Fetch survey with full structure
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select(`
                 *,
@@ -37,7 +37,7 @@ export async function GET(
         }
 
         // Fetch responses with data
-        const { data: responses, error: responsesError } = await supabase
+        const { data: responses, error: responsesError } = await getSupabaseServer()
             .from('survey_responses')
             .select(`*, response_data (*)`)
             .eq('survey_id', id)

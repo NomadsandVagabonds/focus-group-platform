@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
             .getPublicUrl(filePath);
 
         // Store file metadata in database
-        const { data: fileRecord, error: dbError } = await supabase
+        const { data: fileRecord, error: dbError } = await getSupabaseServer()
             .from('uploaded_files')
             .insert({
                 response_id: responseId,
@@ -197,7 +197,7 @@ export async function DELETE(request: NextRequest) {
 
         // Delete from database if ID provided
         if (fileId) {
-            const { error: dbError } = await supabase
+            const { error: dbError } = await getSupabaseServer()
                 .from('uploaded_files')
                 .delete()
                 .eq('id', fileId);

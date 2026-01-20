@@ -11,7 +11,7 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const { data: quota, error } = await supabase
+        const { data: quota, error } = await getSupabaseServer()
             .from('survey_quotas')
             .select('*')
             .eq('id', id)
@@ -37,7 +37,7 @@ export async function PUT(
         const { id } = await params;
         const body = await request.json();
 
-        const { data: quota, error } = await supabase
+        const { data: quota, error } = await getSupabaseServer()
             .from('survey_quotas')
             .update({
                 name: body.name,
@@ -72,7 +72,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('survey_quotas')
             .delete()
             .eq('id', id);
@@ -105,28 +105,28 @@ export async function PATCH(
 
             if (error) {
                 // If the function doesn't exist, do it manually
-                const { data: quota } = await supabase
+                const { data: quota } = await getSupabaseServer()
                     .from('survey_quotas')
                     .select('current_count')
                     .eq('id', id)
                     .single();
 
                 if (quota) {
-                    await supabase
+                    await getSupabaseServer()
                         .from('survey_quotas')
                         .update({ current_count: quota.current_count + 1 })
                         .eq('id', id);
                 }
             }
         } else if (action === 'reset') {
-            await supabase
+            await getSupabaseServer()
                 .from('survey_quotas')
                 .update({ current_count: 0 })
                 .eq('id', id);
         }
 
         // Fetch updated quota
-        const { data: quota } = await supabase
+        const { data: quota } = await getSupabaseServer()
             .from('survey_quotas')
             .select('*')
             .eq('id', id)

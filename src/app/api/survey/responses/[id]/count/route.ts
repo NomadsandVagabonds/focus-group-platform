@@ -12,7 +12,7 @@ export async function GET(
 
         // Get counts by status using a single query with grouping
         // This is more efficient than multiple count queries
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('survey_responses')
             .select('status')
             .eq('survey_id', surveyId);

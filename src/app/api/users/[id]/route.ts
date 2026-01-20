@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
 
-        const { data: user, error } = await supabase
+        const { data: user, error } = await getSupabaseServer()
             .from('users')
             .select('*, user_permissions(*)')
             .eq('id', id)
@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         if (is_active !== undefined) updates.is_active = is_active;
         if (metadata !== undefined) updates.metadata = metadata;
 
-        const { data: user, error } = await supabase
+        const { data: user, error } = await getSupabaseServer()
             .from('users')
             .update(updates)
             .eq('id', id)
@@ -88,7 +88,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('users')
             .delete()
             .eq('id', id);

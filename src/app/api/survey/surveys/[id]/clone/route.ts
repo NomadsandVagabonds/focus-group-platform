@@ -13,7 +13,7 @@ export async function POST(
         const newTitle = body.title;
 
         // Fetch the original survey with full structure
-        const { data: originalSurvey, error: fetchError } = await supabase
+        const { data: originalSurvey, error: fetchError } = await getSupabaseServer()
             .from('surveys')
             .select(`
                 *,
@@ -34,7 +34,7 @@ export async function POST(
         }
 
         // Create the new survey
-        const { data: newSurvey, error: surveyError } = await supabase
+        const { data: newSurvey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .insert({
                 title: newTitle || `${originalSurvey.title} (Copy)`,
@@ -66,7 +66,7 @@ export async function POST(
         const groupIdMap = new Map<string, string>();
         
         for (const group of originalSurvey.question_groups || []) {
-            const { data: newGroup, error: groupError } = await supabase
+            const { data: newGroup, error: groupError } = await getSupabaseServer()
                 .from('question_groups')
                 .insert({
                     survey_id: newSurvey.id,
@@ -88,7 +88,7 @@ export async function POST(
 
             // Clone questions
             for (const question of group.questions || []) {
-                const { data: newQuestion, error: questionError } = await supabase
+                const { data: newQuestion, error: questionError } = await getSupabaseServer()
                     .from('questions')
                     .insert({
                         group_id: newGroup.id,
@@ -118,7 +118,7 @@ export async function POST(
                         relevance_logic: sq.relevance_logic,
                     }));
 
-                    const { error: sqError } = await supabase
+                    const { error: sqError } = await getSupabaseServer()
                         .from('subquestions')
                         .insert(subquestionInserts);
 
@@ -137,7 +137,7 @@ export async function POST(
                         scale_id: opt.scale_id,
                     }));
 
-                    const { error: aoError } = await supabase
+                    const { error: aoError } = await getSupabaseServer()
                         .from('answer_options')
                         .insert(answerInserts);
 

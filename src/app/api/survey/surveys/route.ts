@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     try {
         const { title, description } = await request.json();
 
-        const { data: survey, error } = await supabase
+        const { data: survey, error } = await getSupabaseServer()
             .from('surveys')
             .insert({
                 title,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
     try {
-        const { data: surveys, error } = await supabase
+        const { data: surveys, error } = await getSupabaseServer()
             .from('surveys')
             .select('*')
             .order('created_at', { ascending: false });

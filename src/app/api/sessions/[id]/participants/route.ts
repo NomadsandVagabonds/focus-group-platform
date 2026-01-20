@@ -22,7 +22,7 @@ export async function POST(
         }
 
         // Verify session exists
-        const { data: session, error: sessionError } = await supabase
+        const { data: session, error: sessionError } = await getSupabaseServer()
             .from('sessions')
             .select('id')
             .eq('id', sessionId)
@@ -54,7 +54,7 @@ export async function POST(
             }
         }));
 
-        const { data: created, error: createError } = await supabase
+        const { data: created, error: createError } = await getSupabaseServer()
             .from('participants')
             .insert(participantRecords)
             .select();
@@ -65,7 +65,7 @@ export async function POST(
         const baseUrl = request.headers.get('origin') || 'http://localhost:3000';
 
         // Get the session code from the database
-        const { data: sessionData } = await supabase
+        const { data: sessionData } = await getSupabaseServer()
             .from('sessions')
             .select('code')
             .eq('id', sessionId)
@@ -100,7 +100,7 @@ export async function GET(
     try {
         const { id: sessionId } = await params;
 
-        const { data: participants, error } = await supabase
+        const { data: participants, error } = await getSupabaseServer()
             .from('participants')
             .select('*')
             .eq('session_id', sessionId)

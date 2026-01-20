@@ -23,7 +23,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         }
 
         // Verify the response exists and belongs to this survey
-        const { data: response, error: responseError } = await supabase
+        const { data: response, error: responseError } = await getSupabaseServer()
             .from('survey_responses')
             .select('id, survey_id, status')
             .eq('id', response_id)
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         }
 
         // Get survey settings for expiry
-        const { data: survey } = await supabase
+        const { data: survey } = await getSupabaseServer()
             .from('surveys')
             .select('settings')
             .eq('id', surveyId)
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         const resumeToken = generateResumeToken();
 
         // Check for existing resume token
-        const { data: existingToken } = await supabase
+        const { data: existingToken } = await getSupabaseServer()
             .from('resume_tokens')
             .select('id')
             .eq('response_id', response_id)
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         let tokenData;
         if (existingToken) {
             // Update existing token
-            const { data, error } = await supabase
+            const { data, error } = await getSupabaseServer()
                 .from('resume_tokens')
                 .update({
                     token: resumeToken,
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             tokenData = data;
         } else {
             // Create new token
-            const { data, error } = await supabase
+            const { data, error } = await getSupabaseServer()
                 .from('resume_tokens')
                 .insert({
                     survey_id: surveyId,
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         // Look up the resume token
-        const { data: resumeToken, error: tokenError } = await supabase
+        const { data: resumeToken, error: tokenError } = await getSupabaseServer()
             .from('resume_tokens')
             .select('*, survey_responses(*)')
             .eq('token', token)
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         // Get response data
-        const { data: responseData, error: dataError } = await supabase
+        const { data: responseData, error: dataError } = await getSupabaseServer()
             .from('response_data')
             .select('question_id, subquestion_id, value')
             .eq('response_id', resumeToken.response_id);
@@ -176,7 +176,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         if (dataError) throw dataError;
 
         // Update last accessed
-        await supabase
+        await getSupabaseServer()
             .from('resume_tokens')
             .update({ last_accessed_at: new Date().toISOString() })
             .eq('id', resumeToken.id);

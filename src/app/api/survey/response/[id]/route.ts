@@ -11,7 +11,7 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const { data: response, error } = await supabase
+        const { data: response, error } = await getSupabaseServer()
             .from('survey_responses')
             .select(`
                 *,
@@ -48,7 +48,7 @@ export async function PUT(
             if (body.status) updateData.status = body.status;
             if (body.metadata) updateData.metadata = body.metadata;
 
-            const { error: responseError } = await supabase
+            const { error: responseError } = await getSupabaseServer()
                 .from('survey_responses')
                 .update(updateData)
                 .eq('id', id);
@@ -63,7 +63,7 @@ export async function PUT(
             for (const item of body.response_data) {
                 if (item.id) {
                     // Update existing response data
-                    const { error: dataError } = await supabase
+                    const { error: dataError } = await getSupabaseServer()
                         .from('response_data')
                         .update({ value: item.value })
                         .eq('id', item.id);
@@ -73,7 +73,7 @@ export async function PUT(
                     }
                 } else if (item.question_id && item.value !== undefined) {
                     // Upsert new response data
-                    const { error: upsertError } = await supabase
+                    const { error: upsertError } = await getSupabaseServer()
                         .from('response_data')
                         .upsert({
                             response_id: id,
@@ -92,7 +92,7 @@ export async function PUT(
         }
 
         // Fetch the updated response
-        const { data: updatedResponse, error: fetchError } = await supabase
+        const { data: updatedResponse, error: fetchError } = await getSupabaseServer()
             .from('survey_responses')
             .select(`
                 *,
@@ -120,7 +120,7 @@ export async function DELETE(
         const { id } = await params;
 
         // First delete all response_data for this response
-        const { error: dataError } = await supabase
+        const { error: dataError } = await getSupabaseServer()
             .from('response_data')
             .delete()
             .eq('response_id', id);
@@ -131,7 +131,7 @@ export async function DELETE(
         }
 
         // Then delete the response itself
-        const { error: responseError } = await supabase
+        const { error: responseError } = await getSupabaseServer()
             .from('survey_responses')
             .delete()
             .eq('id', id);

@@ -20,7 +20,7 @@ export async function PATCH(
         if (email !== undefined) updates.email = email;
         if (metadata !== undefined) updates.metadata = metadata;
 
-        const { data: participant, error } = await supabase
+        const { data: participant, error } = await getSupabaseServer()
             .from('participants')
             .update(updates)
             .eq('id', id)
@@ -51,7 +51,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('participants')
             .delete()
             .eq('id', id);

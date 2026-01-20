@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
         const { response_id, question_code, subquestion_code, value } = await request.json();
 
         // Get question ID from code
-        const { data: question } = await supabase
+        const { data: question } = await getSupabaseServer()
             .from('questions')
             .select('id')
             .eq('code', question_code)
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
         let subquestion_id = null;
         if (subquestion_code) {
-            const { data: subquestion } = await supabase
+            const { data: subquestion } = await getSupabaseServer()
                 .from('subquestions')
                 .select('id')
                 .eq('question_id', question.id)
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Upsert response data
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('response_data')
             .upsert({
                 response_id,

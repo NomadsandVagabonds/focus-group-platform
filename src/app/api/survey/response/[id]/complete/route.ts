@@ -11,7 +11,7 @@ export async function POST(
         const { id: responseId } = await params;
 
         // Mark response as complete
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseServer()
             .from('survey_responses')
             .update({
                 status: 'complete',
@@ -27,7 +27,7 @@ export async function POST(
         }
 
         // Get survey settings for redirect
-        const { data: survey } = await supabase
+        const { data: survey } = await getSupabaseServer()
             .from('surveys')
             .select('settings')
             .eq('id', data.survey_id)

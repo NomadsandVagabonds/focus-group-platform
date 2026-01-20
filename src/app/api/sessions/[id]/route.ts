@@ -13,7 +13,7 @@ export async function GET(
         const { id } = await params;
 
         // Get session
-        const { data: session, error: sessionError } = await supabase
+        const { data: session, error: sessionError } = await getSupabaseServer()
             .from('sessions')
             .select('*')
             .eq('id', id)
@@ -27,7 +27,7 @@ export async function GET(
         }
 
         // Get participants
-        const { data: participants, error: participantsError } = await supabase
+        const { data: participants, error: participantsError } = await getSupabaseServer()
             .from('participants')
             .select('*')
             .eq('session_id', id)
@@ -67,7 +67,7 @@ export async function PATCH(
         if (moderatorNotes !== undefined) updates.moderator_notes = moderatorNotes;
         if (name) updates.name = name;
 
-        const { data: session, error } = await supabase
+        const { data: session, error } = await getSupabaseServer()
             .from('sessions')
             .update(updates)
             .eq('id', id)
@@ -98,7 +98,7 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('sessions')
             .delete()
             .eq('id', id);

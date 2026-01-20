@@ -4,10 +4,12 @@ import { redirect } from 'next/navigation';
 import SurveyBuilderLayout from '@/components/survey/builder/SurveyBuilderLayout';
 import type { SurveyWithStructure } from '@/lib/supabase/survey-types';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+function getSupabase() {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+}
 
 export default async function SurveyBuilderPage({
     params,
@@ -17,7 +19,7 @@ export default async function SurveyBuilderPage({
     const { id: surveyId } = await params;
 
     // Fetch survey with full structure
-    const { data: survey, error } = await supabase
+    const { data: survey, error } = await getSupabase()
         .from('surveys')
         .select(`
       *,

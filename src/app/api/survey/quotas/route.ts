@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'surveyId is required' }, { status: 400 });
         }
 
-        const { data: quotas, error } = await supabase
+        const { data: quotas, error } = await getSupabaseServer()
             .from('survey_quotas')
             .select('*')
             .eq('survey_id', surveyId)
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { data: quota, error } = await supabase
+        const { data: quota, error } = await getSupabaseServer()
             .from('survey_quotas')
             .insert({
                 survey_id: surveyId,

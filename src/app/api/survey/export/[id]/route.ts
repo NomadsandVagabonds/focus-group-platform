@@ -11,7 +11,7 @@ export async function GET(
     try {
         const { id } = await params;
         // Fetch survey with full structure
-        const { data: survey, error } = await supabase
+        const { data: survey, error } = await getSupabaseServer()
             .from('surveys')
             .select(`
         *,

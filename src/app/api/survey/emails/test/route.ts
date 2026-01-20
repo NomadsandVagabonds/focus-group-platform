@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Fetch survey details
-        const { data: survey, error: surveyError } = await supabase
+        const { data: survey, error: surveyError } = await getSupabaseServer()
             .from('surveys')
             .select('id, title, description')
             .eq('id', surveyId)

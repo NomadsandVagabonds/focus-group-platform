@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        const { data: tokens, error } = await supabase
+        const { data: tokens, error } = await getSupabaseServer()
             .from('survey_tokens')
             .insert(tokensToCreate)
             .select();

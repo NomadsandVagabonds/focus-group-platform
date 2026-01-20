@@ -27,7 +27,7 @@ export async function POST(
         const supabase = getSupabase();
 
         // Get participant and their session
-        const { data: participant, error: participantError } = await supabase
+        const { data: participant, error: participantError } = await getSupabaseServer()
             .from('participants')
             .select('code, session_id')
             .eq('id', id)
@@ -41,7 +41,7 @@ export async function POST(
         }
 
         // Get session code (used as room name)
-        const { data: session, error: sessionError } = await supabase
+        const { data: session, error: sessionError } = await getSupabaseServer()
             .from('sessions')
             .select('code')
             .eq('id', participant.session_id)

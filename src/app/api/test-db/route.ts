@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 export async function GET() {
     try {
         // Test 1: Create a sample session
-        const { data: session, error: sessionError } = await supabase
+        const { data: session, error: sessionError } = await getSupabaseServer()
             .from('sessions')
             .insert({
                 name: 'Test Session',
@@ -22,7 +22,7 @@ export async function GET() {
         if (sessionError) {
             // If it already exists, just fetch it
             if (sessionError.code === '23505') {
-                const { data: existingSession } = await supabase
+                const { data: existingSession } = await getSupabaseServer()
                     .from('sessions')
                     .select('*')
                     .eq('code', 'TEST-001')
@@ -38,7 +38,7 @@ export async function GET() {
         }
 
         // Test 2: Create a sample participant
-        const { data: participant, error: participantError } = await supabase
+        const { data: participant, error: participantError } = await getSupabaseServer()
             .from('participants')
             .insert({
                 session_id: session.id,

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { id: surveyId } = await params;
 
-        const { data: permissions, error } = await supabase
+        const { data: permissions, error } = await getSupabaseServer()
             .from('user_permissions')
             .select('*, users(id, email, full_name, role)')
             .eq('survey_id', surveyId)
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             granted_by,
         }));
 
-        const { data: permissions, error } = await supabase
+        const { data: permissions, error } = await getSupabaseServer()
             .from('user_permissions')
             .upsert(permissionsToCreate, {
                 onConflict: 'user_id,survey_id',
@@ -99,7 +99,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const { error } = await supabase
+        const { error } = await getSupabaseServer()
             .from('user_permissions')
             .delete()
             .eq('survey_id', surveyId)

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
         const { subquestions, answer_options, ...questionData } = body;
 
         // Insert question
-        const { data: question, error: questionError } = await supabase
+        const { data: question, error: questionError } = await getSupabaseServer()
             .from('questions')
             .insert(questionData)
             .select()
