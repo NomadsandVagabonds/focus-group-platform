@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
         // If code is provided, look up single session
         if (code) {
-            const { data: session, error } = await getSupabaseServer()
+            const { data: session, error } = await supabase
                 .from('sessions')
                 .select('*')
                 .eq('code', code.toUpperCase())
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Otherwise list all sessions
-        const { data: sessions, error } = await getSupabaseServer()
+        const { data: sessions, error } = await supabase
             .from('sessions')
             .select('*')
             .order('created_at', { ascending: false });
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         const code = generateSessionCode();
 
         // Create the session
-        const { data: session, error: sessionError } = await getSupabaseServer()
+        const { data: session, error: sessionError } = await supabase
             .from('sessions')
             .insert({
                 name,
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
                 metadata: p.metadata || {}
             }));
 
-            const { data: created, error: participantError } = await getSupabaseServer()
+            const { data: created, error: participantError } = await supabase
                 .from('participants')
                 .insert(participantRecords)
                 .select();
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        const { data: backups, error: backupError } = await getSupabaseServer()
+        const { data: backups, error: backupError } = await supabase
             .from('participants')
             .insert(backupParticipants)
             .select();

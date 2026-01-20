@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Find the session by code
-        const { data: session, error: sessionError } = await getSupabaseServer()
+        const { data: session, error: sessionError } = await supabase
             .from('sessions')
             .select('id, name, status')
             .eq('code', sessionCode.toUpperCase())
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Find the participant by code within this session
-        const { data: participant, error: participantError } = await getSupabaseServer()
+        const { data: participant, error: participantError } = await supabase
             .from('participants')
             .select('id, display_name, notes, metadata')
             .eq('session_id', session.id)

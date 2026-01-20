@@ -17,7 +17,7 @@ export async function GET(
 
     try {
         const supabase = getSupabase();
-        const { data, error } = await getSupabaseServer()
+        const { data, error } = await supabase
             .from('participant_tags')
             .select(`
                 id,
@@ -52,14 +52,14 @@ export async function PUT(
         }
 
         // Delete existing tags for this participant
-        await getSupabaseServer()
+        await supabase
             .from('participant_tags')
             .delete()
             .eq('participant_id', id);
 
         // Insert new tags
         if (tagIds.length > 0) {
-            const { error: insertError } = await getSupabaseServer()
+            const { error: insertError } = await supabase
                 .from('participant_tags')
                 .insert(tagIds.map((tagId: string) => ({
                     participant_id: id,
@@ -70,7 +70,7 @@ export async function PUT(
         }
 
         // Return updated tags
-        const { data } = await getSupabaseServer()
+        const { data } = await supabase
             .from('participant_tags')
             .select(`tag:tags(id, name, color)`)
             .eq('participant_id', id);

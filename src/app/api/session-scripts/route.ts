@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     try {
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        const { data, error } = await getSupabaseServer()
+        const { data, error } = await supabase
             .from('session_scripts')
             .select('*')
             .eq('session_id', sessionId)
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         // Delete existing sections for this session
-        await getSupabaseServer()
+        await supabase
             .from('session_scripts')
             .delete()
             .eq('session_id', sessionId);
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
             order_index: index,
         }));
 
-        const { data, error } = await getSupabaseServer()
+        const { data, error } = await supabase
             .from('session_scripts')
             .insert(sectionsToInsert)
             .select();

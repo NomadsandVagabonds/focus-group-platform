@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
             // Mark recording start time on session
             const sessionStart = startTime || Date.now();
 
-            const { error } = await getSupabaseServer()
+            const { error } = await supabase
                 .from('sessions')
                 .update({ recording_start_time: sessionStart })
                 .eq('id', sessionId);
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
             }
 
             // Get session start time
-            const { data: session } = await getSupabaseServer()
+            const { data: session } = await supabase
                 .from('sessions')
                 .select('recording_start_time')
                 .eq('id', sessionId)
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
             const sessionStart = session?.recording_start_time || Date.now();
             const now = Date.now();
 
-            const { error } = await getSupabaseServer()
+            const { error } = await supabase
                 .from('slider_events')
                 .insert({
                     session_id: sessionId,
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
             }
 
             // Get session start time
-            const { data: session } = await getSupabaseServer()
+            const { data: session } = await supabase
                 .from('sessions')
                 .select('recording_start_time')
                 .eq('id', sessionId)
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
                 session_ms: (e.timestamp || Date.now()) - sessionStart,
             }));
 
-            const { error } = await getSupabaseServer()
+            const { error } = await supabase
                 .from('slider_events')
                 .insert(rows);
 
@@ -123,13 +123,13 @@ export async function POST(request: NextRequest) {
 
         } else if (action === 'export') {
             // Export all slider data for a session
-            const { data: session } = await getSupabaseServer()
+            const { data: session } = await supabase
                 .from('sessions')
                 .select('id, recording_start_time, recording_end_time')
                 .eq('id', sessionId)
                 .single();
 
-            const { data: events, error } = await getSupabaseServer()
+            const { data: events, error } = await supabase
                 .from('slider_events')
                 .select('participant_id, value, timestamp, session_ms')
                 .eq('session_id', sessionId)
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
             // Mark session as ended
             const endTime = Date.now();
 
-            const { error } = await getSupabaseServer()
+            const { error } = await supabase
                 .from('sessions')
                 .update({ recording_end_time: endTime })
                 .eq('id', sessionId);
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
             }
 
             // Get event count
-            const { count } = await getSupabaseServer()
+            const { count } = await supabase
                 .from('slider_events')
                 .select('*', { count: 'exact', head: true })
                 .eq('session_id', sessionId);

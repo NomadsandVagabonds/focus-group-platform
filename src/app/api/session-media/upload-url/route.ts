@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         const uploadUrl = await getSignedUrl(s3Client, putCommand, { expiresIn: 600 }); // 10 min
 
         // Get current max order
-        const { data: existing } = await getSupabaseServer()
+        const { data: existing } = await supabase
             .from('session_media')
             .select('display_order')
             .eq('session_id', sessionId)
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         const nextOrder = (existing?.[0]?.display_order || 0) + 1;
 
         // Pre-insert into database (will be orphaned if upload fails, but that's ok)
-        const { data: newMedia, error } = await getSupabaseServer()
+        const { data: newMedia, error } = await supabase
             .from('session_media')
             .insert({
                 session_id: sessionId,
