@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Download, StatsUpSquare, Settings, Eye, ArrowLeft } from 'iconoir-react';
 import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
 import QuestionGroupList from './QuestionGroupList';
 import QuestionEditor from './QuestionEditor';
@@ -36,7 +37,7 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                 question_groups: [...survey.question_groups, { ...data, questions: [] }],
             });
         } else {
-            alert('❌ Failed to add group');
+            alert('Failed to add group');
         }
     };
 
@@ -111,7 +112,7 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                 <div className="header-content">
                     <div className="header-left">
                         <div className="breadcrumb">
-                            <a href="/admin/surveys" className="back-link">← All Surveys</a>
+                            <a href="/admin/surveys" className="back-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><ArrowLeft width={12} height={12} /> All Surveys</a>
                             <span className="separator">/</span>
                             <span className="current">{survey.title}</span>
                         </div>
@@ -146,8 +147,10 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                             <button
                                 className="btn-secondary"
                                 onClick={() => setShowExportMenu(!showExportMenu)}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                             >
-                                <span>📥 Export Data</span>
+                                <Download width={14} height={14} />
+                                <span>Export Data</span>
                             </button>
                             {showExportMenu && (
                                 <div className="export-menu card">
@@ -169,16 +172,19 @@ export default function SurveyBuilderClient({ survey: initialSurvey }: SurveyBui
                             )}
                         </div>
 
-                        <a href={`/admin/surveys/${survey.id}/responses`} className="btn-secondary">
-                            <span>📊 View Results</span>
+                        <a href={`/admin/surveys/${survey.id}/responses`} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <StatsUpSquare width={14} height={14} />
+                            <span>View Results</span>
                         </a>
 
-                        <a href={`/admin/surveys/${survey.id}/settings`} className="btn-secondary">
-                            <span>⚙️ Settings</span>
+                        <a href={`/admin/surveys/${survey.id}/settings`} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <Settings width={14} height={14} />
+                            <span>Settings</span>
                         </a>
 
-                        <a href={`/survey/take/${survey.id}`} target="_blank" className="btn-primary">
-                            <span>👁 Preview Survey</span>
+                        <a href={`/survey/take/${survey.id}`} target="_blank" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <Eye width={14} height={14} />
+                            <span>Preview Survey</span>
                         </a>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Calendar, Rocket, Trash, Refresh, Eye, Folder, EditPencil, ArrowLeft } from 'iconoir-react';
 import styles from '../../admin.module.css';
 import SessionAnalytics from '@/components/SessionAnalytics';
 import SessionTranscript from '@/components/SessionTranscript';
@@ -133,8 +134,9 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
 
     return (
         <>
-            <Link href="/admin" className={styles.backLink}>
-                ← Back to Sessions
+            <Link href="/admin" className={styles.backLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <ArrowLeft width={14} height={14} />
+                Back to Sessions
             </Link>
 
             <div className={styles.detailHeader}>
@@ -146,8 +148,9 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                             {session.status}
                         </span>
                         {session.scheduled_at && (
-                            <span style={{ marginLeft: '12px', color: '#4A5568', fontSize: '0.9rem' }}>
-                                📅 {new Date(session.scheduled_at).toLocaleString('en-US', {
+                            <span style={{ marginLeft: '12px', color: '#4A5568', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <Calendar width={14} height={14} />
+                                {new Date(session.scheduled_at).toLocaleString('en-US', {
                                     weekday: 'short',
                                     month: 'short',
                                     day: 'numeric',
@@ -161,8 +164,10 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                 <button
                     className={styles.primaryBtn}
                     onClick={() => router.push(`/moderator?session=${session.id}&user=Moderator`)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                    🚀 Launch Session
+                    <Rocket width={16} height={16} />
+                    Launch Session
                 </button>
             </div>
 
@@ -222,10 +227,10 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                                 e.stopPropagation();
                                                 setDeleteConfirm({ participant: p });
                                             }}
-                                            style={{ background: '#F3F4F6', color: '#6B7280', borderColor: '#D1D5DB' }}
+                                            style={{ background: '#F3F4F6', color: '#6B7280', borderColor: '#D1D5DB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                             title="Delete participant"
                                         >
-                                            🗑️
+                                            <Trash width={14} height={14} />
                                         </button>
                                     </div>
                                 </div>
@@ -245,8 +250,9 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                             style={{ opacity: 0.7, background: '#F7FAFC' }}
                                         >
                                             <div className={styles.participantInfo}>
-                                                <div className={styles.participantName}>
-                                                    🔄 {p.display_name || p.code}
+                                                <div className={styles.participantName} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                    <Refresh width={14} height={14} />
+                                                    {p.display_name || p.code}
                                                 </div>
                                                 <div className={styles.participantCode}>
                                                     Code: {p.code}
@@ -279,7 +285,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                     </div>
 
                     <div className={styles.inviteBox} style={{ background: 'rgba(250, 204, 21, 0.1)', borderColor: 'rgba(250, 204, 21, 0.3)' }}>
-                        <label style={{ color: '#B7791F' }}>👁️ Observer URL (for clients)</label>
+                        <label style={{ color: '#B7791F', display: 'flex', alignItems: 'center', gap: '6px' }}><Eye width={14} height={14} /> Observer URL (for clients)</label>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <code style={{ flex: 1 }}>{window.location.origin}/observer?session={session.id}</code>
                             <button
@@ -330,7 +336,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 justifyContent: 'center'
                             }}
                         >
-                            📁 Media
+                            <Folder width={14} height={14} /> Media
                         </Link>
                         <Link
                             href={`/admin/sessions/${id}/script`}
@@ -344,7 +350,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                                 justifyContent: 'center'
                             }}
                         >
-                            📝 Script
+                            <EditPencil width={14} height={14} /> Script
                         </Link>
                     </div>
                 </div>
@@ -421,7 +427,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
                     zIndex: 1000
                 }}>
                     <div className={styles.card} style={{ maxWidth: '400px', margin: '20px' }}>
-                        <h2 className={styles.cardTitle} style={{ color: '#6B7280' }}>🗑️ Delete Participant</h2>
+                        <h2 className={styles.cardTitle} style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: '8px' }}><Trash width={18} height={18} /> Delete Participant</h2>
 
                         <p style={{ marginBottom: '16px', color: '#4A5568' }}>
                             Are you sure you want to delete <strong>{deleteConfirm.participant.metadata?.name || deleteConfirm.participant.display_name || 'this participant'}</strong>?

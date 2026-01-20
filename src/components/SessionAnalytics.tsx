@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { VideoCamera, Search, Download } from 'iconoir-react';
 import VideoChartPlayer from './VideoChartPlayer';
 import WordReactionMap from './WordReactionMap';
 
@@ -152,8 +153,8 @@ export default function SessionAnalytics({ sessionId }: Props) {
                     marginBottom: '20px',
                     border: '1px solid #E2E8F0'
                 }}>
-                    <div style={{ color: '#4A5568', fontSize: '12px', marginBottom: '8px', fontWeight: 500 }}>
-                        📹 Session Replay (Optional)
+                    <div style={{ color: '#4A5568', fontSize: '12px', marginBottom: '8px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <VideoCamera width={14} height={14} /> Session Replay (Optional)
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <input
@@ -186,7 +187,7 @@ export default function SessionAnalytics({ sessionId }: Props) {
                                 color: '#4A5568'
                             }}
                         >
-                            🔍 Browse S3
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Search width={12} height={12} /> Browse S3</span>
                         </button>
                     </div>
                     <div style={{ color: '#718096', fontSize: '11px', marginTop: '8px' }}>
@@ -388,7 +389,7 @@ export default function SessionAnalytics({ sessionId }: Props) {
                         fontWeight: 500
                     }}
                 >
-                    📥 Export JSON Data
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Download width={14} height={14} /> Export JSON Data</span>
                 </a>
             </div>
         </div>

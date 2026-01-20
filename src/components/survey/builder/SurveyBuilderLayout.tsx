@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Eye, Play, Settings, Xmark, FloppyDisk, Plus } from 'iconoir-react';
 import QuestionEditor from './QuestionEditor';
 import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
 
@@ -235,20 +236,20 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                         <option value="active">Active</option>
                         <option value="closed">Closed</option>
                     </select>
-                    <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}?preview=true`, '_blank')}>
-                        👁 Preview
+                    <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}?preview=true`, '_blank')} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Eye width={14} height={14} /> Preview
                     </button>
-                    <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}`, '_blank')}>
-                        ▶ Run survey
+                    <button className="btn-secondary" onClick={() => window.open(`/survey/take/${localSurvey.id}`, '_blank')} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Play width={14} height={14} /> Run survey
                     </button>
-                    <button className="btn-secondary" onClick={() => window.location.href = `/admin/surveys/${localSurvey.id}/settings`}>
-                        ⚙️ Settings
+                    <button className="btn-secondary" onClick={() => window.location.href = `/admin/surveys/${localSurvey.id}/settings`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Settings width={14} height={14} /> Settings
                     </button>
-                    <button className="btn-secondary" onClick={() => window.location.href = '/admin/surveys'}>
-                        × Close
+                    <button className="btn-secondary" onClick={() => window.location.href = '/admin/surveys'} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Xmark width={14} height={14} /> Close
                     </button>
-                    <button className="btn-primary">
-                        💾 Save
+                    <button className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <FloppyDisk width={14} height={14} /> Save
                     </button>
                 </div>
             </div>
@@ -258,11 +259,11 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                 {/* Left Sidebar - Groups & Questions */}
                 <div className="builder-sidebar">
                     <div className="sidebar-actions">
-                        <button className="btn-add" onClick={handleAddQuestion}>
-                            ➕ Add question
+                        <button className="btn-add" onClick={handleAddQuestion} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <Plus width={14} height={14} /> Add question
                         </button>
-                        <button className="btn-add" onClick={handleAddGroup}>
-                            ➕ Add group
+                        <button className="btn-add" onClick={handleAddGroup} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <Plus width={14} height={14} /> Add group
                         </button>
                     </div>
 

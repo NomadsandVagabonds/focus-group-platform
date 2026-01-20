@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { MediaVideo, Search } from 'iconoir-react';
 
 interface TranscriptSegment {
     id: number;
@@ -160,7 +161,7 @@ export default function SessionTranscript({ sessionId }: Props) {
                             fontSize: '12px'
                         }}
                     >
-                        🎬 Download SRT
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><MediaVideo width={12} height={12} /> Download SRT</span>
                     </button>
                 </div>
             </div>
@@ -171,7 +172,7 @@ export default function SessionTranscript({ sessionId }: Props) {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="🔍 Search transcript..."
+                    placeholder="Search transcript..."
                     style={{
                         width: '100%',
                         padding: '10px 14px',

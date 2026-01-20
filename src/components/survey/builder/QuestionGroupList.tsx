@@ -1,6 +1,7 @@
 // Question Group List Component
 'use client';
 
+import { EditPencil, Copy } from 'iconoir-react';
 import type { QuestionGroup, Question, Subquestion, AnswerOption } from '@/lib/supabase/survey-types';
 
 interface QuestionGroupListProps {
@@ -38,7 +39,7 @@ export default function QuestionGroupList({
 
       {sortedGroups.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📝</div>
+          <div className="empty-icon"><EditPencil width={48} height={48} /></div>
           <h3>Start Building Your Survey</h3>
           <p>Create your first question group to begin adding questions.</p>
           <button onClick={onAddGroup} className="btn-primary">
@@ -90,7 +91,7 @@ export default function QuestionGroupList({
                               }}
                               title="Copy question"
                             >
-                              📋
+                              <Copy width={14} height={14} />
                             </button>
                           )}
                         </div>

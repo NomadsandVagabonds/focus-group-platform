@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
+import { List, StatsUpSquare, Settings, LogOut, ArrowLeft } from 'iconoir-react';
 import styles from './admin.module.css';
 
 interface AdminLayoutClientProps {
@@ -83,10 +84,10 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
         setPassword('');
     };
 
-    const navItems = [
-        { href: '/admin', label: 'Sessions', icon: '📋' },
-        { href: '/admin/data', label: 'Data', icon: '📊' },
-        { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+    const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
+        { href: '/admin', label: 'Sessions', icon: <List width={18} height={18} /> },
+        { href: '/admin/data', label: 'Data', icon: <StatsUpSquare width={18} height={18} /> },
+        { href: '/admin/settings', label: 'Settings', icon: <Settings width={18} height={18} /> },
     ];
 
     const isActive = (href: string) => {
@@ -214,8 +215,9 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                     </form>
 
                     <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                        <Link href="/" style={{ color: '#64748b', fontSize: '0.875rem', textDecoration: 'none' }}>
-                            ← Back to home
+                        <Link href="/" style={{ color: '#64748b', fontSize: '0.875rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <ArrowLeft width={14} height={14} />
+                            Back to home
                         </Link>
                     </div>
                 </div>
@@ -249,7 +251,9 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                     <button
                         onClick={handleLogout}
                         style={{
-                            display: 'block',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
                             width: '100%',
                             padding: '0.5rem 1rem',
                             marginBottom: '0.5rem',
@@ -262,10 +266,12 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
                             textAlign: 'left'
                         }}
                     >
+                        <LogOut width={16} height={16} />
                         Logout
                     </button>
-                    <Link href="/" className={styles.backToApp}>
-                        ← Back to App
+                    <Link href="/" className={styles.backToApp} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <ArrowLeft width={14} height={14} />
+                        Back to App
                     </Link>
                 </div>
             </aside>
