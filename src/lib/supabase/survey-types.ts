@@ -185,6 +185,11 @@ export interface QuestionSettings {
         condition: string;
         skipTo: string;
     }>;
+    // Screenout condition - if true, participant is screened out
+    // Expression uses question codes, e.g., "Q1 != 'A4' AND Q1 != 'A5'"
+    screenout_condition?: string;
+    // Filter source for cascading options (alternative name for array_filter)
+    filter_source?: string;
     // File upload settings (LimeSurvey Type |)
     allowed_file_types?: string[];  // e.g., ['pdf', 'doc', 'jpg']
     max_file_size?: number;         // Maximum file size in MB

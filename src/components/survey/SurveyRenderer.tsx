@@ -22,11 +22,20 @@ function applyArrayFilter(
     allQuestions: QuestionWithNested[]
 ): QuestionWithNested {
     const filterSource = question.settings?.array_filter || question.settings?.filter_source;
+
+    // Debug: Log array filter check
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[ArrayFilter] Question ${question.code}: filterSource=${filterSource}, settings=`, question.settings);
+    }
+
     if (!filterSource) return question;
 
     // Find the source question
     const sourceQuestion = allQuestions.find(q => q.code === filterSource);
-    if (!sourceQuestion) return question;
+    if (!sourceQuestion) {
+        console.warn(`[ArrayFilter] Source question '${filterSource}' not found for ${question.code}`);
+        return question;
+    }
 
     // Get selected codes from source question (multiple choice stores as Q_code = 'Y')
     const selectedCodes = new Set<string>();
@@ -37,12 +46,24 @@ function applyArrayFilter(
         ...(sourceQuestion.answer_options || [])
     ];
 
+    // Debug: Log what we're checking
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[ArrayFilter] Source ${filterSource} has ${sourceOptions.length} options`);
+        console.log(`[ArrayFilter] Response data entries:`, Array.from(responseData.entries()).filter(([k]) => k.startsWith(filterSource)));
+    }
+
     sourceOptions.forEach(opt => {
         const key = `${filterSource}_${opt.code}`;
-        if (responseData.get(key) === 'Y' || responseData.get(key) === true) {
+        const value = responseData.get(key);
+        if (value === 'Y' || value === true) {
             selectedCodes.add(opt.code);
         }
     });
+
+    // Debug: Log selected codes
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[ArrayFilter] Selected codes from ${filterSource}:`, Array.from(selectedCodes));
+    }
 
     // If nothing selected in source, show nothing (or could show all - depends on preference)
     if (selectedCodes.size === 0) {
@@ -54,11 +75,17 @@ function applyArrayFilter(
     }
 
     // Filter current question's options to only include those selected in source
-    return {
+    const filtered = {
         ...question,
         subquestions: (question.subquestions || []).filter(sq => selectedCodes.has(sq.code)),
         answer_options: (question.answer_options || []).filter(ao => selectedCodes.has(ao.code))
     };
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[ArrayFilter] ${question.code} filtered: ${filtered.subquestions?.length || 0} subqs, ${filtered.answer_options?.length || 0} opts`);
+    }
+
+    return filtered;
 }
 
 interface SurveyRendererProps {
@@ -68,7 +95,7 @@ interface SurveyRendererProps {
     isPreview?: boolean;
 }
 
-type SurveyPhase = 'welcome' | 'questions' | 'complete';
+type SurveyPhase = 'welcome' | 'questions' | 'complete' | 'screenout';
 
 export default function SurveyRenderer({ survey, responseId, completionUrl, isPreview = false }: SurveyRendererProps) {
     const settings = survey.settings || {};
@@ -78,6 +105,14 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
     const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
     const [responseData, setResponseData] = useState<Map<string, any>>(new Map());
     const [validationErrors, setValidationErrors] = useState<Map<string, string>>(new Map());
+
+    // Calculate screenout URL (Prolific or custom)
+    const screenoutUrl = useMemo(() => {
+        if (settings.prolific_integration?.enabled && settings.prolific_integration.screenout_code) {
+            return `https://app.prolific.com/submissions/complete?cc=${settings.prolific_integration.screenout_code}`;
+        }
+        return settings.screenout_redirect_url || null;
+    }, [settings]);
 
     // Sort groups by sort_order
     const sortedGroups = useMemo(() => {
@@ -152,6 +187,30 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
         }
     }, [responseId, isPreview, validationErrors]);
 
+    // Check if any question in current group triggers a screenout
+    const checkScreenout = useCallback((): boolean => {
+        for (const question of visibleQuestions) {
+            const screenoutCondition = question.settings?.screenout_condition;
+            if (!screenoutCondition) continue;
+
+            try {
+                const engine = new ExpressionEngine(responseData);
+                const shouldScreenout = engine.evaluate(screenoutCondition);
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[Screenout] Question ${question.code}: condition="${screenoutCondition}" result=${shouldScreenout}`);
+                }
+
+                if (shouldScreenout) {
+                    return true;
+                }
+            } catch (error) {
+                console.error(`Error evaluating screenout condition for ${question.code}:`, error);
+            }
+        }
+        return false;
+    }, [visibleQuestions, responseData]);
+
     const handleNext = useCallback(() => {
         // Validate current group
         const errors = new Map<string, string>();
@@ -210,6 +269,26 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
 
         setValidationErrors(new Map());
 
+        // Check for screenout conditions AFTER validation passes
+        if (checkScreenout()) {
+            if (!isPreview) {
+                // Mark response as screened out
+                fetch(`/api/survey/response/${responseId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'screened_out' }),
+                }).catch(err => console.error('Error updating response status:', err));
+
+                // Redirect to screenout URL if available
+                if (screenoutUrl) {
+                    window.location.href = screenoutUrl;
+                    return;
+                }
+            }
+            setPhase('screenout');
+            return;
+        }
+
         if (currentGroupIndex < visibleGroups.length - 1) {
             setCurrentGroupIndex(prev => prev + 1);
             window.scrollTo(0, 0);
@@ -229,7 +308,7 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                 setPhase('complete');
             }
         }
-    }, [currentGroupIndex, visibleGroups.length, visibleQuestions, responseData, responseId, isPreview]);
+    }, [currentGroupIndex, visibleGroups.length, visibleQuestions, responseData, responseId, isPreview, checkScreenout, screenoutUrl, allQuestions]);
 
     const handleBack = useCallback(() => {
         if (currentGroupIndex > 0) {
@@ -273,6 +352,26 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                             Continue
                         </a>
                     )}
+                </div>
+                <style jsx>{surveyStyles}</style>
+            </div>
+        );
+    }
+
+    // Screenout Phase
+    if (phase === 'screenout') {
+        return (
+            <div className="survey-page">
+                <div className="survey-card welcome-card">
+                    <h1>{settings.screenout_title || 'Thank you for your interest'}</h1>
+                    <p>{settings.screenout_message || 'Unfortunately, you do not meet the criteria for this survey. Thank you for your time.'}</p>
+                    {isPreview ? (
+                        <p className="preview-note">Preview Mode - Screenout triggered</p>
+                    ) : screenoutUrl ? (
+                        <a href={screenoutUrl} className="btn-primary">
+                            Continue
+                        </a>
+                    ) : null}
                 </div>
                 <style jsx>{surveyStyles}</style>
             </div>

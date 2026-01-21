@@ -21,6 +21,25 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
     const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
     const [newGroupTitle, setNewGroupTitle] = useState('');
     const [selectedGroupForNewQuestion, setSelectedGroupForNewQuestion] = useState<string | null>(null);
+    const [saveNotification, setSaveNotification] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ show: false, message: '', type: 'success' });
+
+    // Auto-hide notification after 3 seconds
+    useEffect(() => {
+        if (saveNotification.show) {
+            const timer = setTimeout(() => {
+                setSaveNotification(prev => ({ ...prev, show: false }));
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [saveNotification.show]);
+
+    const showSaveSuccess = (message: string = 'Changes saved') => {
+        setSaveNotification({ show: true, message, type: 'success' });
+    };
+
+    const showSaveError = (message: string = 'Failed to save') => {
+        setSaveNotification({ show: true, message, type: 'error' });
+    };
 
     // Get all questions for use in dropdowns (array filter, conditions, etc.)
     const allQuestions = (localSurvey.question_groups || []).flatMap(g =>
@@ -43,7 +62,7 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
         setSelectedQuestion(question);
     };
 
-    const handleSaveQuestion = async (updatedQuestion: Question) => {
+    const handleSaveQuestion = async (updatedQuestion: Question): Promise<boolean> => {
         try {
             const response = await fetch(`/api/survey/questions/${updatedQuestion.id}`, {
                 method: 'PUT',
@@ -66,10 +85,16 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                 } as SurveyWithStructure));
                 setShowQuestionEditor(false);
                 setSelectedQuestion(updatedQuestion);
+                showSaveSuccess('Question saved');
+                return true;
+            } else {
+                showSaveError('Failed to save question');
+                return false;
             }
         } catch (error) {
             console.error('Failed to save question:', error);
-            alert('Failed to save question');
+            showSaveError('Failed to save question');
+            return false;
         }
     };
 
@@ -316,11 +341,28 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                     <button className="btn-secondary" onClick={() => window.location.href = '/admin/surveys'} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <Xmark width={14} height={14} /> Close
                     </button>
-                    <button className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <button
+                        className="btn-primary"
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        onClick={async () => {
+                            if (selectedQuestion) {
+                                await handleSaveQuestion(selectedQuestion);
+                            } else {
+                                showSaveSuccess('All changes saved');
+                            }
+                        }}
+                    >
                         <FloppyDisk width={14} height={14} /> Save
                     </button>
                 </div>
             </div>
+
+            {/* Save Notification Toast */}
+            {saveNotification.show && (
+                <div className={`save-toast ${saveNotification.type}`}>
+                    {saveNotification.type === 'success' ? '✓' : '✕'} {saveNotification.message}
+                </div>
+            )}
 
             {/* Main Content - 3 Columns */}
             <div className="builder-content">
@@ -355,6 +397,9 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                         <QuestionEditorPanel
                             question={selectedQuestion}
                             onSave={handleSaveQuestion}
+                            allQuestions={allQuestions}
+                            showSaveSuccess={showSaveSuccess}
+                            showSaveError={showSaveError}
                         />
                     ) : (
                         <div className="empty-state">
@@ -372,6 +417,8 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                                 setSelectedQuestion(updatedQuestion);
                             }}
                             onSave={handleSaveQuestion}
+                            showSaveSuccess={showSaveSuccess}
+                            showSaveError={showSaveError}
                         />
                     )}
                 </div>
@@ -473,6 +520,42 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                     display: flex;
                     gap: 0.5rem;
                     align-items: center;
+                }
+
+                .save-toast {
+                    position: fixed;
+                    top: 70px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease-out;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                }
+
+                .save-toast.success {
+                    background: #d4edda;
+                    color: #155724;
+                    border: 1px solid #c3e6cb;
+                }
+
+                .save-toast.error {
+                    background: #f8d7da;
+                    color: #721c24;
+                    border: 1px solid #f5c6cb;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
                 }
 
                 .status-select {
@@ -890,12 +973,19 @@ function SortableQuestionItem({ question, isSelected, onSelect }: any) {
 }
 
 // Question Editor Panel Component
-function QuestionEditorPanel({ question, onSave }: any) {
+function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSuccess, showSaveError }: {
+    question: any;
+    onSave: (q: any) => Promise<boolean>;
+    allQuestions?: Array<{ code: string; question_text: string; question_type: string }>;
+    showSaveSuccess?: (message: string) => void;
+    showSaveError?: (message: string) => void;
+}) {
     const [questionText, setQuestionText] = useState(question.question_text);
     const [subquestions, setSubquestions] = useState(question.subquestions || []);
     const [answerOptions, setAnswerOptions] = useState(question.answer_options || []);
     const [savingSubquestion, setSavingSubquestion] = useState<string | null>(null);
     const [savingAnswerOption, setSavingAnswerOption] = useState<string | null>(null);
+    const [savingQuestion, setSavingQuestion] = useState(false);
 
     // Sync state when question changes
     useEffect(() => {
@@ -904,12 +994,17 @@ function QuestionEditorPanel({ question, onSave }: any) {
         setAnswerOptions(question.answer_options || []);
     }, [question.id, question.question_text, question.subquestions, question.answer_options]);
 
-    const handleSave = () => {
-        onSave({
-            ...question,
-            question_text: questionText,
-            subquestions,
-        });
+    const handleSave = async () => {
+        setSavingQuestion(true);
+        try {
+            await onSave({
+                ...question,
+                question_text: questionText,
+                subquestions,
+            });
+        } finally {
+            setSavingQuestion(false);
+        }
     };
 
     const handleSubquestionChange = (id: string, field: 'code' | 'label', value: string) => {
@@ -934,9 +1029,10 @@ function QuestionEditorPanel({ question, onSave }: any) {
             if (!response.ok) {
                 throw new Error('Failed to save');
             }
+            showSaveSuccess?.('Subquestion saved');
         } catch (error) {
             console.error('Failed to save subquestion:', error);
-            alert('Failed to save subquestion');
+            showSaveError?.('Failed to save subquestion');
         } finally {
             setSavingSubquestion(null);
         }
@@ -964,9 +1060,10 @@ function QuestionEditorPanel({ question, onSave }: any) {
             if (!response.ok) {
                 throw new Error('Failed to save');
             }
+            showSaveSuccess?.('Answer option saved');
         } catch (error) {
             console.error('Failed to save answer option:', error);
-            alert('Failed to save answer option');
+            showSaveError?.('Failed to save answer option');
         } finally {
             setSavingAnswerOption(null);
         }
@@ -985,8 +1082,8 @@ function QuestionEditorPanel({ question, onSave }: any) {
                     rows={4}
                 />
 
-                <button className="btn-save" onClick={handleSave}>
-                    💾 Save Changes
+                <button className="btn-save" onClick={handleSave} disabled={savingQuestion}>
+                    {savingQuestion ? '⏳ Saving...' : '💾 Save Changes'}
                 </button>
 
                 {/* Subquestions Table */}
@@ -1222,9 +1319,10 @@ function QuestionEditorPanel({ question, onSave }: any) {
 }
 
 // Question Settings Panel Component - Comprehensive settings like LimeSurvey
-function QuestionSettings({ question, onChange, onSave }: any) {
+function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSaveError }: any) {
     const [localQuestion, setLocalQuestion] = useState(question);
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['general', 'validation']));
+    const [saving, setSaving] = useState(false);
 
     // Sync when question changes
     useEffect(() => {
@@ -1256,8 +1354,13 @@ function QuestionSettings({ question, onChange, onSave }: any) {
         setExpandedSections(newExpanded);
     };
 
-    const handleSave = () => {
-        onSave(localQuestion);
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            await onSave(localQuestion);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const settings = localQuestion.settings || {};
@@ -1851,31 +1954,74 @@ function QuestionSettings({ question, onChange, onSave }: any) {
                 </button>
                 {expandedSections.has('logic') && (
                     <div className="section-content">
-                        <div className="setting-group">
-                            <label>Relevance condition</label>
-                            <input
-                                type="text"
-                                value={localQuestion.relevance_logic || ''}
-                                onChange={(e) => handleChange('relevance_logic', e.target.value)}
-                                placeholder="e.g., Q1 == 'A1'"
-                                className="code-input"
-                            />
-                            <span className="help-text">Show only when condition is true</span>
-                        </div>
+                        {/* Array Filter - Show only selected options from another question */}
+                        {(isMultipleChoice || isArrayQuestion) && (
+                            <div className="setting-group highlight-setting">
+                                <label>Only show options selected in:</label>
+                                <select
+                                    value={settings.array_filter || ''}
+                                    onChange={(e) => handleSettingChange('array_filter', e.target.value || undefined)}
+                                >
+                                    <option value="">Show all options (no filter)</option>
+                                    <optgroup label="Multiple choice questions">
+                                        {allQuestions
+                                            .filter(q => q.code !== localQuestion.code)
+                                            .filter(q => ['M', 'multiple_choice_multiple', 'button_multi_select'].includes(q.question_type))
+                                            .map(q => (
+                                                <option key={q.code} value={q.code}>
+                                                    {q.code}: {(q.question_text || '').substring(0, 40)}...
+                                                </option>
+                                            ))
+                                        }
+                                    </optgroup>
+                                    <optgroup label="Other questions">
+                                        {allQuestions
+                                            .filter(q => q.code !== localQuestion.code)
+                                            .filter(q => !['M', 'multiple_choice_multiple', 'button_multi_select'].includes(q.question_type))
+                                            .map(q => (
+                                                <option key={q.code} value={q.code}>
+                                                    {q.code}: {(q.question_text || '').substring(0, 40)}...
+                                                </option>
+                                            ))
+                                        }
+                                    </optgroup>
+                                </select>
+                                <span className="help-text">
+                                    Only options that were selected in the chosen question will appear here
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Exclusive option - for "None of the above" */}
+                        {isMultipleChoice && (
+                            <div className="setting-group">
+                                <label>"None of the above" option:</label>
+                                <select
+                                    value={settings.exclusive_option || ''}
+                                    onChange={(e) => handleSettingChange('exclusive_option', e.target.value || undefined)}
+                                >
+                                    <option value="">No exclusive option</option>
+                                    {(subquestions.length > 0 ? subquestions : answerOptions).map((opt: any) => (
+                                        <option key={opt.code} value={opt.code}>
+                                            {opt.code}: {opt.label || 'Untitled'}
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="help-text">Selecting this deselects all others</span>
+                            </div>
+                        )}
 
                         {(isChoiceQuestion || isArrayQuestion) && (
-                            <>
-                                <div className="setting-row">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.randomize_answers || false}
-                                            onChange={(e) => handleSettingChange('randomize_answers', e.target.checked)}
-                                        />
-                                        <span>Randomize answer order</span>
-                                    </label>
-                                </div>
-                            </>
+                            <div className="setting-row">
+                                <label className="checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.randomize_answers || false}
+                                        onChange={(e) => handleSettingChange('randomize_answers', e.target.checked)}
+                                    />
+                                    <span>Randomize answer order</span>
+                                </label>
+                            </div>
                         )}
 
                         {isArrayQuestion && (
@@ -1903,38 +2049,40 @@ function QuestionSettings({ question, onChange, onSave }: any) {
                             <span className="help-text">Questions with same group are randomized together</span>
                         </div>
 
-                        {isMultipleChoice && (
-                            <div className="setting-group">
-                                <label>Exclusive option code</label>
-                                <input
-                                    type="text"
-                                    value={settings.exclusive_option || ''}
-                                    onChange={(e) => handleSettingChange('exclusive_option', e.target.value)}
-                                    placeholder="e.g., A99"
-                                />
-                                <span className="help-text">This option deselects all others</span>
-                            </div>
-                        )}
+                        {/* Advanced: Custom relevance condition */}
+                        <div className="setting-group">
+                            <label>Advanced: Custom condition</label>
+                            <input
+                                type="text"
+                                value={localQuestion.relevance || ''}
+                                onChange={(e) => handleChange('relevance', e.target.value)}
+                                placeholder="e.g., Q1 == 'A1'"
+                                className="code-input"
+                            />
+                            <span className="help-text">Show only when this expression is true</span>
+                        </div>
 
-                        {isArrayQuestion && (
-                            <div className="setting-group">
-                                <label>Array filter (question code)</label>
-                                <input
-                                    type="text"
-                                    value={settings.array_filter_question || ''}
-                                    onChange={(e) => handleSettingChange('array_filter_question', e.target.value)}
-                                    placeholder="e.g., Q1"
-                                />
-                                <span className="help-text">Only show subquestions selected in that question</span>
-                            </div>
-                        )}
+                        {/* Screenout condition */}
+                        <div className="setting-group highlight-setting" style={{ background: '#fff8f5', padding: '10px', borderRadius: '4px', border: '1px solid #f5c6cb' }}>
+                            <label style={{ color: '#c94a4a', fontWeight: 600 }}>🚫 Screenout Condition (Screener)</label>
+                            <input
+                                type="text"
+                                value={settings.screenout_condition || ''}
+                                onChange={(e) => handleSettingChange('screenout_condition', e.target.value || undefined)}
+                                placeholder="e.g., Q2 != 'A4' AND Q2 != 'A5'"
+                                className="code-input"
+                            />
+                            <span className="help-text" style={{ color: '#856404' }}>
+                                If this condition is TRUE, respondent is screened out. Example: Q2 != 'Somewhat interested' AND Q2 != 'Very interested'
+                            </span>
+                        </div>
                     </div>
                 )}
             </div>
 
             {/* Save Button */}
-            <button className="btn-save-settings" onClick={handleSave}>
-                💾 Save Settings
+            <button className="btn-save-settings" onClick={handleSave} disabled={saving}>
+                {saving ? '⏳ Saving...' : '💾 Save Settings'}
             </button>
 
             <style jsx>{`
@@ -2047,6 +2195,19 @@ function QuestionSettings({ question, onChange, onSave }: any) {
                     font-size: 0.6875rem;
                     color: #999;
                     margin-top: 0.125rem;
+                }
+
+                .highlight-setting {
+                    background: #f0fdf4;
+                    border: 1px solid #bbf7d0;
+                    border-radius: 6px;
+                    padding: 0.75rem;
+                    margin: -0.25rem;
+                }
+
+                .highlight-setting label {
+                    color: #166534;
+                    font-weight: 600;
                 }
 
                 .btn-save-settings {

@@ -391,12 +391,19 @@ export class ExpressionEngine {
 
             // Handle multi-char operators
             const twoChar = expression.slice(i, i + 2);
-            if (['==', '!=', '<=', '>='].includes(twoChar)) {
+            if (['==', '!=', '<=', '>=', '||', '&&'].includes(twoChar)) {
                 if (current) {
                     tokens.push(current);
                     current = '';
                 }
-                tokens.push(twoChar);
+                // Normalize || to OR and && to AND for parser
+                if (twoChar === '||') {
+                    tokens.push('OR');
+                } else if (twoChar === '&&') {
+                    tokens.push('AND');
+                } else {
+                    tokens.push(twoChar);
+                }
                 i++; // Skip next char
                 continue;
             }
