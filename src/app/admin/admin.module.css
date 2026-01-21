@@ -424,6 +424,174 @@
     gap: 20px;
 }
 
+/* Session Actions */
+.sessionActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Delete Button */
+.deleteBtn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    background: white;
+    color: #718096;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+    background: #FEE2E2;
+    border-color: #EF4444;
+    color: #DC2626;
+}
+
+/* Danger Button */
+.dangerBtn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #DC2626;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dangerBtn:hover {
+    background-color: #B91C1C;
+}
+
+.dangerBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 480px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1A1A2E;
+}
+
+.modalClose {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #718096;
+    padding: 0;
+    line-height: 1;
+}
+
+.modalClose:hover {
+    color: #1A1A2E;
+}
+
+.modalBody {
+    padding: 24px;
+    text-align: center;
+}
+
+.warningIcon {
+    margin-bottom: 16px;
+}
+
+.warningTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1A1A2E;
+    margin-bottom: 8px;
+}
+
+.sessionName {
+    font-size: 1rem;
+    color: #4A5568;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+.sessionCodeModal {
+    font-size: 0.875rem;
+    color: #718096;
+    font-family: monospace;
+    margin-bottom: 16px;
+}
+
+.warningMessage {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #991B1B;
+}
+
+.warningMessage p {
+    margin: 0 0 8px 0;
+}
+
+.warningMessage ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+}
+
+.warningMessage li {
+    margin-bottom: 4px;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #E2E8F0;
+}
+
+.secondaryBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .twoColumn {
         grid-template-columns: 1fr;
@@ -431,5 +599,10 @@
 
     .sidebar {
         display: none;
+    }
+
+    .sessionActions {
+        flex-direction: column;
+        gap: 8px;
     }
 }

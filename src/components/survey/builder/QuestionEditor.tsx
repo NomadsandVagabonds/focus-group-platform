@@ -16,7 +16,11 @@ type TabType = 'general' | 'options' | 'logic' | 'display';
 
 export default function QuestionEditor({ question: initialQuestion, onSave, onCancel, allQuestions = [] }: QuestionEditorProps) {
     const [mounted, setMounted] = useState(false);
-    const [question, setQuestion] = useState(initialQuestion);
+    // Ensure settings object always exists to prevent undefined access errors
+    const [question, setQuestion] = useState({
+        ...initialQuestion,
+        settings: initialQuestion.settings || {}
+    });
     const [subquestions, setSubquestions] = useState<Subquestion[]>(initialQuestion.subquestions || []);
     const [answerOptions, setAnswerOptions] = useState<AnswerOption[]>(initialQuestion.answer_options || []);
     const [activeTab, setActiveTab] = useState<TabType>('general');
