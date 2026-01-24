@@ -40,12 +40,14 @@ function seededShuffle<T>(array: T[], seed: string): T[] {
 }
 
 export default function ArrayQuestion({ question, responseData, onAnswer, randomizationSeed }: ArrayQuestionProps) {
-  // Filter subquestions based on array_filter_question setting
+  // Filter subquestions based on array_filter setting (supports multiple property names)
   const filteredSubquestions = useMemo(() => {
     let subqs = [...question.subquestions].sort((a, b) => a.order_index - b.order_index);
 
-    // Apply array filter if configured
-    const filterQuestionCode = question.settings.array_filter_question;
+    // Apply array filter if configured (check all property name variants)
+    const filterQuestionCode = question.settings.array_filter_question
+      || question.settings.array_filter
+      || question.settings.filter_source;
     if (filterQuestionCode) {
       subqs = subqs.filter(subq => {
         // Check if the corresponding answer from the filter question is selected

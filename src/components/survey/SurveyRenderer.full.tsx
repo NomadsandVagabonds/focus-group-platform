@@ -1,3 +1,14 @@
+/**
+ * @deprecated This file is ORPHANED and not imported anywhere.
+ * The active renderer is SurveyRenderer.tsx (which uses QuestionLoader for dynamic imports).
+ *
+ * This file contains potentially useful features that could be migrated:
+ * - fetchWithRetry: Retry logic with exponential backoff
+ * - ValidationEngine integration
+ * - More comprehensive question type handling
+ *
+ * TODO: Either delete this file or migrate useful features to SurveyRenderer.tsx
+ */
 // Survey Renderer - Client Component for Taking Surveys
 'use client';
 

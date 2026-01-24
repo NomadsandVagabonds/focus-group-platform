@@ -148,8 +148,11 @@ export interface QuestionSettings {
     min_answers?: number;
     max_answers?: number;
     hide_tip?: boolean;
-    array_filter_question?: string; // Question code to filter from
-    array_filter?: string; // Alternative property for array filter
+    // Array Filter: Show only subquestions/options selected in another question
+    // NOTE: All three properties below are supported for backwards compatibility.
+    // Code should check all three: array_filter_question || array_filter || filter_source
+    array_filter_question?: string; // Question code to filter from (LimeSurvey style)
+    array_filter?: string;          // Alternative property name for array filter
     randomize_answers?: boolean;
     randomize_subquestions?: boolean;
     placeholder?: string;
@@ -188,8 +191,7 @@ export interface QuestionSettings {
     // Screenout condition - if true, participant is screened out
     // Expression uses question codes, e.g., "Q1 != 'A4' AND Q1 != 'A5'"
     screenout_condition?: string;
-    // Filter source for cascading options (alternative name for array_filter)
-    filter_source?: string;
+    filter_source?: string;         // Third alternative name for array filter
     // File upload settings (LimeSurvey Type |)
     allowed_file_types?: string[];  // e.g., ['pdf', 'doc', 'jpg']
     max_file_size?: number;         // Maximum file size in MB
