@@ -433,6 +433,7 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                             onSave={handleSaveQuestion}
                             showSaveSuccess={showSaveSuccess}
                             showSaveError={showSaveError}
+                            allQuestions={allQuestions}
                         />
                     )}
                 </div>
@@ -1337,7 +1338,7 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
 }
 
 // Question Settings Panel Component - Comprehensive settings like LimeSurvey
-function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSaveError }: any) {
+function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSaveError, allQuestions = [] }: any) {
     const [localQuestion, setLocalQuestion] = useState(question);
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['general', 'validation']));
     const [saving, setSaving] = useState(false);
@@ -1760,6 +1761,46 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
                     </div>
                 )}
             </div>
+
+            {/* Filter Options - For choice questions */}
+            {(isChoiceQuestion || isMultipleChoice) && (
+                <div className="settings-section">
+                    <button className="section-header" onClick={() => toggleSection('filter')}>
+                        <span className="section-icon">{expandedSections.has('filter') ? '▼' : '▶'}</span>
+                        <span>Filter Options</span>
+                    </button>
+                    {expandedSections.has('filter') && (
+                        <div className="section-content">
+                            <div className="setting-group">
+                                <label>Only show options selected in:</label>
+                                <select
+                                    value={settings.array_filter || ''}
+                                    onChange={(e) => handleSettingChange('array_filter', e.target.value || undefined)}
+                                >
+                                    <option value="">No filter - show all options</option>
+                                    {allQuestions
+                                        .filter(q => q.code !== localQuestion.code)
+                                        .map(q => (
+                                            <option key={q.code} value={q.code}>
+                                                {q.code}: {q.question_text?.substring(0, 40) || 'Untitled'}...
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                <small className="help-text">
+                                    Only options that match codes selected in the source question will appear.
+                                </small>
+                            </div>
+                            {settings.array_filter && (
+                                <div className="info-box">
+                                    Filtering from <strong>{settings.array_filter}</strong>.
+                                    Make sure both questions use matching option codes.
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Slider Settings - Only for slider type */}
             {isSliderQuestion && (
