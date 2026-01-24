@@ -2001,7 +2001,10 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
                                     onChange={(e) => handleSettingChange('exclusive_option', e.target.value || undefined)}
                                 >
                                     <option value="">No exclusive option</option>
-                                    {(subquestions.length > 0 ? subquestions : answerOptions).map((opt: any) => (
+                                    {((localQuestion.subquestions || []).length > 0
+                                        ? (localQuestion.subquestions || [])
+                                        : (localQuestion.answer_options || [])
+                                    ).map((opt: any) => (
                                         <option key={opt.code} value={opt.code}>
                                             {opt.code}: {opt.label || 'Untitled'}
                                         </option>
