@@ -132,6 +132,12 @@ export default function ButtonMultiSelectQuestion({
     const handleToggle = (code: string) => {
         const isSelected = selectedCodes.has(code);
         const exclusiveOption = settings.exclusive_option;
+        const maxAnswers = settings.max_answers || settings.max_selections;
+
+        // If trying to select and max is reached, don't allow (unless deselecting)
+        if (!isSelected && maxAnswers && selectedCodes.size >= maxAnswers) {
+            return; // Max selections reached
+        }
 
         // If selecting an exclusive option, deselect all others
         if (!isSelected && exclusiveOption === code) {
@@ -158,9 +164,16 @@ export default function ButtonMultiSelectQuestion({
     const layout = settings.button_layout || 'horizontal';
     const columns = settings.display_columns || 3;
     const buttonStyle = settings.button_style || 'outline'; // outline, filled, pill
+    const maxAnswers = settings.max_answers || settings.max_selections;
+    const atMaxSelections = maxAnswers && selectedCodes.size >= maxAnswers;
 
     return (
         <div className={`button-multi-select-question layout-${layout}`}>
+            {maxAnswers && (
+                <div className={`selection-counter ${atMaxSelections ? 'at-max' : ''}`}>
+                    {selectedCodes.size} of {maxAnswers} selected
+                </div>
+            )}
             <div className="button-grid" style={layout === 'grid' ? { gridTemplateColumns: `repeat(${columns}, 1fr)` } : undefined}>
                 {options.map((option) => {
                     const isSelected = selectedCodes.has(option.code);
@@ -170,9 +183,10 @@ export default function ButtonMultiSelectQuestion({
                         <button
                             key={option.id}
                             type="button"
-                            className={`select-button style-${buttonStyle} ${isSelected ? 'selected' : ''} ${isExclusive ? 'exclusive' : ''}`}
+                            className={`select-button style-${buttonStyle} ${isSelected ? 'selected' : ''} ${isExclusive ? 'exclusive' : ''} ${atMaxSelections && !isSelected ? 'disabled' : ''}`}
                             onClick={() => handleToggle(option.code)}
                             aria-pressed={isSelected}
+                            disabled={atMaxSelections && !isSelected}
                         >
                             <span className="checkbox-indicator">{isSelected ? '✓' : ''}</span>
                             {option.label}
@@ -206,6 +220,17 @@ export default function ButtonMultiSelectQuestion({
             <style jsx>{`
                 .button-multi-select-question {
                     width: 100%;
+                }
+
+                .selection-counter {
+                    font-size: 0.875rem;
+                    color: #666;
+                    margin-bottom: 0.75rem;
+                    font-weight: 500;
+                }
+
+                .selection-counter.at-max {
+                    color: #c94a4a;
                 }
 
                 .button-grid {
@@ -343,6 +368,13 @@ export default function ButtonMultiSelectQuestion({
                 /* Exclusive option styling */
                 .select-button.exclusive {
                     border-style: dashed;
+                }
+
+                /* Disabled state when max selections reached */
+                .select-button.disabled,
+                .select-button:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
                 }
 
                 .select-button:focus {

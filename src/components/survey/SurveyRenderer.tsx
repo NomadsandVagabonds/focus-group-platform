@@ -238,8 +238,34 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
             }
 
             if (question.mandatory || question.settings?.mandatory) {
-                // For array questions, check if all VISIBLE subquestions are answered
-                if (filteredQuestion.subquestions && filteredQuestion.subquestions.length > 0) {
+                // Check question type to determine validation approach
+                const isMultiSelect = ['M', 'multiple_choice', 'multiple_choice_multiple', 'button_multi_select'].includes(qType);
+                const isArrayQuestion = ['F', 'H', 'array', 'array_flexible', ';', ':'].includes(qType);
+
+                if (isMultiSelect && filteredQuestion.subquestions && filteredQuestion.subquestions.length > 0) {
+                    // For multi-select questions, check if AT LEAST ONE option is selected
+                    const minAnswers = question.settings?.min_answers || 1;
+                    let selectedCount = 0;
+                    filteredQuestion.subquestions.forEach(subq => {
+                        const key = `${question.code}_${subq.code}`;
+                        const value = responseData.get(key);
+                        if (value && value !== '' && value !== null) {
+                            selectedCount++;
+                        }
+                    });
+                    // Also check answer_options
+                    filteredQuestion.answer_options?.forEach(opt => {
+                        const key = `${question.code}_${opt.code}`;
+                        const value = responseData.get(key);
+                        if (value && value !== '' && value !== null) {
+                            selectedCount++;
+                        }
+                    });
+                    if (selectedCount < minAnswers) {
+                        errors.set(question.code, minAnswers === 1 ? 'Please select at least one option' : `Please select at least ${minAnswers} options`);
+                    }
+                } else if (isArrayQuestion && filteredQuestion.subquestions && filteredQuestion.subquestions.length > 0) {
+                    // For array/matrix questions, check if all VISIBLE subquestions are answered
                     const unanswered = filteredQuestion.subquestions.some(subq => {
                         const key = `${question.code}_${subq.code}`;
                         const value = responseData.get(key);
@@ -247,6 +273,19 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
                     });
                     if (unanswered) {
                         errors.set(question.code, 'Please answer all rows in this question');
+                    }
+                } else if (filteredQuestion.subquestions && filteredQuestion.subquestions.length > 0) {
+                    // Default for other types with subquestions - check if at least one selected
+                    let hasAnswer = false;
+                    filteredQuestion.subquestions.forEach(subq => {
+                        const key = `${question.code}_${subq.code}`;
+                        const value = responseData.get(key);
+                        if (value && value !== '' && value !== null) {
+                            hasAnswer = true;
+                        }
+                    });
+                    if (!hasAnswer) {
+                        errors.set(question.code, 'Please select at least one option');
                     }
                 } else {
                     // Simple question - check direct value
