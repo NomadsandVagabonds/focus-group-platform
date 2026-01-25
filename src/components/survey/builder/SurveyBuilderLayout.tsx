@@ -7,6 +7,7 @@ import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import { Eye, Settings, Xmark, FloppyDisk, Plus, WarningTriangle, Play, Link as LinkIcon } from 'iconoir-react';
 import QuestionEditor from './QuestionEditor';
+import AIAssistantPanel from './AIAssistantPanel';
 import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
 
 interface SurveyBuilderLayoutProps {
@@ -63,12 +64,15 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
     };
 
     const handleSaveQuestion = async (updatedQuestion: Question): Promise<boolean> => {
+        console.log('[Save] Starting save for question:', updatedQuestion.id, updatedQuestion.code);
         try {
             const response = await fetch(`/api/survey/questions/${updatedQuestion.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedQuestion),
             });
+
+            console.log('[Save] Response status:', response.status);
 
             if (response.ok) {
                 // Update local state - preserve full question structure
@@ -86,13 +90,16 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                 setShowQuestionEditor(false);
                 setSelectedQuestion(updatedQuestion);
                 showSaveSuccess('Question saved');
+                console.log('[Save] Success!');
                 return true;
             } else {
-                showSaveError('Failed to save question');
+                const errorData = await response.text();
+                console.error('[Save] Failed with status:', response.status, errorData);
+                showSaveError(`Failed to save: ${response.status}`);
                 return false;
             }
         } catch (error) {
-            console.error('Failed to save question:', error);
+            console.error('[Save] Exception:', error);
             showSaveError('Failed to save question');
             return false;
         }
@@ -364,6 +371,13 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                 </div>
             )}
 
+            {/* AI Assistant Panel */}
+            <AIAssistantPanel
+                survey={localSurvey}
+                onApplyChanges={(updatedSurvey) => setLocalSurvey(updatedSurvey)}
+                selectedQuestion={selectedQuestion}
+            />
+
             {/* Main Content - 3 Columns */}
             <div className="builder-content">
                 {/* Left Sidebar - Groups & Questions */}
@@ -419,6 +433,7 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                             onSave={handleSaveQuestion}
                             showSaveSuccess={showSaveSuccess}
                             showSaveError={showSaveError}
+                            allQuestions={allQuestions}
                         />
                     )}
                 </div>
@@ -995,13 +1010,17 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
     }, [question.id, question.question_text, question.subquestions, question.answer_options]);
 
     const handleSave = async () => {
+        console.log('[QuestionEditorPanel] Save clicked, question:', question?.id, question?.code);
         setSavingQuestion(true);
         try {
-            await onSave({
+            const result = await onSave({
                 ...question,
                 question_text: questionText,
                 subquestions,
             });
+            console.log('[QuestionEditorPanel] Save result:', result);
+        } catch (err) {
+            console.error('[QuestionEditorPanel] Save error:', err);
         } finally {
             setSavingQuestion(false);
         }
@@ -1038,7 +1057,7 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
         }
     };
 
-    const handleAnswerOptionChange = (id: string, field: 'code' | 'answer_text', value: string) => {
+    const handleAnswerOptionChange = (id: string, field: 'code' | 'label', value: string) => {
         setAnswerOptions((prev: any[]) =>
             prev.map((ao: any) =>
                 ao.id === id ? { ...ao, [field]: value } : ao
@@ -1054,7 +1073,7 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     code: ao.code,
-                    answer_text: ao.answer_text,
+                    label: ao.label,
                 }),
             });
             if (!response.ok) {
@@ -1160,8 +1179,8 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
                                             <input
                                                 type="text"
                                                 className="inline-input"
-                                                value={ao.answer_text}
-                                                onChange={(e) => handleAnswerOptionChange(ao.id, 'answer_text', e.target.value)}
+                                                value={ao.label}
+                                                onChange={(e) => handleAnswerOptionChange(ao.id, 'label', e.target.value)}
                                             />
                                         </td>
                                         <td>
@@ -1319,7 +1338,7 @@ function QuestionEditorPanel({ question, onSave, allQuestions = [], showSaveSucc
 }
 
 // Question Settings Panel Component - Comprehensive settings like LimeSurvey
-function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSaveError }: any) {
+function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSaveError, allQuestions = [] }: any) {
     const [localQuestion, setLocalQuestion] = useState(question);
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['general', 'validation']));
     const [saving, setSaving] = useState(false);
@@ -1355,9 +1374,13 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
     };
 
     const handleSave = async () => {
+        console.log('[QuestionSettings] Save clicked, question:', localQuestion?.id, localQuestion?.code);
         setSaving(true);
         try {
-            await onSave(localQuestion);
+            const result = await onSave(localQuestion);
+            console.log('[QuestionSettings] Save result:', result);
+        } catch (err) {
+            console.error('[QuestionSettings] Save error:', err);
         } finally {
             setSaving(false);
         }
@@ -1738,6 +1761,46 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
                     </div>
                 )}
             </div>
+
+            {/* Filter Options - For choice questions */}
+            {(isChoiceQuestion || isMultipleChoice) && (
+                <div className="settings-section">
+                    <button className="section-header" onClick={() => toggleSection('filter')}>
+                        <span className="section-icon">{expandedSections.has('filter') ? '▼' : '▶'}</span>
+                        <span>Filter Options</span>
+                    </button>
+                    {expandedSections.has('filter') && (
+                        <div className="section-content">
+                            <div className="setting-group">
+                                <label>Only show options selected in:</label>
+                                <select
+                                    value={settings.array_filter || ''}
+                                    onChange={(e) => handleSettingChange('array_filter', e.target.value || undefined)}
+                                >
+                                    <option value="">No filter - show all options</option>
+                                    {allQuestions
+                                        .filter(q => q.code !== localQuestion.code)
+                                        .map(q => (
+                                            <option key={q.code} value={q.code}>
+                                                {q.code}: {q.question_text?.substring(0, 40) || 'Untitled'}...
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                <small className="help-text">
+                                    Only options that match codes selected in the source question will appear.
+                                </small>
+                            </div>
+                            {settings.array_filter && (
+                                <div className="info-box">
+                                    Filtering from <strong>{settings.array_filter}</strong>.
+                                    Make sure both questions use matching option codes.
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Slider Settings - Only for slider type */}
             {isSliderQuestion && (

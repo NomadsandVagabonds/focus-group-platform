@@ -10,13 +10,13 @@ export async function PUT(
         const { id } = await params;
         const body = await request.json();
 
-        const { code, answer_text } = body;
+        const { code, label } = body;
 
         const { data, error } = await getSupabaseServer()
             .from('answer_options')
             .update({
                 code,
-                answer_text,
+                label,
                 updated_at: new Date().toISOString()
             })
             .eq('id', id)

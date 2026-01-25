@@ -48,6 +48,7 @@ export default function ButtonSelectQuestion({
     const settings = question.settings || {};
 
     // Get options from answer_options OR subquestions (LimeSurvey L type uses subquestions)
+    // Also apply array_filter if configured
     const options = useMemo(() => {
         // Try answer_options first, then fall back to subquestions (LimeSurvey format)
         let opts: Array<{ id: string; code: string; label: string; order_index: number }> = [];
@@ -71,12 +72,47 @@ export default function ButtonSelectQuestion({
 
         opts.sort((a, b) => a.order_index - b.order_index);
 
+        // Apply array_filter - only show options selected in source question
+        const filterQuestionCode = settings.array_filter_question
+            || settings.array_filter
+            || settings.filter_source;
+
+        if (filterQuestionCode) {
+            // Get selected codes from the source question
+            const sourceSelectedCodes = new Set<string>();
+
+            // Check for multi-select format: Q_code = 'Y'
+            opts.forEach(opt => {
+                const key = `${filterQuestionCode}_${opt.code}`;
+                const value = responseData.get(key);
+                if (value === 'Y' || value === true || value === '1') {
+                    sourceSelectedCodes.add(opt.code);
+                }
+            });
+
+            // Also check for single value that might be an array or match a code
+            const singleValue = responseData.get(filterQuestionCode);
+            if (Array.isArray(singleValue)) {
+                singleValue.forEach(v => sourceSelectedCodes.add(v));
+            } else if (typeof singleValue === 'string' && singleValue) {
+                sourceSelectedCodes.add(singleValue);
+            }
+
+            // Filter to only show options that were selected in source
+            if (sourceSelectedCodes.size > 0) {
+                opts = opts.filter(opt => sourceSelectedCodes.has(opt.code));
+            } else {
+                // If nothing selected in source, show nothing
+                opts = [];
+            }
+        }
+
         if (settings.randomize_answers && randomizationSeed) {
             opts = seededShuffle(opts, `${randomizationSeed}_${question.code}`);
         }
 
         return opts;
-    }, [question, settings.randomize_answers, randomizationSeed]);
+    }, [question, settings.randomize_answers, randomizationSeed, responseData, settings.array_filter_question, settings.array_filter, settings.filter_source]);
 
     const handleSelect = (code: string) => {
         onAnswer(question.code, code);

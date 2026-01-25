@@ -14,10 +14,12 @@ export async function PATCH(request: NextRequest) {
             );
         }
 
+        const supabase = getSupabaseServer();
+
         // Update order_index for each question
         const updates = questionIds.map((questionId, index) => {
             return supabase
-                .from('survey_questions')
+                .from('questions')
                 .update({ order_index: index })
                 .eq('id', questionId)
                 .eq('group_id', groupId);
