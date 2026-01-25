@@ -27,9 +27,16 @@
 </head>
 
 <body>
-    <video controls autoplay muted playsinline>
+    <video controls muted playsinline preload="auto">
         <source src="/demo/ResonantDemoV2.mp4" type="video/mp4">
     </video>
+    <script>
+        // Wait for enough buffer before playing
+        const video = document.querySelector('video');
+        video.addEventListener('canplaythrough', () => {
+            video.play();
+        });
+    </script>
 </body>
 
 </html>
