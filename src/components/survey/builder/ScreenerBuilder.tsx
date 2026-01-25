@@ -429,21 +429,22 @@ export default function ScreenerBuilder({
                 }
 
                 .screenout-type-selector {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 0.75rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
                 }
 
                 .type-option {
                     display: flex;
                     align-items: center;
-                    gap: 0.625rem;
-                    padding: 0.875rem;
+                    gap: 0.5rem;
+                    padding: 0.75rem;
                     background: white;
                     border: 2px solid #e0ddd8;
                     border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.15s;
+                    min-width: 0;
                 }
 
                 .type-option:hover {
@@ -460,14 +461,15 @@ export default function ScreenerBuilder({
                 }
 
                 .type-icon {
-                    width: 28px;
-                    height: 28px;
+                    width: 24px;
+                    height: 24px;
+                    min-width: 24px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     font-weight: bold;
-                    font-size: 0.875rem;
+                    font-size: 0.75rem;
                 }
 
                 .type-icon.pass {
@@ -483,16 +485,21 @@ export default function ScreenerBuilder({
                 .type-text {
                     display: flex;
                     flex-direction: column;
+                    min-width: 0;
+                    flex: 1;
                 }
 
                 .type-text strong {
-                    font-size: 0.875rem;
+                    font-size: 0.8125rem;
                     color: #1a1d24;
                 }
 
                 .type-text small {
-                    font-size: 0.75rem;
+                    font-size: 0.6875rem;
                     color: #666;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 .answer-options-grid {

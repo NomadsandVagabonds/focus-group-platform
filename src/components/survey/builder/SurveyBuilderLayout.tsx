@@ -100,7 +100,6 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                         ),
                     })),
                 } as SurveyWithStructure));
-                setShowQuestionEditor(false);
                 setSelectedQuestion(updatedQuestion);
                 showSaveSuccess('Question saved');
                 console.log('[Save] Success!');
