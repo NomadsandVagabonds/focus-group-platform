@@ -314,15 +314,15 @@ export default function AdminSurveysPage() {
           align-items: center;
         }
 
-        .btn-new-survey {
+        :global(.btn-new-survey) {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
           background: linear-gradient(135deg, #c94a4a 0%, #a83232 100%);
-          color: white;
+          color: white !important;
           padding: 0.75rem 1.25rem;
           border-radius: 8px;
-          text-decoration: none;
+          text-decoration: none !important;
           font-weight: 500;
           font-size: 0.9375rem;
           transition: all 0.2s ease;
@@ -331,7 +331,7 @@ export default function AdminSurveysPage() {
           cursor: pointer;
         }
 
-        .btn-new-survey:hover {
+        :global(.btn-new-survey:hover) {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(201, 74, 74, 0.35);
         }
@@ -448,7 +448,7 @@ export default function AdminSurveysPage() {
           flex-shrink: 0;
         }
 
-        .btn-action {
+        :global(.btn-action) {
           display: inline-flex;
           align-items: center;
           gap: 0.375rem;
@@ -458,17 +458,17 @@ export default function AdminSurveysPage() {
           font-weight: 500;
           cursor: pointer;
           transition: all 0.15s ease;
-          text-decoration: none;
+          text-decoration: none !important;
           border: 1px solid transparent;
         }
 
-        .btn-edit {
+        :global(.btn-edit) {
           background: linear-gradient(135deg, #1a1d24 0%, #2d3748 100%);
-          color: white;
+          color: white !important;
           border-color: #1a1d24;
         }
 
-        .btn-edit:hover {
+        :global(.btn-edit:hover) {
           background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
           transform: translateY(-1px);
         }
