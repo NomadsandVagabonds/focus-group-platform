@@ -176,6 +176,58 @@ export default function SurveySettingsEditor({ survey, onSave }: SurveySettingsP
                 )}
             </fieldset>
 
+            <fieldset className="settings-section">
+                <legend>Screenout Page</legend>
+                <p className="section-intro">
+                    Customize what respondents see when they don't qualify for the survey.
+                </p>
+
+                <div className="form-group">
+                    <label htmlFor="screenout-title">Page Title</label>
+                    <input
+                        id="screenout-title"
+                        type="text"
+                        value={settings.screenout_title || ''}
+                        onChange={(e) =>
+                            setSettings({
+                                ...settings,
+                                screenout_title: e.target.value,
+                            })
+                        }
+                        placeholder="Thank you for your interest"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="screenout-message">Page Content (HTML supported)</label>
+                    <textarea
+                        id="screenout-message"
+                        value={settings.screenout_message || ''}
+                        onChange={(e) =>
+                            setSettings({
+                                ...settings,
+                                screenout_message: e.target.value,
+                            })
+                        }
+                        placeholder="Unfortunately, you do not meet the criteria for this survey. Thank you for your time."
+                        rows={8}
+                    />
+                    <span className="help-text">
+                        You can use HTML to format this message. The Prolific code will be displayed automatically if configured above.
+                    </span>
+                </div>
+
+                {settings.screenout_message && (
+                    <div className="preview-section">
+                        <label>Preview:</label>
+                        <div
+                            className="html-preview"
+                            dangerouslySetInnerHTML={{ __html: settings.screenout_message }}
+                        />
+                    </div>
+                )}
+            </fieldset>
+
             <div className="actions">
                 <button onClick={handleSave} className="btn-primary">
                     Save Settings
@@ -226,8 +278,15 @@ export default function SurveySettingsEditor({ survey, onSave }: SurveySettingsP
                     margin-bottom: 0.5rem;
                 }
 
+                .section-intro {
+                    font-size: 0.8125rem;
+                    color: #6b6b6b;
+                    margin: 0 0 1rem 0;
+                }
+
                 .form-group select,
-                .form-group input[type="text"] {
+                .form-group input[type="text"],
+                .form-group textarea {
                     width: 100%;
                     padding: 0.75rem;
                     border: 1px solid #e0ddd8;
@@ -235,13 +294,48 @@ export default function SurveySettingsEditor({ survey, onSave }: SurveySettingsP
                     font-size: 0.875rem;
                     background: white;
                     color: #1a1d24;
+                    font-family: inherit;
+                }
+
+                .form-group textarea {
+                    resize: vertical;
+                    min-height: 120px;
+                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                    font-size: 0.8125rem;
+                    line-height: 1.5;
                 }
 
                 .form-group select:focus,
-                .form-group input[type="text"]:focus {
+                .form-group input[type="text"]:focus,
+                .form-group textarea:focus {
                     outline: none;
                     border-color: #c94a4a;
                     box-shadow: 0 0 0 2px rgba(201, 74, 74, 0.1);
+                }
+
+                .preview-section {
+                    margin-top: 1rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid #e0ddd8;
+                }
+
+                .preview-section > label {
+                    display: block;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: #6b6b6b;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 0.5rem;
+                }
+
+                .html-preview {
+                    background: white;
+                    border: 1px solid #e0ddd8;
+                    border-radius: 4px;
+                    padding: 1rem;
+                    max-height: 300px;
+                    overflow-y: auto;
                 }
 
                 .checkbox-group label {

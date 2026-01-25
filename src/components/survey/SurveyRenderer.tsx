@@ -399,20 +399,52 @@ export default function SurveyRenderer({ survey, responseId, completionUrl, isPr
 
     // Screenout Phase
     if (phase === 'screenout') {
+        // Check if screenout_message contains HTML (has any HTML tags)
+        const hasCustomHtml = settings.screenout_message && /<[^>]+>/.test(settings.screenout_message);
+
         return (
             <div className="survey-page">
-                <div className="survey-card welcome-card">
-                    <h1>{settings.screenout_title || 'Thank you for your interest'}</h1>
-                    <p>{settings.screenout_message || 'Unfortunately, you do not meet the criteria for this survey. Thank you for your time.'}</p>
-                    {isPreview ? (
+                <div className="survey-card welcome-card screenout-card">
+                    {hasCustomHtml ? (
+                        // Render custom HTML content
+                        <div
+                            className="screenout-content"
+                            dangerouslySetInnerHTML={{ __html: settings.screenout_message }}
+                        />
+                    ) : (
+                        // Render simple text with title
+                        <>
+                            <h1>{settings.screenout_title || 'Thank you for your interest'}</h1>
+                            <p>{settings.screenout_message || 'Unfortunately, you do not meet the criteria for this survey. Thank you for your time.'}</p>
+                        </>
+                    )}
+                    {isPreview && (
                         <p className="preview-note">Preview Mode - Screenout triggered</p>
-                    ) : screenoutUrl ? (
-                        <a href={screenoutUrl} className="btn-primary">
-                            Continue
+                    )}
+                    {!isPreview && screenoutUrl && (
+                        <a href={screenoutUrl} className="btn-primary screenout-continue">
+                            Continue to Prolific
                         </a>
-                    ) : null}
+                    )}
                 </div>
                 <style jsx>{surveyStyles}</style>
+                <style jsx>{`
+                    .screenout-card {
+                        text-align: center;
+                    }
+                    .screenout-content {
+                        text-align: left;
+                    }
+                    .screenout-content h1,
+                    .screenout-content h2,
+                    .screenout-content h3 {
+                        text-align: center;
+                    }
+                    .screenout-continue {
+                        display: inline-block;
+                        margin-top: 1.5rem;
+                    }
+                `}</style>
             </div>
         );
     }
