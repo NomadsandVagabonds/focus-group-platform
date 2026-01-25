@@ -460,10 +460,11 @@ export class ExpressionEngine {
 
     /**
      * Parse NOT expressions
+     * Handles both 'NOT' keyword and '!' operator
      */
     private parseNot(tokens: string[], ctx: { pos: number }): boolean {
-        if (ctx.pos < tokens.length && tokens[ctx.pos] === 'NOT') {
-            ctx.pos++; // consume NOT
+        if (ctx.pos < tokens.length && (tokens[ctx.pos] === 'NOT' || tokens[ctx.pos] === '!')) {
+            ctx.pos++; // consume NOT or !
             return !this.parseNot(tokens, ctx);
         }
         return this.parseComparison(tokens, ctx);
