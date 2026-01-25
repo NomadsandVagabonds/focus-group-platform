@@ -18,7 +18,7 @@ export default async function SurveyBuilderPage({
 }) {
     const { id: surveyId } = await params;
 
-    // Fetch survey with full structure
+    // Fetch survey with full structure, ordered by order_index
     const { data: survey, error } = await getSupabase()
         .from('surveys')
         .select(`
@@ -33,6 +33,10 @@ export default async function SurveyBuilderPage({
       )
     `)
         .eq('id', surveyId)
+        .order('order_index', { referencedTable: 'question_groups', ascending: true })
+        .order('order_index', { referencedTable: 'question_groups.questions', ascending: true })
+        .order('order_index', { referencedTable: 'question_groups.questions.subquestions', ascending: true })
+        .order('order_index', { referencedTable: 'question_groups.questions.answer_options', ascending: true })
         .single();
 
     if (error || !survey) {

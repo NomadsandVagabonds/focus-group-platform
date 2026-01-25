@@ -17,12 +17,17 @@ export async function PATCH(request: NextRequest) {
         const supabase = getSupabaseServer();
 
         // Update order_index for each question
-        const updates = questionIds.map((questionId, index) => {
-            return supabase
+        const updates = questionIds.map(async (questionId: string, index: number) => {
+            const { error } = await supabase
                 .from('questions')
                 .update({ order_index: index })
                 .eq('id', questionId)
                 .eq('group_id', groupId);
+
+            if (error) {
+                console.error(`Failed to update question ${questionId}:`, error);
+                throw error;
+            }
         });
 
         await Promise.all(updates);
