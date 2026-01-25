@@ -7,7 +7,7 @@ import type { Question, Subquestion, AnswerOption } from '@/lib/supabase/survey-
 
 interface QuestionEditorProps {
     question: Question & { subquestions?: Subquestion[]; answer_options?: AnswerOption[] };
-    onSave: (question: Question) => void;
+    onSave: (question: Question) => void | Promise<any>;
     onCancel: () => void;
     allQuestions?: Array<{ code: string; question_text: string; question_type: string }>; // For array filter dropdown
 }
@@ -16,6 +16,7 @@ type TabType = 'general' | 'options' | 'logic' | 'display';
 
 export default function QuestionEditor({ question: initialQuestion, onSave, onCancel, allQuestions = [] }: QuestionEditorProps) {
     const [mounted, setMounted] = useState(false);
+    const [saving, setSaving] = useState(false);
     // Ensure settings object always exists to prevent undefined access errors
     const [question, setQuestion] = useState({
         ...initialQuestion,
@@ -44,12 +45,21 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
         'button_multi_select', 'image_select', 'image_multi_select'
     ].includes(question.question_type);
 
-    const handleSave = () => {
-        onSave({
-            ...question,
-            subquestions,
-            answer_options: answerOptions,
-        } as any);
+    const handleSave = async () => {
+        console.log('[QuestionEditor] Save clicked, question:', question?.id, question?.code);
+        setSaving(true);
+        try {
+            await onSave({
+                ...question,
+                subquestions,
+                answer_options: answerOptions,
+            } as any);
+            console.log('[QuestionEditor] Save completed');
+        } catch (err) {
+            console.error('[QuestionEditor] Save error:', err);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const addSubquestion = () => {
@@ -254,22 +264,26 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                                         </span>
                                     </label>
 
-                                    <label className="toggle-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={question.settings.other_option || false}
+                                    <div className="form-group-inline">
+                                        <label className="form-label">
+                                            <strong>"Other" Option</strong>
+                                            <small>Allow respondents to specify their own answer</small>
+                                        </label>
+                                        <select
+                                            className="form-select"
+                                            value={question.settings.other_option === true ? 'other_text' : (question.settings.other_option || 'none')}
                                             onChange={(e) =>
                                                 setQuestion({
                                                     ...question,
-                                                    settings: { ...question.settings, other_option: e.target.checked },
+                                                    settings: { ...question.settings, other_option: e.target.value === 'none' ? false : e.target.value },
                                                 })
                                             }
-                                        />
-                                        <span className="toggle-text">
-                                            <strong>Include "Other" Option</strong>
-                                            <small>Allow respondents to specify their own answer</small>
-                                        </span>
-                                    </label>
+                                        >
+                                            <option value="none">No "Other" option</option>
+                                            <option value="other">Other (button only)</option>
+                                            <option value="other_text">Other with text input</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -840,8 +854,10 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                 </div>
 
                 <div className="modal-footer">
-                    <button onClick={onCancel} className="btn-secondary">Cancel</button>
-                    <button onClick={handleSave} className="btn-primary">Save Question</button>
+                    <button onClick={onCancel} className="btn-secondary" disabled={saving}>Cancel</button>
+                    <button onClick={handleSave} className="btn-primary" disabled={saving}>
+                        {saving ? '⏳ Saving...' : 'Save Question'}
+                    </button>
                 </div>
 
                 <style jsx>{`

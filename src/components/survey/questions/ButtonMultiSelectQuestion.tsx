@@ -195,21 +195,23 @@ export default function ButtonMultiSelectQuestion({
                 })}
             </div>
 
-            {settings.other_option && (
+            {(settings.other_option === true || settings.other_option === 'other' || settings.other_option === 'other_text') && (
                 <div className="other-option">
                     <button
                         type="button"
-                        className={`select-button style-${buttonStyle} other ${selectedCodes.has('_other') ? 'selected' : ''}`}
+                        className={`select-button style-${buttonStyle} other ${selectedCodes.has('_other') ? 'selected' : ''} ${atMaxSelections && !selectedCodes.has('_other') ? 'disabled' : ''}`}
                         onClick={() => handleToggle('_other')}
+                        disabled={atMaxSelections && !selectedCodes.has('_other')}
                     >
                         <span className="checkbox-indicator">{selectedCodes.has('_other') ? '✓' : ''}</span>
-                        Other
+                        {settings.other_label || 'Other'}
                     </button>
-                    {selectedCodes.has('_other') && (
+                    {/* Show text input only for 'other_text' mode (or legacy true value) */}
+                    {selectedCodes.has('_other') && (settings.other_option === true || settings.other_option === 'other_text') && (
                         <input
                             type="text"
                             className="other-input"
-                            placeholder="Please specify..."
+                            placeholder={settings.other_placeholder || 'Please specify...'}
                             value={responseData.get(`${question.code}_other_text`) || ''}
                             onChange={(e) => onAnswer(question.code, e.target.value, '_other_text')}
                         />

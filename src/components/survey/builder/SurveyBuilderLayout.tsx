@@ -1494,14 +1494,16 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
 
                         {isChoiceQuestion && (
                             <div className="setting-row">
-                                <label className="checkbox-label">
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.other_option || false}
-                                        onChange={(e) => handleSettingChange('other_option', e.target.checked)}
-                                    />
-                                    <span>Include "Other" option</span>
-                                </label>
+                                <label className="setting-label">"Other" Option</label>
+                                <select
+                                    className="setting-select"
+                                    value={settings.other_option === true ? 'other_text' : (settings.other_option || 'none')}
+                                    onChange={(e) => handleSettingChange('other_option', e.target.value === 'none' ? false : e.target.value)}
+                                >
+                                    <option value="none">None</option>
+                                    <option value="other">Other (button only)</option>
+                                    <option value="other_text">Other with text input</option>
+                                </select>
                             </div>
                         )}
 
