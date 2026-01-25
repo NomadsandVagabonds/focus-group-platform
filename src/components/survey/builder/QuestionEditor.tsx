@@ -4,12 +4,15 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Question, Subquestion, AnswerOption } from '@/lib/supabase/survey-types';
+import ScreenerBuilder from './ScreenerBuilder';
+
+type QuestionWithNested = Question & { subquestions?: Subquestion[]; answer_options?: AnswerOption[] };
 
 interface QuestionEditorProps {
-    question: Question & { subquestions?: Subquestion[]; answer_options?: AnswerOption[] };
+    question: QuestionWithNested;
     onSave: (question: Question) => void | Promise<any>;
     onCancel: () => void;
-    allQuestions?: Array<{ code: string; question_text: string; question_type: string }>; // For array filter dropdown
+    allQuestions?: QuestionWithNested[]; // For array filter dropdown and screener builder
 }
 
 type TabType = 'general' | 'options' | 'logic' | 'display';
@@ -728,42 +731,24 @@ export default function QuestionEditor({ question: initialQuestion, onSave, onCa
                                 </div>
                             </div>
 
-                            {/* Screenout Condition - For Screener Questions */}
-                            <div className="form-section-compact" style={{ background: '#fff8f5', padding: '1rem', borderRadius: '8px', border: '1px solid #f5c6cb' }}>
-                                <h3 className="section-title" style={{ color: '#c94a4a' }}>🚫 Screenout Condition (Screener)</h3>
-                                <p className="section-description">
-                                    Use this for screening questions. If the condition evaluates to TRUE, the respondent
-                                    will be screened out and redirected to your screenout URL (e.g., Prolific partial payment).
-                                </p>
+                            {/* Screenout Condition - Visual Screener Builder */}
+                            <ScreenerBuilder
+                                question={{ ...question, subquestions, answer_options: answerOptions }}
+                                allQuestions={allQuestions as QuestionWithNested[] || []}
+                                value={question.settings.screenout_condition || ''}
+                                onChange={(expr) =>
+                                    setQuestion({
+                                        ...question,
+                                        settings: { ...question.settings, screenout_condition: expr || undefined },
+                                    })
+                                }
+                            />
 
-                                <div className="form-group">
-                                    <label>Screenout if this condition is TRUE:</label>
-                                    <input
-                                        type="text"
-                                        value={question.settings.screenout_condition || ''}
-                                        onChange={(e) =>
-                                            setQuestion({
-                                                ...question,
-                                                settings: { ...question.settings, screenout_condition: e.target.value || undefined },
-                                            })
-                                        }
-                                        placeholder="e.g., (Q1_SQ006.NAOK == 'A1' || Q1_SQ006.NAOK == 'A2' || Q1_SQ006.NAOK == 'A3')"
-                                        className="input-text"
-                                        style={{ fontFamily: 'monospace', fontSize: '0.875rem' }}
-                                    />
-                                    <small className="help-text" style={{ color: '#856404' }}>
-                                        Use LimeSurvey syntax: == for equals, != for not equals, || for OR, && for AND.
-                                        Example: Screen out if NOT "somewhat" or "very" interested.
-                                    </small>
+                            {question.settings.screenout_condition && (
+                                <div className="info-box" style={{ background: '#fef3cd', borderColor: '#ffc107', marginTop: '0.75rem' }}>
+                                    <strong>⚠️ Screener active:</strong> Make sure your Prolific screenout URL/code is configured in Survey Settings.
                                 </div>
-
-                                {question.settings.screenout_condition && (
-                                    <div className="info-box" style={{ background: '#f8d7da', borderColor: '#f5c6cb' }}>
-                                        <strong>⚠️ Screener active:</strong> Respondents matching this condition will be screened out.
-                                        Make sure your Prolific screenout code is set in Survey Settings.
-                                    </div>
-                                )}
-                            </div>
+                            )}
 
                             <div className="form-section-compact">
                                 <h3 className="section-title">Other Settings</h3>

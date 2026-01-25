@@ -42,12 +42,16 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
         setSaveNotification({ show: true, message, type: 'error' });
     };
 
-    // Get all questions for use in dropdowns (array filter, conditions, etc.)
+    // Get all questions for use in dropdowns (array filter, conditions, screener builder, etc.)
+    // Include full question data with subquestions and answer_options for the screener builder
     const allQuestions = (localSurvey.question_groups || []).flatMap(g =>
         (g.questions || []).map(q => ({
+            ...q,
             code: q.code,
             question_text: q.question_text,
-            question_type: q.question_type
+            question_type: q.question_type,
+            subquestions: q.subquestions || [],
+            answer_options: q.answer_options || []
         }))
     );
 
