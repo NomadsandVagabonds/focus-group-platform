@@ -59,6 +59,10 @@ export default function ButtonMultiSelectQuestion({
                 selected.add(opt.code);
             }
         });
+        // Also check for "Other" option selection
+        if (responseData.get(`${question.code}__other`)) {
+            selected.add('_other');
+        }
         return selected;
     }, [question, responseData]);
 
