@@ -1,4 +1,14 @@
-// Survey Builder Layout - Fully Functional
+/**
+ * Survey Builder Layout - Main Active Component
+ *
+ * This is the PRIMARY survey builder used by the admin page (/admin/surveys/[id]).
+ *
+ * Question editing UI components in this file:
+ *   - QuestionEditorPanel: Center panel for editing question text, subquestions, answer options
+ *   - QuestionSettings: Right sidebar for settings (validation, relevance, screener conditions, etc.)
+ *
+ * NOTE: QuestionEditor.tsx (modal) and SurveyBuilderClient.tsx are DEPRECATED and not used.
+ */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,9 +16,9 @@ import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useS
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Eye, Settings, Xmark, FloppyDisk, Plus, WarningTriangle, Play, Link as LinkIcon } from 'iconoir-react';
-import QuestionEditor from './QuestionEditor';
 import AIAssistantPanel from './AIAssistantPanel';
-import type { SurveyWithStructure, QuestionGroup, Question } from '@/lib/supabase/survey-types';
+import ScreenerBuilder from './ScreenerBuilder';
+import type { SurveyWithStructure, QuestionGroup, Question, Subquestion, AnswerOption } from '@/lib/supabase/survey-types';
 
 interface SurveyBuilderLayoutProps {
     survey: SurveyWithStructure;
@@ -16,7 +26,6 @@ interface SurveyBuilderLayoutProps {
 
 export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps) {
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
-    const [showQuestionEditor, setShowQuestionEditor] = useState(false);
     const [localSurvey, setLocalSurvey] = useState(survey);
     const [showNewQuestionDialog, setShowNewQuestionDialog] = useState(false);
     const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
@@ -442,16 +451,6 @@ export default function SurveyBuilderLayout({ survey }: SurveyBuilderLayoutProps
                     )}
                 </div>
             </div>
-
-            {/* Question Editor Modal */}
-            {showQuestionEditor && selectedQuestion && (
-                <QuestionEditor
-                    question={selectedQuestion}
-                    onSave={handleSaveQuestion}
-                    onCancel={() => setShowQuestionEditor(false)}
-                    allQuestions={allQuestions}
-                />
-            )}
 
             {/* New Question Dialog */}
             {showNewQuestionDialog && (
@@ -2134,20 +2133,13 @@ function QuestionSettings({ question, onChange, onSave, showSaveSuccess, showSav
                             <span className="help-text">Show only when this expression is true</span>
                         </div>
 
-                        {/* Screenout condition */}
-                        <div className="setting-group highlight-setting" style={{ background: '#fff8f5', padding: '10px', borderRadius: '4px', border: '1px solid #f5c6cb' }}>
-                            <label style={{ color: '#c94a4a', fontWeight: 600 }}>🚫 Screenout Condition (Screener)</label>
-                            <input
-                                type="text"
-                                value={settings.screenout_condition || ''}
-                                onChange={(e) => handleSettingChange('screenout_condition', e.target.value || undefined)}
-                                placeholder="e.g., Q2 != 'A4' AND Q2 != 'A5'"
-                                className="code-input"
-                            />
-                            <span className="help-text" style={{ color: '#856404' }}>
-                                If this condition is TRUE, respondent is screened out. Example: Q2 != 'Somewhat interested' AND Q2 != 'Very interested'
-                            </span>
-                        </div>
+                        {/* Screenout condition - Visual Builder */}
+                        <ScreenerBuilder
+                            question={localQuestion as Question & { subquestions?: Subquestion[]; answer_options?: AnswerOption[] }}
+                            allQuestions={allQuestions}
+                            value={settings.screenout_condition || ''}
+                            onChange={(expr) => handleSettingChange('screenout_condition', expr || undefined)}
+                        />
                     </div>
                 )}
             </div>

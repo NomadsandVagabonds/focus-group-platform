@@ -1,4 +1,16 @@
-// Question Editor Modal Component
+/**
+ * Question Editor Modal Component
+ *
+ * ⚠️  DEPRECATED / NOT ACTIVELY USED
+ *
+ * This modal component is NOT currently active in the main survey builder.
+ * The active question settings UI is in SurveyBuilderLayout.tsx:
+ *   - QuestionEditorPanel (center panel) - for editing question text, subquestions, answer options
+ *   - QuestionSettings (right sidebar) - for settings like validation, relevance, screenout conditions
+ *
+ * This file is kept for potential future use but is NOT rendered in the current UI flow.
+ * If you need to modify question settings, edit the components in SurveyBuilderLayout.tsx instead.
+ */
 'use client';
 
 import { useState, useEffect } from 'react';

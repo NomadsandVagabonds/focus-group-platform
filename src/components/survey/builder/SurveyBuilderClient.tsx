@@ -1,4 +1,14 @@
-// Survey Builder Client Component
+/**
+ * Survey Builder Client Component
+ *
+ * ⚠️  DEPRECATED / NOT ACTIVELY USED
+ *
+ * This file is NOT imported anywhere and is essentially dead code.
+ * The active survey builder is SurveyBuilderLayout.tsx, which is used by:
+ *   /src/app/admin/surveys/[id]/page.tsx
+ *
+ * This file is kept for reference but can be safely deleted if needed.
+ */
 'use client';
 
 import { useState } from 'react';
