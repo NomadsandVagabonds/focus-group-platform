@@ -217,7 +217,7 @@ export default function ButtonMultiSelectQuestion({
                             className="other-input"
                             placeholder={settings.other_placeholder || 'Please specify...'}
                             value={responseData.get(`${question.code}_other_text`) || ''}
-                            onChange={(e) => onAnswer(question.code, e.target.value, '_other_text')}
+                            onChange={(e) => onAnswer(question.code, e.target.value, 'other_text')}
                         />
                     )}
                 </div>
