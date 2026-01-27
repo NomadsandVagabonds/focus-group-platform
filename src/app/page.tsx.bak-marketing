@@ -367,7 +367,7 @@ export default function MarketingPage() {
                             }}
                         >
                             We unite rigorous public opinion research with strategic communication
-                            to build bipartisan momentum for responsible AI governance.
+                            to inform public understanding of AI governance issues.
                         </p>
 
                         {/* CTAs */}
@@ -433,17 +433,17 @@ export default function MarketingPage() {
             <section id="mission" className={styles.features} style={{ background: '#FFFFFF' }}>
                 <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
                     <h2 className={styles.sectionTitle} style={{ marginBottom: '2rem' }}>
-                        Translating public sentiment into policy momentum
+                        Understanding public sentiment on AI policy issues
                     </h2>
                     <p style={{ fontSize: '1.2rem', lineHeight: 1.8, color: '#2D3748', marginBottom: '1.5rem' }}>
-                        The AI policy conversation moves faster than our democratic institutions can respond.
-                        Legislators need evidence. Advocates need data. Funders need to know what actually
-                        moves the needle. And the public deserves to be heard.
+                        The AI policy conversation moves faster than public understanding can keep pace.
+                        Researchers need rigorous data. The public deserves to understand the issues.
+                        And policymakers benefit from transparency about what citizens actually think.
                     </p>
                     <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4A5568' }}>
                         Resonant provides the research infrastructure to understand how people actually weigh
-                        the promises of AI against its risks. Then we translate those findings into the
-                        evidence base that can move governance forward.
+                        the promises of AI against its risks. Then we translate those findings into
+                        publicly available research that informs the broader conversation.
                     </p>
                 </div>
             </section>
@@ -518,14 +518,14 @@ export default function MarketingPage() {
                                 fontSize: '1.25rem',
                                 color: '#1A1A2E',
                                 marginBottom: '0.75rem'
-                            }}>Strategic Mobilization</h3>
+                            }}>Public Education</h3>
                             <p style={{
                                 fontSize: '1rem',
                                 lineHeight: 1.65,
                                 color: '#4A5568'
                             }}>
-                                Our field-tested education campaigns align messages with local context,
-                                building durable coalitions that champion safe AI adoption.
+                                Our field-tested educational programs help communities understand AI technology
+                                and its implications, fostering informed civic participation.
                             </p>
                         </div>
 
@@ -564,8 +564,8 @@ export default function MarketingPage() {
                                 lineHeight: 1.65,
                                 color: '#4A5568'
                             }}>
-                                We transform complex technical insights into compelling stories and policy briefs
-                                that resonate with public officials and the communities they serve.
+                                We transform complex technical insights into compelling stories and accessible
+                                research that helps communities and decision-makers understand the issues.
                             </p>
                         </div>
                     </div>
@@ -730,8 +730,8 @@ export default function MarketingPage() {
                     </h2>
                     <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: '#4A5568', marginBottom: '3rem' }}>
                         Our ongoing work investigates how the American public understands AI risk,
-                        what messaging frameworks resonate across political lines, and how to build
-                        durable coalitions for governance.
+                        what messaging frameworks resonate across political lines, and how to foster
+                        informed public discourse on AI issues.
                     </p>
 
                     {/* Sankey Visualization - Native React Component */}
@@ -767,7 +767,7 @@ export default function MarketingPage() {
             <section id="contact" className={styles.cta}>
                 <h2 className={styles.ctaTitle}>Work with us</h2>
                 <p className={styles.ctaDesc}>
-                    We partner with researchers, advocates, and policymakers working on AI governance.
+                    We partner with researchers, educators, and institutions interested in AI governance.
                     If our approach <em>resonates</em>, we would love to explore how we might collaborate.
                 </p>
                 <div className="flex gap-4 justify-center">
@@ -782,7 +782,7 @@ export default function MarketingPage() {
                 <div className={styles.footerContent}>
                     <div>
                         <div style={{ color: 'white', fontWeight: 'bold', fontFamily: 'Georgia', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Resonant</div>
-                        <p style={{ fontSize: '0.85rem' }}>A research organization focused on AI governance.</p>
+                        <p style={{ fontSize: '0.85rem' }}>A research organization studying public opinion on AI technology.</p>
                     </div>
                     <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', fontSize: '0.85rem' }}>
                         <Link href="/ethics" style={{ color: '#A0AEC0', textDecoration: 'none' }}>Ethical Funding</Link>
